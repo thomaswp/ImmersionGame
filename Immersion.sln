@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual C# Express 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Immersion", "Immersion\Immersion\Immersion.csproj", "{84E0C9AB-EFE5-4F8B-9949-11B491292979}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ImmersionContent", "Immersion\ImmersionContent\ImmersionContent.contentproj", "{7134E733-DA45-47FA-AF6B-0BD3CC4C5B9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersionContent", "Immersion\ImmersionContent\ImmersionContent.contentproj", "{7134E733-DA45-47FA-AF6B-0BD3CC4C5B9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelEditor", "LevelEditor\LevelEditor.csproj", "{FF0E2752-217F-470C-B003-62AF0C2F29D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersionData", "ImmersionData\ImmersionData.csproj", "{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +21,14 @@ Global
 		{84E0C9AB-EFE5-4F8B-9949-11B491292979}.Release|x86.Build.0 = Release|x86
 		{7134E733-DA45-47FA-AF6B-0BD3CC4C5B9D}.Debug|x86.ActiveCfg = Debug|x86
 		{7134E733-DA45-47FA-AF6B-0BD3CC4C5B9D}.Release|x86.ActiveCfg = Release|x86
+		{FF0E2752-217F-470C-B003-62AF0C2F29D3}.Debug|x86.ActiveCfg = Debug|x86
+		{FF0E2752-217F-470C-B003-62AF0C2F29D3}.Debug|x86.Build.0 = Debug|x86
+		{FF0E2752-217F-470C-B003-62AF0C2F29D3}.Release|x86.ActiveCfg = Release|x86
+		{FF0E2752-217F-470C-B003-62AF0C2F29D3}.Release|x86.Build.0 = Release|x86
+		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Debug|x86.ActiveCfg = Debug|x86
+		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Debug|x86.Build.0 = Debug|x86
+		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Release|x86.ActiveCfg = Release|x86
+		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
