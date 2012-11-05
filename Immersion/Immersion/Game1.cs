@@ -18,11 +18,17 @@ namespace Immersion
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Sprite Plaform;
+        Sprite Hero;
+        Vector2 myScreenSize;
+        List<Sprite> mySprites = new List<Sprite>();
+
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
         /// <summary>
@@ -48,6 +54,16 @@ namespace Immersion
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            // Make the hero
+            Texture2D heroImage = Content.Load<Texture2D>("hero");
+            Hero myHero = new Hero(heroImage);
+
+            //Make a Platform
+            Texture2D plat45 = Content.Load<Texture2D>("platform45");
+            Sprite platform = new Sprite(plat45,new Vector2(25,25));
+
+            mySprites.Add(platform);
+            mySprites.Add(myHero);
         }
 
         /// <summary>
@@ -70,8 +86,14 @@ namespace Immersion
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            // Here's where the input manager is told to deal with the input
+            InputManager.ActKeyboard(Keyboard.GetState());
+            InputManager.ActMouse(Mouse.GetState());
             // TODO: Add your update logic here
-
+            foreach (Sprite s in mySprites)
+            {
+                s.Update(gameTime.ElapsedGameTime.TotalSeconds);
+            }
             base.Update(gameTime);
         }
 
@@ -84,7 +106,12 @@ namespace Immersion
             GraphicsDevice.Clear(Color.Purple);
 
             // TODO: Add your drawing code here
-
+            spriteBatch.Begin();
+            foreach (Sprite s in mySprites)
+            {
+                s.Draw(spriteBatch);
+            }
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
