@@ -12,8 +12,9 @@ using Microsoft.Xna.Framework.Media;
 namespace Immersion
 {
     [Serializable]
-    public class Map
+    public class MapData
     {
-        public String name;
+        public String name = "New Map";
+        public List<PlatformData> Platforms = new List<PlatformData>();
     }
 }

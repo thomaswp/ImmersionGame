@@ -19,7 +19,7 @@ namespace LevelEditor
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Map map = new Map();
+            MapData map = new MapData();
             map.name = "Moo";
         }
     }
