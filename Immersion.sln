@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelEditor", "LevelEditor\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersionData", "ImmersionData\ImmersionData.csproj", "{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFMapEditor", "WPFMapEditor\WPFMapEditor.csproj", "{C9A2B982-F3E4-4D84-B257-B4A067513C73}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,10 +29,6 @@ Global
 		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Debug|x86.Build.0 = Debug|x86
 		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Release|x86.ActiveCfg = Release|x86
 		{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}.Release|x86.Build.0 = Release|x86
-		{C9A2B982-F3E4-4D84-B257-B4A067513C73}.Debug|x86.ActiveCfg = Debug|x86
-		{C9A2B982-F3E4-4D84-B257-B4A067513C73}.Debug|x86.Build.0 = Debug|x86
-		{C9A2B982-F3E4-4D84-B257-B4A067513C73}.Release|x86.ActiveCfg = Release|x86
-		{C9A2B982-F3E4-4D84-B257-B4A067513C73}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

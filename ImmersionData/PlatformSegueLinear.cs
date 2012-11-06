@@ -6,13 +6,26 @@ using Microsoft.Xna.Framework;
 
 namespace Immersion
 {
-    class PlatformSegueLinear : PlatformSegue
+    public class PlatformSegueLinear : PlatformSegue
     {
-        public PlatformSegueLinear(Vector2 start, Vector2 end) : base(start, end) { }
+        public PlatformSegueLinear(Vector2 destination) : base(destination) { }
 
-        public override Microsoft.Xna.Framework.Vector2 getPosition(float perc)
+        public override Vector2 getPosition(Vector2 start, float perc)
         {
-            return start * (1 - perc) + end * perc;
+            return start * (1 - perc) + Destination * perc;
+        }
+
+        public override string[] getProperties()
+        {
+            return new String[]
+            {
+                "Speed"
+            };
+        }
+
+        public override void changeProperty(int index, float value)
+        {
+            
         }
     }
 }

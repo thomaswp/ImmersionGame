@@ -92,6 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlatformSegueCurved.cs" />
     <Compile Include="MapData.cs" />
     <Compile Include="PlatformData.cs" />
     <Compile Include="PlatformSegue.cs" />
