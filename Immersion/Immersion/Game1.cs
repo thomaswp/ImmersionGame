@@ -59,8 +59,8 @@ namespace Immersion
             Hero myHero = new Hero(heroImage);
 
             //Make a Platform
-            Texture2D plat45 = Content.Load<Texture2D>("platform45");
-            Sprite platform = new Sprite(plat45,new Vector2(25,25));
+            Texture2D plat45 = Content.Load<Texture2D>("platform45squished");
+            Sprite platform = new Sprite(plat45,new Vector2(100,100));
 
             mySprites.Add(platform);
             mySprites.Add(myHero);
@@ -103,7 +103,7 @@ namespace Immersion
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Purple);
+            GraphicsDevice.Clear(Color.Aqua);
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();

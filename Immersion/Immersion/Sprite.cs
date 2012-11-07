@@ -29,13 +29,15 @@ namespace Immersion
 
         public virtual void Update(double elapsedTime)
         {
+            //Make gravity
+            myVelocity.X = 0;
             myPosition += myVelocity;
             myAngle += myAngularVelocity;
         }
 
         public virtual void Draw(SpriteBatch batch)
         {
-            batch.Draw(myTexture, myPosition, Color.White);
+            batch.Draw(myTexture, myPosition,null, Color.White, 0f, new Vector2(0,0),1f,SpriteEffects.None, 0f);
         }
     }
 }
