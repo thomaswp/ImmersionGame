@@ -18,16 +18,22 @@ namespace Immersion
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Sprite Plaform;
-        Sprite Hero;
-        Vector2 myScreenSize;
+        Hero myHero;
+        Background background;
+        List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
+        Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
+
+        MapData map;
 
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = 1000;
+            graphics.PreferredBackBufferHeight = 700;
+            graphics.ApplyChanges();
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
@@ -50,19 +56,34 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
+            map = MapData.ReadFromFile("Map1.map");
+
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            Vector2 center = myScreenSize / 2;
+
+            Texture2D bgSprite = Content.Load<Texture2D>("space");
+            background = new Background(bgSprite, (int)myScreenSize.X, (int)myScreenSize.Y);
 
             // TODO: use this.Content to load your game content here
             // Make the hero
             Texture2D heroImage = Content.Load<Texture2D>("hero");
-            Hero myHero = new Hero(heroImage);
+            Texture2D shadow = Content.Load<Texture2D>("shadow");
+            myHero = new Hero(heroImage, shadow, center);
 
             //Make a Platform
             Texture2D plat45 = Content.Load<Texture2D>("platform45squished");
-            Sprite platform = new Sprite(plat45,new Vector2(100,100));
+            foreach (PlatformData data in map.Platforms)
+            {
+                PlatformSprite platform = new PlatformSprite(plat45, data);
+                mySprites.Add(platform);
+                myPlatforms.Add(platform);
+            }
 
-            mySprites.Add(platform);
+            myHero.myPosition = myPlatforms[0].myPosition;
+            offset = center;
+
             mySprites.Add(myHero);
         }
 
@@ -90,10 +111,20 @@ namespace Immersion
             InputManager.ActKeyboard(Keyboard.GetState());
             InputManager.ActMouse(Mouse.GetState());
             // TODO: Add your update logic here
+            myHero.UpdateCurrentPlatform(myPlatforms);
             foreach (Sprite s in mySprites)
             {
-                s.Update(gameTime.ElapsedGameTime.TotalSeconds);
+                s.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
+
+            int buffer = 300;
+            Vector2 heroPos = myHero.myPosition + offset;
+            if (heroPos.X < buffer) heroPos.X = buffer;
+            if (heroPos.X > myScreenSize.X - buffer) heroPos.X = myScreenSize.X - buffer;
+            if (heroPos.Y < buffer) heroPos.Y = buffer;
+            if (heroPos.Y > myScreenSize.Y - buffer) heroPos.Y = myScreenSize.Y - buffer;
+            offset = offset * 0.9f + (heroPos - myHero.myPosition) * 0.1f;
+
             base.Update(gameTime);
         }
 
@@ -107,9 +138,10 @@ namespace Immersion
 
             // TODO: Add your drawing code here
             spriteBatch.Begin();
+            background.Draw(spriteBatch, offset);
             foreach (Sprite s in mySprites)
             {
-                s.Draw(spriteBatch);
+                s.Draw(spriteBatch, offset);
             }
             spriteBatch.End();
             base.Draw(gameTime);

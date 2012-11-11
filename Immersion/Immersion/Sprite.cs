@@ -13,13 +13,14 @@ using Microsoft.Xna.Framework.Storage;
 using System.Collections;
 namespace Immersion
 {
-    class Sprite
+    public class Sprite
     {
         protected internal Texture2D myTexture;
         protected internal Vector2 myPosition;
         protected internal Vector2 myVelocity = new Vector2(0, 0);
         protected internal float myAngle = 0f;
         protected internal float myAngularVelocity = 0f;
+        protected internal float myScale = 1f;
 
         public Sprite(Texture2D texture, Vector2 position)
         {
@@ -27,17 +28,16 @@ namespace Immersion
             this.myPosition = position;
         }
 
-        public virtual void Update(double elapsedTime)
+        public virtual void Update(float elapsedTime)
         {
-            //Make gravity
-            myVelocity.X = 0;
-            myPosition += myVelocity;
-            myAngle += myAngularVelocity;
+            myPosition += myVelocity * elapsedTime;
+            myAngle += myAngularVelocity * elapsedTime;
         }
 
-        public virtual void Draw(SpriteBatch batch)
+        public virtual void Draw(SpriteBatch batch, Vector2 offset)
         {
-            batch.Draw(myTexture, myPosition,null, Color.White, 0f, new Vector2(0,0),1f,SpriteEffects.None, 0f);
+            batch.Draw(myTexture, myPosition + offset,null, Color.White, 0f, 
+                new Vector2(myTexture.Width / 2,myTexture.Height / 2),myScale,SpriteEffects.None, 0f);
         }
     }
 }

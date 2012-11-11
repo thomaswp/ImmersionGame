@@ -30,16 +30,22 @@ namespace Immersion
             //startPos = 2 * startPos - getPosition(degree);
         }
 
-        public Vector2 getPosition(int frame)
+        public Vector2 getPosition(float degree)
         {
             if (segues.Count == 0) return startPos;
 
-            float perc = frame / 361f;
+            float perc = degree / 361f;
             int segueIndex = (int)(segues.Count * perc);
             float sPerc = (perc - (float)segueIndex / segues.Count) * segues.Count;
             Vector2 start = segueIndex > 0 ? segues[segueIndex - 1].Destination : startPos;
 
             return segues[segueIndex].getPosition(start, sPerc);
+        }
+
+        public Vector2 getVelocity(float degree)
+        {
+            float dt = 0.001f;
+            return (getPosition(degree) - getPosition(degree - dt)) / dt;
         }
 
         public bool contains(Vector2 position, int frame)

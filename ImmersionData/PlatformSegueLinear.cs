@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Immersion
 {
+    [Serializable]
     public class PlatformSegueLinear : PlatformSegue
     {
         public PlatformSegueLinear(Vector2 destination) : base(destination) { }

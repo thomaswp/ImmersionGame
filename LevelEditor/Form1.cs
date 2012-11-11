@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Immersion;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
+using System.IO;
 
 namespace LevelEditor
 {
@@ -64,6 +65,7 @@ namespace LevelEditor
 
         private void draw()
         {
+            if (pictureBoxWorld.Width == 0) return;
             Image bmp = pictureBoxWorld.Image;
             if (bmp == null || bmp.Width != pictureBoxWorld.Width || bmp.Height != pictureBoxWorld.Height)
             {
@@ -294,6 +296,23 @@ namespace LevelEditor
         private bool segueContains(PlatformSegue segue, Vector2 pos)
         {
             return (segue.Destination - pos).Length() < SEGUE_RAD;
+        }
+
+        private void tsmiOpen_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                map = MapData.ReadFromFile(openFileDialog.FileName);
+                draw();
+            }
+        }
+
+        private void tsmiSave_Click(object sender, EventArgs e)
+        {
+            if (this.saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                map.WriteToFile(saveFileDialog.FileName);
+            }
         }
 
     }

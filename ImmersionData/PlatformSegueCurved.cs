@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Immersion
 {
+    [Serializable]
     public class PlatformSegueCurved : PlatformSegue
     {
         public float curvature = 0;
