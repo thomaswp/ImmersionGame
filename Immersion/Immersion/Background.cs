@@ -25,7 +25,7 @@ namespace Immersion
             this.texture = texture;
         }
 
-        public void Draw(SpriteBatch spritebatch, Vector2 offset)
+        public void Draw(SpriteBatch spritebatch, Vector2 offset, float scale)
         {
             offset *= 0.7f;
             while (offset.X < -texture.Width) offset.X += texture.Width;
@@ -33,9 +33,9 @@ namespace Immersion
             while (offset.Y < -texture.Height) offset.Y += texture.Height;
             while (offset.Y > 0) offset.Y -= texture.Height;
 
-            for (int i = 0; i < cols; i++)
+            for (int i = 0; i < cols / scale; i++)
             {
-                for (int j = 0; j < rows; j++)
+                for (int j = 0; j < rows / scale; j++)
                 {
                     spritebatch.Draw(texture, offset + new Vector2(texture.Width * i, 
                         texture.Height * j), Color.White);

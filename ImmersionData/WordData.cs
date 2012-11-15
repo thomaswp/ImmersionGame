@@ -23,17 +23,21 @@ namespace Immersion
 
         public void GeneratePath()
         {
-            double degreeStart = Math.Atan2(Parent.StartPosition.Y, Parent.StartPosition.X) * 180 / Math.PI;
-            double degreeEnd = Math.Atan2(Parent.EndPosition.Y, Parent.EndPosition.X) * 180 / Math.PI;
+            double posDegreeStart = Math.Atan2(Parent.StartPosition.Y, Parent.StartPosition.X) * 180 / Math.PI;
+            double posDegreeEnd = Math.Atan2(Parent.EndPosition.Y, Parent.EndPosition.X) * 180 / Math.PI;
 
-            degreeStart -= Parent.StartDegree;
-            degreeEnd -= Parent.EndDegree;
+            int slope = (int)Math.Round((posDegreeStart - posDegreeEnd) / (Parent.StartDegree - Parent.EndDegree));
 
-           // while (degreeStart < 0) degreeStart += 360;
-           // while (degreeEnd < degreeStart) degreeEnd += 360;
+            int posDir = Math.Sign(posDegreeStart - posDegreeEnd);
+
+            //posDegreeStart -= Parent.StartDegree;
+            //posDegreeEnd -= Parent.EndDegree;
+
+            int inc = 5;// * slope;
+            //int start = inc > 0 ? 0 : 360;
 
             points.Clear();
-            for (int i = 0; i < Parent.StartDegree; i += 5)
+            for (int i = 0; i < Parent.StartDegree; i += inc)
             {
                 addNormalPoint(i);
             }

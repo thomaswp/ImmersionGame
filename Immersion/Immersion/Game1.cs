@@ -23,6 +23,7 @@ namespace Immersion
         List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
         Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
+        float worldScale = 1;
 
         MapData map;
 
@@ -125,6 +126,18 @@ namespace Immersion
             if (heroPos.Y > myScreenSize.Y - buffer) heroPos.Y = myScreenSize.Y - buffer;
             offset = offset * 0.9f + (heroPos - myHero.myPosition) * 0.1f;
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                if (worldScale > 0.2f)
+                    worldScale *= 0.99f;
+                offset = myScreenSize / worldScale / 2;
+            }
+            else
+            {
+                if (worldScale < 1)
+                    worldScale *= 1.01f;
+            }
+
             base.Update(gameTime);
         }
 
@@ -137,8 +150,13 @@ namespace Immersion
             GraphicsDevice.Clear(Color.Aqua);
 
             // TODO: Add your drawing code here
+            Matrix m = Matrix.CreateScale(worldScale);
+
             spriteBatch.Begin();
-            background.Draw(spriteBatch, offset);
+            background.Draw(spriteBatch, offset, (float)Math.Sqrt(worldScale));
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, m);
             foreach (Sprite s in mySprites)
             {
                 s.Draw(spriteBatch, offset);

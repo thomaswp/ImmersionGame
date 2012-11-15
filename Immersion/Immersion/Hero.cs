@@ -79,7 +79,7 @@ namespace Immersion
             }
             else
             {
-                myVelocityZ += 5;
+                myVelocityZ += 7;
             }
         }
 
@@ -124,16 +124,30 @@ namespace Immersion
                 return;
             }
 
-            float maxVel = 400;
             myVelocityZ += -2000f * elapsedTime;
             myPositionZ += myVelocityZ * elapsedTime;
             myPositionZ = Math.Max(myPositionZ, 0);
+
+            float maxVel = 400;
             if (!moved)
             {
                 if (IsGrounded)
-                    myVelocity *= 0.3f;
+                {
+                    if (Keyboard.GetState().IsKeyDown(Keys.L))
+                    {
+
+                        myVelocity *= 0.9f;
+                    }
+                    else
+                    {
+
+                        myVelocity *= 0.3f;
+                    }
+                }
                 else
+                {
                     myVelocity *= 0.9f;
+                }
             }
             if (myVelocity.Length() > maxVel)
             {
