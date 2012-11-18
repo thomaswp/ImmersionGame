@@ -20,6 +20,7 @@ namespace Immersion
     {
         public String name = "New Map";
         public List<PlatformData> Platforms = new List<PlatformData>();
+        public List<WordCloudData> WordClouds = new List<WordCloudData>();
 
         public static MapData ReadFromFile(String path)
         {

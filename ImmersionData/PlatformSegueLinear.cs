@@ -11,12 +11,12 @@ namespace Immersion
     {
         public PlatformSegueLinear(Vector2 destination) : base(destination) { }
 
-        public override Vector2 getPosition(Vector2 start, float perc)
+        public override Vector2 GetPosition(Vector2 start, float perc)
         {
             return start * (1 - perc) + Destination * perc;
         }
 
-        public override string[] getProperties()
+        public override string[] GetProperties()
         {
             return new String[]
             {
@@ -24,7 +24,7 @@ namespace Immersion
             };
         }
 
-        public override void changeProperty(int index, float value)
+        public override void ChangeProperty(int index, float value)
         {
             
         }

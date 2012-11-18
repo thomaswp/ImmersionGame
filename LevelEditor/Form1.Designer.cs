@@ -41,9 +41,9 @@
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWorld)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegree)).BeginInit();
@@ -52,9 +52,9 @@
             // 
             // pictureBoxWorld
             // 
-            this.pictureBoxWorld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxWorld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxWorld.Location = new System.Drawing.Point(0, 76);
             this.pictureBoxWorld.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxWorld.Name = "pictureBoxWorld";
@@ -67,11 +67,11 @@
             // 
             // trackBarDegree
             // 
-            this.trackBarDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBarDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBarDegree.Location = new System.Drawing.Point(0, 32);
             this.trackBarDegree.Margin = new System.Windows.Forms.Padding(4);
-            this.trackBarDegree.Maximum = 360;
+            this.trackBarDegree.Maximum = 359;
             this.trackBarDegree.Name = "trackBarDegree";
             this.trackBarDegree.Size = new System.Drawing.Size(797, 56);
             this.trackBarDegree.TabIndex = 1;
@@ -100,7 +100,7 @@
             this.nudDegree.Location = new System.Drawing.Point(805, 32);
             this.nudDegree.Margin = new System.Windows.Forms.Padding(4);
             this.nudDegree.Maximum = new decimal(new int[] {
-            360,
+            359,
             0,
             0,
             0});
@@ -192,25 +192,25 @@
             this.tsmiFile.Size = new System.Drawing.Size(44, 24);
             this.tsmiFile.Text = "File";
             // 
-            // tsmiSave
-            // 
-            this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(152, 24);
-            this.tsmiSave.Text = "Save";
-            this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
-            // 
             // tsmiNew
             // 
             this.tsmiNew.Name = "tsmiNew";
-            this.tsmiNew.Size = new System.Drawing.Size(152, 24);
+            this.tsmiNew.Size = new System.Drawing.Size(114, 24);
             this.tsmiNew.Text = "New";
             // 
             // tsmiOpen
             // 
             this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(152, 24);
+            this.tsmiOpen.Size = new System.Drawing.Size(114, 24);
             this.tsmiOpen.Text = "Open";
             this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
+            // 
+            // tsmiSave
+            // 
+            this.tsmiSave.Name = "tsmiSave";
+            this.tsmiSave.Size = new System.Drawing.Size(114, 24);
+            this.tsmiSave.Text = "Save";
+            this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // Form1
             // 

@@ -25,10 +25,11 @@ namespace Immersion
             get { return myTexture.Width / 2 * myScale; }
         }
 
-        public PlatformSprite(Texture2D texture, PlatformData data) : base(texture, data.startPos)
+        public PlatformSprite(Texture2D texture, PlatformData data) : base(texture, data.StartPos)
         {
             this.data = data;
             myScale = 0.5f;
+            myColor.A = 100;
         }
 
         public override void Update(float elapsedTime)
@@ -36,8 +37,8 @@ namespace Immersion
             base.Update(elapsedTime);
             float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
             float posMult = 3;
-            degree = (degree + elapsedTime * timeMult) % 361;
-            myPosition = data.getPosition(degree) * posMult;
+            degree = (degree + elapsedTime * timeMult) % 360;
+            myPosition = data.GetPosition(degree) * posMult;
             Velocity = data.getVelocity(degree) * posMult * timeMult;
         }
 

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Immersion
 {
+    [Serializable]
     public class WordPath
     {
         public WordPath(Vector2[] points) //4 points (x, y)

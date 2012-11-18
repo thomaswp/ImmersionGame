@@ -27,6 +27,8 @@ namespace LevelEditor
             Linear, Curved
         }
 
+        private int Degree { get { return this.trackBarDegree.Value; } }
+
         MapData map = new MapData();
 
         Point mapOffset, startDragMouse, startDragMap;
@@ -50,6 +52,30 @@ namespace LevelEditor
         private void Form1_Load_1(object sender, EventArgs e)
         {
             map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
+            List<String> words = new List<string>();
+            String stuff = "This is a public service announcement for the sake of a new moon on the shores of Albermarle county";
+            String[] stuffA = stuff.Split(new char[] {' '});
+            words.Add("Hello");
+            words.Add("how");
+            words.Add("are");
+            words.Add("you");
+            words.Add("Hello");
+            //map.WordClouds.Add(new WordCloudData(new Vector2(300, 80), 50, new Vector2(100, 200), 90, words));
+            map.WordClouds.Add(new WordCloudData(new Vector2(100, 200), 50, new Vector2(300, 80), 90, words));
+            Random rand = new Random();
+            for (int i = 0; i < 10; i++)
+            {
+                List<String> ws = new List<string>();
+                for (int j = 0; rand.NextDouble() < 0.75; j++)
+                {
+                    ws.Add(stuffA[rand.Next(stuffA.Length)]);
+                }
+                int time1 = rand.Next(330);
+                int time2 = rand.Next(360 - time1) + time1;
+                int w = 700;
+                int dw = -w / 2;
+                map.WordClouds.Add(new WordCloudData(new Vector2(dw + rand.Next(w), dw + rand.Next(w)), time1, new Vector2(dw + rand.Next(w), dw + rand.Next(w)), time2, ws));
+            }
             draw();
         }
 
@@ -80,22 +106,53 @@ namespace LevelEditor
             g.DrawString(degree.ToString(), new Font("Arial", 12), Brushes.Black, new PointF(0, 0));
             g.DrawString("(" + mapOffset.X + ", " + mapOffset.Y + ")", new Font("Arial", 12), Brushes.Black, new PointF(50, 0));
 
+            Font smallFont = new Font("Arial", 7);
+
+            foreach (WordCloudData wordCloud in map.WordClouds)
+            {
+                Pen p = new Pen(Color.DarkBlue, 5);
+                g.DrawLine(p, mapPointOnCanvas(wordCloud.StartPosition), 
+                    mapPointOnCanvas(wordCloud.EndPosition));
+                foreach (WordData word in wordCloud.Words)
+                {
+                    for (int i = 0; i < word.points.Count; i++)
+                    {
+                        int lastIndex = i == 0 ? word.points.Count - 1 : i - 1;
+                        Point p1 = mapPointOnCanvas(word.points[lastIndex]);
+                        Point p2 = mapPointOnCanvas(word.points[i]);
+                        g.DrawEllipse(Pens.Black, new Rectangle(p1.X - 2, p1.Y - 2, 4, 4));
+                    }
+                    for (int i = 0; i < 360; i += 3)
+                    {
+                        Point p1 = mapPointOnCanvas(word.GetPosition(i));
+                        Point p2 = mapPointOnCanvas(word.GetPosition(i + 1));
+                        g.DrawLine(Pens.Black, p1, p2);
+                    }
+
+                    g.DrawString(word.Text, smallFont, Brushes.Black, 
+                        mapPointOnCanvas(word.GetPosition(Degree)));
+                }
+            }
+
             foreach (PlatformData platform in map.Platforms)
             {
-                Vector2 pos = platform.getPosition(degree);
+                Vector2 pos = platform.GetPosition(degree);
                 Point canvasPos = mapPointOnCanvas(pos);
 
                 Pen pen = selectedPlatform == platform ? Pens.Red : Pens.Black;
                 for (int i = 0; i < 360; i += 6)
                 { 
-                    Point p1 = mapPointOnCanvas(platform.getPosition(i));
-                    Point p2 = mapPointOnCanvas(platform.getPosition(i + 2));
+                    Point p1 = mapPointOnCanvas(platform.GetPosition(i));
+                    Point p2 = mapPointOnCanvas(platform.GetPosition(i + 2));
                     g.DrawLine(pen, p1, p2);
                 }
-                Point startPos = mapPointOnCanvas(platform.startPos);
+                Point startPos = mapPointOnCanvas(platform.StartPos);
                 g.DrawEllipse(pen, new Rectangle(startPos.X - SEGUE_RAD, startPos.Y - SEGUE_RAD, 
                     SEGUE_RAD * 2, SEGUE_RAD * 2));
-                foreach (PlatformSegue segue in platform.segues)
+
+                List<PlatformSegue> segs = new List<PlatformSegue>(platform.segues);
+                segs.Insert(0, platform.StartSegue);
+                foreach (PlatformSegue segue in segs)
                 {
                     Point sPos = mapPointOnCanvas(segue.Destination);
                     Pen sPen = pen;
@@ -116,7 +173,7 @@ namespace LevelEditor
         {
             if (selectedSegue != null)
             {
-                selectedSegue.changeProperty(listBoxProperties.SelectedIndex, e.Delta);
+                selectedSegue.ChangeProperty(listBoxProperties.SelectedIndex, e.Delta);
                 draw();
             }
         }
@@ -164,18 +221,24 @@ namespace LevelEditor
                 draggingPlatform = selectedPlatform;
                 if (draggingPlatform != null)
                 {
-                    draggingItemOffset = selectedPlatform.getPosition(degree) - pos;
+                    draggingItemOffset = selectedPlatform.GetPosition(degree) - pos;
                 }
 
                 if (draggingPlatform == null)
                 {
                     foreach (PlatformData platform in map.Platforms)
                     {
+                        if (segueContains(platform.StartSegue, pos))
+                        {
+                            selectedSegue = platform.StartSegue;
+                            break;
+                        }
                         foreach (PlatformSegue segue in platform.segues)
                         {
                             if (segueContains(segue, pos))
                             {
                                 selectedSegue = segue;
+                                break;
                             }
                         }
                     }
@@ -183,11 +246,11 @@ namespace LevelEditor
                 listBoxProperties.Visible = selectedSegue != null;
                 if (selectedSegue != null)
                 {
-                    if (listBoxProperties.Tag != selectedSegue.GetType())
+                    if ((System.Type)listBoxProperties.Tag != selectedSegue.GetType())
                     {
                         listBoxProperties.Tag = selectedSegue.GetType();
                         listBoxProperties.Items.Clear();
-                        listBoxProperties.Items.AddRange(selectedSegue.getProperties());
+                        listBoxProperties.Items.AddRange(selectedSegue.GetProperties());
                     }
                 }
 
@@ -254,7 +317,15 @@ namespace LevelEditor
             }
             if (draggingPlatform != null)
             {
-                draggingPlatform.startPos = pos + draggingItemOffset;
+                if (draggingPlatform.segues.Count == 0)
+                {
+                    draggingPlatform.StartPos = pos + draggingItemOffset;
+                }
+                else
+                {
+                    updatePlatformOffset(selectedPlatform, Degree, mousePosOnMap(e.Location));
+                    //updatePlatformWeights(Degree, mousePosOnMap(e.Location));
+                }
                 draw();
             }
             if (draggingSegue != null)
@@ -262,6 +333,74 @@ namespace LevelEditor
                 draggingSegue.Destination = pos + draggingItemOffset;
                 draw();
             }
+        }
+
+        private void updatePlatformOffset(PlatformData platform, int degree, Vector2 pos)
+        {
+            float desiredDegree = 0;
+            float minDis = float.MaxValue;
+            for (float deg = 0; deg < 360; deg += 0.1f)
+            {
+                float dis = (platform.GetPosition(deg) - pos).Length();
+                if (dis < minDis)
+                {
+                    minDis = dis;
+                    desiredDegree = deg;
+                }
+            }
+
+            platform.DegreeOffset += desiredDegree - degree;
+            platform.DegreeOffset = (platform.DegreeOffset + 360) % 360;
+        }
+
+        private void updatePlatformWeights(int degree, Vector2 pos)
+        {
+            if (degree == 0) return;
+            if (selectedPlatform.segues.Count < 2) return;
+
+            int segueIndex = selectedPlatform.GetCurrentSegueIndex(degree);
+            if (segueIndex < 0) return;
+            PlatformSegue segue = selectedPlatform.segues[segueIndex];
+            Vector2 start = segueIndex == 0 ? selectedPlatform.StartPos : 
+                selectedPlatform.segues[segueIndex - 1].Destination;
+
+            float desiredPerc = 0;
+            float minDis = float.MaxValue;
+            for (float perc = 0; perc < 1; perc += 0.01f)
+            {
+                float dis = (segue.GetPosition(start, perc) - pos).Length();
+                if (dis < minDis)
+                {
+                    minDis = dis;
+                    desiredPerc = perc;
+                }
+            }
+
+            float degreePerc = degree / 360f;
+
+            if (degreePerc == desiredPerc) return;
+            
+            float weightBefore = 0, weightAfter = 0;
+            for (int i = 0; i < selectedPlatform.segues.Count; i++)
+            {
+                if (i < segueIndex)
+                {
+                    weightBefore += selectedPlatform.segues[i].Weight;
+                }
+                if (i > segueIndex)
+                {
+                    weightAfter += selectedPlatform.segues[i].Weight;
+                }
+            }
+
+            float weight = degreePerc * (weightBefore + weightAfter) - weightBefore;
+            weight /= desiredPerc - degreePerc;
+
+            if (weight <= 0 || float.IsNaN(weight)) return;
+
+            Console.WriteLine(weight);
+
+            segue.Weight = weight;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)

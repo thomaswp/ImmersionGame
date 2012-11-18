@@ -11,9 +11,9 @@ namespace Immersion
     {
         public float curvature = 0;
 
-        public PlatformSegueCurved(Vector2 destination) : base(destination) { }
+        public PlatformSegueCurved(Vector2 destination) : base(destination) { Weight = 3; }
 
-        public override Vector2 getPosition(Vector2 start, float perc)
+        public override Vector2 GetPosition(Vector2 start, float perc)
         {
 
             Vector2 center = (start + Destination) / 2;
@@ -38,7 +38,7 @@ namespace Immersion
 
         }
 
-        public override string[] getProperties()
+        public override string[] GetProperties()
         {
             return new String[] 
             {
@@ -47,7 +47,7 @@ namespace Immersion
             };
         }
 
-        public override void changeProperty(int index, float value)
+        public override void ChangeProperty(int index, float value)
         {
             if (index == 1)
             {

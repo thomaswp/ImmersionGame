@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Immersion
 {
+    [Serializable]
     public class WordCloudData
     {
         private Vector2 startPosition, endPosition;
@@ -37,9 +38,9 @@ namespace Immersion
 
         private void GeneratePaths()
         {
-            foreach (WordData word in Words)
+            for (int i = 0; i < Words.Count; i++)
             {
-                word.GeneratePath();
+                Words[i].GeneratePath(i / (float)Words.Count);
             }
         }
     }

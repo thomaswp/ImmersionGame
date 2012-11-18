@@ -97,6 +97,7 @@
     <Compile Include="PlatformData.cs" />
     <Compile Include="PlatformSegue.cs" />
     <Compile Include="PlatformSegueLinear.cs" />
+    <Compile Include="PlatformSegueStart.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WordCloudData.cs" />
     <Compile Include="WordData.cs" />

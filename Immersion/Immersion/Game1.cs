@@ -23,6 +23,7 @@ namespace Immersion
         List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
         Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
+        List<WordSprite> myWordSprites = new List<WordSprite>();
         float worldScale = 1;
 
         MapData map;
@@ -57,7 +58,7 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            map = MapData.ReadFromFile("Map1.map");
+            map = MapData.ReadFromFile("Map2.map");
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -80,6 +81,15 @@ namespace Immersion
                 PlatformSprite platform = new PlatformSprite(plat45, data);
                 mySprites.Add(platform);
                 myPlatforms.Add(platform);
+            }
+
+            SpriteFont font = Content.Load<SpriteFont>("DefaultFont");
+            foreach (WordCloudData wordCloud in map.WordClouds)
+            {
+                foreach (WordData word in wordCloud.Words)
+                {
+                    myWordSprites.Add(new WordSprite(word, font));
+                }
             }
 
             myHero.myPosition = myPlatforms[0].myPosition;
@@ -116,6 +126,10 @@ namespace Immersion
             foreach (Sprite s in mySprites)
             {
                 s.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+            foreach (WordSprite word in myWordSprites)
+            {
+                word.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
             int buffer = 300;
@@ -157,6 +171,12 @@ namespace Immersion
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, m);
+
+            foreach (WordSprite word in myWordSprites)
+            {
+                word.Draw(spriteBatch, offset);
+            }
+
             foreach (Sprite s in mySprites)
             {
                 s.Draw(spriteBatch, offset);

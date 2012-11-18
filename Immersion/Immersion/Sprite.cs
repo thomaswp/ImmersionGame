@@ -21,6 +21,7 @@ namespace Immersion
         protected internal float myAngle = 0f;
         protected internal float myAngularVelocity = 0f;
         protected internal float myScale = 1f;
+        protected internal Color myColor = Color.White;
 
         public Sprite(Texture2D texture, Vector2 position)
         {
@@ -36,7 +37,7 @@ namespace Immersion
 
         public virtual void Draw(SpriteBatch batch, Vector2 offset)
         {
-            batch.Draw(myTexture, myPosition + offset,null, Color.White, 0f, 
+            batch.Draw(myTexture, myPosition + offset,null, myColor, 0f, 
                 new Vector2(myTexture.Width / 2,myTexture.Height / 2),myScale,SpriteEffects.None, 0f);
         }
     }

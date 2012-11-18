@@ -10,8 +10,15 @@ namespace Immersion
     [Serializable]
     public class PlatformData
     {
-        public Vector2 startPos;
+        public Vector2 StartPos 
+        { 
+            get { return StartSegue.Destination; } 
+            set { StartSegue.Destination = value; } 
+        }
+        public PlatformSegueStart StartSegue;
         public List<PlatformSegue> segues = new List<PlatformSegue>();
+        public int Repeats = 1;
+        public float DegreeOffset = 0;
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 
@@ -19,38 +26,88 @@ namespace Immersion
         {
             if (segues.Count > 0)
                 return segues[segues.Count - 1].Destination;
-            return startPos;
+            return StartPos;
         }
 
         public PlatformData(Vector2 startPos, int degree)
         {
-            this.startPos = startPos;
-            //segues.Add(new PlatformSegueLinear(getSegueStart(), getSegueStart() + new Vector2(100, 100)));
-            //segues.Add(new PlatformSegueLinear(getSegueStart(), getSegueStart() + new Vector2(100, -100)));
-            //startPos = 2 * startPos - getPosition(degree);
+            StartSegue = new PlatformSegueStart(startPos);
         }
 
-        public Vector2 getPosition(float degree)
+        private float[] getWeightMarks()
         {
-            if (segues.Count == 0) return startPos;
+            float totalWeight = 0;
+            float[] weightMarks = new float[segues.Count];
+            for (int i = 0; i < segues.Count; i++)
+            {
+                totalWeight += segues[i].Weight;
+                weightMarks[i] = totalWeight;
+            }
+            for (int i = 0; i < weightMarks.Length; i++)
+            {
+                weightMarks[i] /= totalWeight;
+            }
+            return weightMarks;
+        }
 
-            float perc = degree / 361f;
-            int segueIndex = (int)(segues.Count * perc);
-            float sPerc = (perc - (float)segueIndex / segues.Count) * segues.Count;
-            Vector2 start = segueIndex > 0 ? segues[segueIndex - 1].Destination : startPos;
+        private float getDegreePerc(float degree)
+        {
+            degree += DegreeOffset;
+            while (degree < 0) degree += 360;
+            degree = (degree * Repeats) % 360;
 
-            return segues[segueIndex].getPosition(start, sPerc);
+            return degree / 360f;
+        }
+
+        public int GetCurrentSegueIndex(float degree)
+        {
+           
+            float[] weightMarks = getWeightMarks();
+            float perc = getDegreePerc(degree);
+
+            for (int i = 0; i < weightMarks.Length; i++)
+            {
+                float mark = weightMarks[i];
+                if (perc <= mark)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        public Vector2 GetPosition(float degree)
+        {
+            if (segues.Count == 0) return StartPos;
+
+            float perc = getDegreePerc(degree);
+            float[] weightMarks = getWeightMarks();
+
+            float lastMark = 0;
+            Vector2 start = StartPos;
+            for (int i = 0; i < weightMarks.Length; i++)
+            {
+                float mark = weightMarks[i];
+                if (perc <= mark)
+                {
+                    float sPerc = (perc - lastMark) / (mark - lastMark);
+                    return segues[i].GetPosition(start, sPerc);
+                }
+                lastMark = mark;
+                start = segues[i].Destination;
+            }
+            return Vector2.Zero;
         }
 
         public Vector2 getVelocity(float degree)
         {
             float dt = 0.001f;
-            return (getPosition(degree) - getPosition(degree - dt)) / dt;
+            return (GetPosition(degree) - GetPosition(degree - dt)) / dt;
         }
 
         public bool contains(Vector2 position, int frame)
         {
-            return (position - getPosition(frame)).Length() < 25;
+            return (position - GetPosition(frame)).Length() < 25;
         }
     }
 }
