@@ -29,6 +29,7 @@ namespace Immersion
         public void Update(float elapsedTime)
         {
             float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
+            if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
             float posMult = 3;
             degree = (degree + elapsedTime * timeMult) % 360;
             position = data.GetPosition(degree) * posMult;

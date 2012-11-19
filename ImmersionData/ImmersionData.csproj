@@ -92,6 +92,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IPathed.cs" />
+    <Compile Include="LinearPath.cs" />
     <Compile Include="PlatformSegueCurved.cs" />
     <Compile Include="MapData.cs" />
     <Compile Include="PlatformData.cs" />

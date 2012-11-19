@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace Immersion
 {
     [Serializable]
-    public class PlatformData
+    public class PlatformData : IPathed
     {
         public Vector2 StartPos 
         { 

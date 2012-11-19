@@ -10,22 +10,25 @@ namespace Immersion
     [Serializable]
     public class WordCloudData
     {
-        private Vector2 startPosition, endPosition;
         private float startDegree, endDegree;
+        private IPathed pathed;
 
-        public Vector2 StartPosition { get { return startPosition; } set { startPosition = value; GeneratePaths(); } }
-        public Vector2 EndPosition { get { return endPosition; } set { endPosition = value; GeneratePaths(); } }
+        public Vector2 StartPosition { get { return GetForcedPath(startDegree); } }
+        public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
 
         public readonly List<WordData> Words;
 
-        public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words)
+        public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words) : 
+            this(new LinearPath(startPosition, startDegree, endPosition, endDegree), startDegree, endDegree, words) {}
+
+
+        public WordCloudData(IPathed pathed, float startDegree, float endDegree, List<String> words)
         {
             this.startDegree = startDegree;
             this.endDegree = endDegree;
-            this.startPosition = startPosition;
-            this.endPosition = endPosition;
+            this.pathed = pathed;
 
             Words = new List<WordData>();
             foreach (String word in words)
@@ -34,6 +37,11 @@ namespace Immersion
             }
 
             GeneratePaths();
+        }
+
+        public Vector2 GetForcedPath(float degree)
+        {
+            return pathed.GetPosition(degree);
         }
 
         private void GeneratePaths()

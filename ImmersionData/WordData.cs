@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 namespace Immersion
 {
     [Serializable]
-    public class WordData
+    public class WordData : IPathed
     {
         public WordCloudData Parent;
         public String Text;
@@ -19,6 +19,8 @@ namespace Immersion
         float degreeOffset, radMult, avgRadius, wordOffset;
         int revolutions, dir, radDegreeMult;
 
+        float percentThrough;
+
         public WordData(WordCloudData parent, String text)
         {
             this.Text = text;
@@ -27,37 +29,9 @@ namespace Immersion
 
         public void GeneratePath(float percentThrough)
         {
-            double posDegreeStart = Math.Atan2(Parent.StartPosition.Y, Parent.StartPosition.X) * 180 / Math.PI;
-            double posDegreeEnd = Math.Atan2(Parent.EndPosition.Y, Parent.EndPosition.X) * 180 / Math.PI;
-            if (Math.Abs(posDegreeStart - posDegreeEnd) > 180)
-            {
+            this.percentThrough = percentThrough;
 
-            }
-
-            revolutions = (int)Math.Round((posDegreeStart - posDegreeEnd) / (Parent.StartDegree - Parent.EndDegree));
-            if (revolutions < 1) revolutions = 1;
-            int posDegreesPassed = 360 * revolutions;
-
-            double posDegreeWedge = posDegreeEnd - posDegreeStart;
-            if (posDegreeWedge > 180) posDegreeWedge -= 360;
-            dir = Math.Sign(posDegreeWedge / (Parent.EndDegree - Parent.StartDegree));
-
-            degreeOffset = (float)(posDegreeStart + posDegreeEnd) / 2 - 
-                (Parent.StartDegree + Parent.EndDegree) / 2 * revolutions * dir;
-
-            wordOffset = -10 * percentThrough;
-
-            float startRadius = Parent.StartPosition.Length();
-            float endRadius = Parent.EndPosition.Length();
-            avgRadius = (startRadius + endRadius) / 2;
-
-            int hash = Math.Abs(Text.GetHashCode() + percentThrough.GetHashCode());
-            float hash1 = ((hash) % 100) / 100f;
-            float hash2 = ((hash / 100) % 100) / 100f;
             
-            radMult = 0.1f + hash1 * 1.5f;
-            radDegreeMult = (int)Math.Round((0.5f + hash2) / radMult * 360 / avgRadius);
-            radDegreeMult = Math.Max(radDegreeMult, 1);
 
             //int pointCount = 75 * revolutions;
             //for (int i = 0; i < pointCount; i++)
@@ -95,6 +69,41 @@ namespace Immersion
             //}
         }
 
+        private void Update()
+        {
+            double posDegreeStart = Math.Atan2(Parent.StartPosition.Y, Parent.StartPosition.X) * 180 / Math.PI;
+            double posDegreeEnd = Math.Atan2(Parent.EndPosition.Y, Parent.EndPosition.X) * 180 / Math.PI;
+            if (Math.Abs(posDegreeStart - posDegreeEnd) > 180)
+            {
+
+            }
+
+            revolutions = (int)Math.Round((posDegreeStart - posDegreeEnd) / (Parent.StartDegree - Parent.EndDegree));
+            if (revolutions < 1) revolutions = 1;
+            int posDegreesPassed = 360 * revolutions;
+
+            double posDegreeWedge = posDegreeEnd - posDegreeStart;
+            if (posDegreeWedge > 180) posDegreeWedge -= 360;
+            dir = Math.Sign(posDegreeWedge / (Parent.EndDegree - Parent.StartDegree));
+
+            degreeOffset = (float)(posDegreeStart + posDegreeEnd) / 2 -
+                (Parent.StartDegree + Parent.EndDegree) / 2 * revolutions * dir;
+
+            wordOffset = -10 * percentThrough;
+
+            float startRadius = Parent.StartPosition.Length();
+            float endRadius = Parent.EndPosition.Length();
+            avgRadius = (startRadius + endRadius) / 2;
+
+            int hash = Math.Abs(Text.GetHashCode() + percentThrough.GetHashCode());
+            float hash1 = ((hash) % 100) / 100f;
+            float hash2 = ((hash / 100) % 100) / 100f;
+
+            radMult = 0.1f + hash1 * 1.5f;
+            radDegreeMult = (int)Math.Round((0.5f + hash2) / radMult * 360 / avgRadius);
+            radDegreeMult = Math.Max(radDegreeMult, 1);
+        }
+
         public Vector2 GetPosition(float degree)
         {
             return GetPointPos(degree);
@@ -102,7 +111,7 @@ namespace Immersion
 
         public Vector2 GetPointPos(float timeDeg)
         {
-
+            Update();
             timeDeg += wordOffset;
 
             float degree = degreeOffset + timeDeg * revolutions * dir;
@@ -110,11 +119,17 @@ namespace Immersion
             float rad = avgRadius * (float)(Math.Sin(timDegRadians * radDegreeMult + degreeOffset) * (radMult) + 1);
 
             float lPerc = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree);
-            Vector2 linearPoint = (1 - lPerc) * Parent.StartPosition + lPerc * Parent.EndPosition;
+            //Vector2 linearPoint = (1 - lPerc) * Parent.StartPosition + lPerc * Parent.EndPosition;
+            
 
             double degreeRadians = degree / 180 * Math.PI;
             Vector2 radialPoint = new Vector2((float)Math.Cos(degreeRadians), (float)Math.Sin(degreeRadians)) * rad;
 
+
+            //Rachel Edit This
+            double degThrough = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
+            Vector2 linearOffset = new Vector2((float)Math.Cos(degThrough), (float)Math.Sin(degThrough)) * 30;
+            Vector2 linearPoint = Parent.GetForcedPath(timeDeg) + linearOffset;
 
             float disFromStart = Math.Abs(timeDeg - Parent.StartDegree);//,
             disFromStart = Math.Min(disFromStart, Math.Abs(timeDeg - 360 - Parent.StartDegree));
