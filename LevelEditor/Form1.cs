@@ -91,6 +91,7 @@ namespace LevelEditor
         private void draw()
         {
             if (pictureBoxWorld.Width == 0) return;
+            if (editorState == null) return;
             Image bmp = pictureBoxWorld.Image;
             if (bmp == null || bmp.Width != pictureBoxWorld.Width || bmp.Height != pictureBoxWorld.Height)
             {

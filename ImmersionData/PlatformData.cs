@@ -19,6 +19,8 @@ namespace Immersion
         public List<PlatformSegue> segues = new List<PlatformSegue>();
         public int Repeats = 1;
         public float DegreeOffset = 0;
+        public ItemData item;
+        public Vector2 itemOffset;
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 

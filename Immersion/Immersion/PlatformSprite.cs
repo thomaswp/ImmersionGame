@@ -17,6 +17,7 @@ namespace Immersion
     {
         protected PlatformData data;
         float degree = 0;
+        float timeMult;
 
         public Vector2 Velocity;
 
@@ -25,9 +26,11 @@ namespace Immersion
             get { return myTexture.Width / 2 * myScale; }
         }
 
-        public PlatformSprite(Texture2D texture, PlatformData data) : base(texture, data.StartPos)
+        public PlatformSprite(Texture2D texture, PlatformData data)//, float timeMult)
+            : base(texture, data.StartPos)
         {
             this.data = data;
+            this.timeMult = 30;// timeMult;
             myScale = 0.5f;
             myColor.A = 100;
         }
@@ -35,12 +38,9 @@ namespace Immersion
         public override void Update(float elapsedTime)
         {
             base.Update(elapsedTime);
-            float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
-            if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
-            float posMult = 3;
             degree = (degree + elapsedTime * timeMult) % 360;
-            myPosition = data.GetPosition(degree) * posMult;
-            Velocity = data.getVelocity(degree) * posMult * timeMult;
+            myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
+            Velocity = data.getVelocity(degree) * MapData.DISTANCE_MULTIPLIER * timeMult;
         }
 
         public bool Contains(Vector2 pos)

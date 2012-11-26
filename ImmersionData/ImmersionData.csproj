@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPathed.cs" />
+    <Compile Include="ItemData.cs" />
     <Compile Include="LinearPath.cs" />
     <Compile Include="PlatformSegueCurved.cs" />
     <Compile Include="MapData.cs" />

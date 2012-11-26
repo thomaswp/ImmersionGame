@@ -18,9 +18,12 @@ namespace Immersion
     [Serializable]
     public class MapData
     {
+        public const float DISTANCE_MULTIPLIER = 40;
+
         public String name = "New Map";
         public List<PlatformData> Platforms = new List<PlatformData>();
         public List<WordCloudData> WordClouds = new List<WordCloudData>();
+        public float speed = 30;
 
         public static MapData ReadFromFile(String path)
         {
