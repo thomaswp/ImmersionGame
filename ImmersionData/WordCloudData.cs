@@ -11,7 +11,7 @@ namespace Immersion
     public class WordCloudData
     {
         private float startDegree, endDegree;
-        private IPathed pathed;
+        public IPathed PathedObject;
 
         public Vector2 StartPosition { get { return GetForcedPath(startDegree); } }
         public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
@@ -28,7 +28,7 @@ namespace Immersion
         {
             this.startDegree = startDegree;
             this.endDegree = endDegree;
-            this.pathed = pathed;
+            this.PathedObject = pathed;
 
             Words = new List<WordData>();
             foreach (String word in words)
@@ -41,7 +41,7 @@ namespace Immersion
 
         public Vector2 GetForcedPath(float degree)
         {
-            return pathed.GetPosition(degree);
+            return PathedObject.GetPosition(degree);
         }
 
         private void GeneratePaths()

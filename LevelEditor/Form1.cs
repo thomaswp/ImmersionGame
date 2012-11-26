@@ -176,5 +176,21 @@ namespace LevelEditor
             }
         }
 
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            uiHandler.OnKeyDown(e);
+            draw();
+        }
+
+        private void pictureBoxWorld_Click(object sender, EventArgs e)
+        {
+            uiHandler.OnDoubleClick(e);
+        }
+
+
     }
 }

@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Immersion
 {
-    public class WordSprite
+    public class WordSprite : IPathedSprite
     {
         protected WordData data;
         protected SpriteFont font;
@@ -39,6 +39,10 @@ namespace Immersion
         {
             Vector2 size = font.MeasureString(data.Text);
             spritebatch.DrawString(font, data.Text, position + offset - size / 2, Color.White);
+        }
+
+        public void SetDegree(float degree)
+        {
         }
     }
 }

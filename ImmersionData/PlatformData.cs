@@ -21,6 +21,7 @@ namespace Immersion
         public float DegreeOffset = 0;
         public ItemData item;
         public Vector2 itemOffset;
+        public List<Point> Segments = new List<Point>();
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 
@@ -34,6 +35,7 @@ namespace Immersion
         public PlatformData(Vector2 startPos, int degree)
         {
             StartSegue = new PlatformSegueStart(startPos);
+            Segments.Add(new Point(0, 0));
         }
 
         private float[] getWeightMarks()

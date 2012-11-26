@@ -5,6 +5,7 @@ using System.Text;
 using Immersion;
 using System.Drawing;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
+using XNAPoint = Microsoft.Xna.Framework.Point;
 
 namespace LevelEditor
 {
@@ -62,6 +63,11 @@ namespace LevelEditor
 
             Pen pen = editorState.SelectedPlatform == platform ? Pens.Red : Pens.Black;
 
+            foreach (XNAPoint point in platform.Segments)
+            {
+                DrawSegment(canvasPos, g, point);
+            }
+
             DrawPath(g, platform, pen);
 
             DrawSegue(g, platform.StartSegue, pen);
@@ -74,6 +80,20 @@ namespace LevelEditor
             }
             pen = new Pen(pen.Color, 4);
             g.DrawEllipse(pen, new Rectangle(canvasPos.X - 25, canvasPos.Y - 25, 50, 50));
+        }
+
+        private void DrawSegment(Point center, Graphics g, XNAPoint point)
+        {
+            int r = 10;
+            Point p = new Point((point.Y - point.X) * r, (point.X + point.Y) * r);
+            p.Offset(center);
+
+            Point[] points = new Point[] {
+                new Point(p.X - r, p.Y), new Point(p.X, p.Y + r),
+                new Point(p.X + r, p.Y), new Point(p.X, p.Y - r),
+                new Point(p.X - r, p.Y) };
+            g.DrawLines(Pens.Black, points);
+            g.FillPolygon(new SolidBrush(Color.FromArgb(100, Color.Black)), points);
         }
 
         private void DrawSegue(Graphics g, PlatformSegue segue, Pen pen)

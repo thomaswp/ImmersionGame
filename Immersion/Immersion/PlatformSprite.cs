@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 
 namespace Immersion
 {
-    public class PlatformSprite : Sprite
+    public class PlatformSprite : Sprite, IPathedSprite
     {
         protected PlatformData data;
         private ItemSprite item;
@@ -74,5 +74,9 @@ namespace Immersion
             }
         }
             
+        public void SetDegree(float degree)
+        {
+            this.degree = degree;
+        }
     }
 }

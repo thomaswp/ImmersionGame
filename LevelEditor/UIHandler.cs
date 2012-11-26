@@ -44,6 +44,8 @@ namespace LevelEditor
         //if the user is dragging something, where did they grab it
         private Vector2 draggingItemOffset;
 
+        private PlatformDialog platformDialog = new PlatformDialog();
+
         //selected/highlighted platform
         private PlatformData SelectedPlatform
         {
@@ -62,11 +64,48 @@ namespace LevelEditor
             this.editorState = editorState;
         }
 
+        public void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                if (SelectedPlatform != null)
+                {
+                    editorState.Map.Platforms.Remove(SelectedPlatform);
+                    List<WordCloudData> toRemove = new List<WordCloudData>();
+                    foreach (WordCloudData wordCloud in editorState.Map.WordClouds)
+                    {
+                        if (wordCloud.PathedObject == SelectedPlatform)
+                        {
+                            toRemove.Add(wordCloud);
+                        }
+                    }
+                    foreach (WordCloudData wordCloud in toRemove)
+                    {
+                        editorState.Map.WordClouds.Remove(wordCloud);
+                    }
+                    SelectedPlatform = null;
+                }
+                if (SelectedSegue != null)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        public void OnKeyPress(KeyPressEventArgs e)
+        {
+        }
+
+        public void OnDoubleClick(EventArgs e)
+        {
+        }
+
         //Ugly method that handles all mouse down events. Needs to be cleaned
         public void MouseDown(MouseEventArgs e)
         {
             Vector2 pos = editorState.MousePosOnMap(e.Location);
             MapData map = editorState.Map;
+
 
             if (CurrentActionType == Actions.Move)
             {
@@ -142,6 +181,14 @@ namespace LevelEditor
                 if (SelectedPlatform == null && SelectedSegue == null)
                 {
                     startMapDrag(e);
+                }
+
+
+                if (SelectedPlatform != null && e.Clicks == 2)
+                {
+                    draggingPlatform = null;
+                    platformDialog.PlatformData = SelectedPlatform;
+                    platformDialog.ShowDialog();
                 }
             }
             else if (CurrentActionType == Actions.Segue)
