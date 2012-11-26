@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 using System.Collections;
 namespace Immersion
 {
-    class Item : Sprite
+    class ItemSprite : Sprite
     {
         private bool isCollected = false;
         protected float myPositionZ;
@@ -21,7 +21,7 @@ namespace Immersion
         protected Texture2D shadowImage;
         protected PlatformSprite currentPlatform;
 
-        public Item(Texture2D image, Texture2D shadow, Vector2 position)
+        public ItemSprite(Texture2D image, Texture2D shadow, Vector2 position)
             : base(image, position)
         {
             this.shadowImage = shadow;
@@ -34,7 +34,7 @@ namespace Immersion
 
         public void Draw(SpriteBatch batch, Vector2 offset)
         {
-            float itemScale = 0.4f * myScale;
+            float itemScale = 0.25f * myScale;
             float shadowScale = itemScale * 0.35f;
 
             if (!isCollected)
@@ -44,7 +44,7 @@ namespace Immersion
                     shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
             }
 
-            batch.Draw(myTexture, new Vector2(0, 0), null, Color.White, 0f, new Vector2(myTexture.Width / 2, myTexture.Height / 2),
+            batch.Draw(myTexture, myPosition + offset, null, Color.White, 0f, new Vector2(myTexture.Width / 2, myTexture.Height / 2),
                 itemScale, SpriteEffects.None, 0f);
             }
     }

@@ -16,8 +16,9 @@ namespace Immersion
     public class PlatformSprite : Sprite
     {
         protected PlatformData data;
+        private ItemSprite item;
         float degree = 0;
-        float timeMult;
+        float timeMult = 30;
 
         public Vector2 Velocity;
 
@@ -38,6 +39,8 @@ namespace Immersion
         public override void Update(float elapsedTime)
         {
             base.Update(elapsedTime);
+            float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
+            if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
             degree = (degree + elapsedTime * timeMult) % 360;
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
             Velocity = data.getVelocity(degree) * MapData.DISTANCE_MULTIPLIER * timeMult;
@@ -54,5 +57,22 @@ namespace Immersion
             if (-slope * (relPos.X - dw) < relPos.Y) return false;
             return true;
         }
+
+        public override void Draw(SpriteBatch batch, Vector2 offset)
+        {
+            base.Draw(batch, offset);
+            if (item != null)
+            {
+                item.Draw(batch, myPosition + offset);
+            }
+        }
+        public void LoadItemTextures(ContentManager content, Texture2D shadow)
+        {
+            if (data.item != null)
+            {
+                item = new ItemSprite(content.Load<Texture2D>(data.item.ImageName),shadow,data.itemOffset);
+            }
+        }
+            
     }
 }

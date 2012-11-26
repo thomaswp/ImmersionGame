@@ -18,7 +18,7 @@ namespace Immersion
     [Serializable]
     public class MapData
     {
-        public const float DISTANCE_MULTIPLIER = 40;
+        public const float DISTANCE_MULTIPLIER = 3;
 
         public String name = "New Map";
         public List<PlatformData> Platforms = new List<PlatformData>();

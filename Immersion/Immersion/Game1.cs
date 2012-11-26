@@ -33,8 +33,8 @@ namespace Immersion
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 1000;
-            graphics.PreferredBackBufferHeight = 700;
+            graphics.PreferredBackBufferWidth = 1500;
+            graphics.PreferredBackBufferHeight = 1000;
             graphics.ApplyChanges();
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
@@ -58,13 +58,13 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            map = MapData.ReadFromFile("../../../../../Map2.map");
+            map = MapData.ReadFromFile("../../../../../Map3.map");
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Vector2 center = myScreenSize / 2;
-
+            map.Platforms[0].item = new ItemData("Wine", "wine-bottle");
             Texture2D bgSprite = Content.Load<Texture2D>("space");
             background = new Background(bgSprite, (int)myScreenSize.X, (int)myScreenSize.Y);
 
@@ -81,6 +81,7 @@ namespace Immersion
                 PlatformSprite platform = new PlatformSprite(plat45, data);
                 mySprites.Add(platform);
                 myPlatforms.Add(platform);
+                platform.LoadItemTextures(Content, shadow);
             }
 
             SpriteFont font = Content.Load<SpriteFont>("DefaultFont");
