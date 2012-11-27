@@ -48,6 +48,18 @@ namespace Immersion
 
         public bool Contains(Vector2 pos)
         {
+            foreach (Point p in data.Segments)
+            {
+                if (SegmentContains(pos - getPointOffset(p)))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool SegmentContains(Vector2 pos)
+        {
             Vector2 relPos = pos - myPosition;
             float dw = myTexture.Width / 2 * myScale, dh = myTexture.Height / 2 * myScale;
             float slope = (float)myTexture.Height / myTexture.Width;
@@ -60,12 +72,22 @@ namespace Immersion
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
-            base.Draw(batch, offset);
+            foreach (Point p in data.Segments)
+            {
+                base.Draw(batch, offset + getPointOffset(p));
+            }
             if (item != null)
             {
                 item.Draw(batch, myPosition + offset);
             }
         }
+
+        private Vector2 getPointOffset(Point pos)
+        {
+            float rX = 140, rY = 90;
+            return new Vector2((pos.Y - pos.X) * rX, (pos.X + pos.Y) * rY);
+        }
+
         public void LoadItemTextures(ContentManager content, Texture2D shadow)
         {
             if (data.item != null)
