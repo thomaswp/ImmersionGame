@@ -58,7 +58,7 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            map = MapData.ReadFromFile("../../../../../Map3.map");
+            map = MapData.ReadFromFile("../../../../../Map4.map");
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);

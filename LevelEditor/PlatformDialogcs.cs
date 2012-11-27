@@ -14,6 +14,7 @@ namespace LevelEditor
     public partial class PlatformDialog : Form
     {
         public PlatformData PlatformData { get; set; }
+        public MapData MapData { get; set; }
 
         private Point selection;
         private int size = 100;

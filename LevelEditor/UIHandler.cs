@@ -188,6 +188,7 @@ namespace LevelEditor
                 {
                     draggingPlatform = null;
                     platformDialog.PlatformData = SelectedPlatform;
+                    platformDialog.MapData = map;
                     platformDialog.ShowDialog();
                 }
             }

@@ -12,7 +12,8 @@ namespace LevelEditor
     public class MapRenderer
     {
 
-        public const int SEGUE_DRAW_RAD = 10;
+        public const int SEGUE_DRAW_RAD = 47;
+        public const float SEGUE_RATIO = 9 / 14f;
 
         private EditorState editorState;
         private int Degree { get { return editorState.Degree; } }
@@ -84,14 +85,14 @@ namespace LevelEditor
 
         private void DrawSegment(Point center, Graphics g, XNAPoint point)
         {
-            int r = 10;
-            Point p = new Point((point.Y - point.X) * r, (point.X + point.Y) * r);
+            int rX = SEGUE_DRAW_RAD, rY = (int)(SEGUE_DRAW_RAD * SEGUE_RATIO);
+            Point p = new Point((point.Y - point.X) * rX, (point.X + point.Y) * rY);
             p.Offset(center);
 
             Point[] points = new Point[] {
-                new Point(p.X - r, p.Y), new Point(p.X, p.Y + r),
-                new Point(p.X + r, p.Y), new Point(p.X, p.Y - r),
-                new Point(p.X - r, p.Y) };
+                new Point(p.X - rX, p.Y), new Point(p.X, p.Y + rY),
+                new Point(p.X + rX, p.Y), new Point(p.X, p.Y - rY),
+                new Point(p.X - rX, p.Y) };
             g.DrawLines(Pens.Black, points);
             g.FillPolygon(new SolidBrush(Color.FromArgb(100, Color.Black)), points);
         }
