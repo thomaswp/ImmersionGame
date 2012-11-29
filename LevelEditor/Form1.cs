@@ -45,32 +45,7 @@ namespace LevelEditor
 
             MapData map = editorState.Map;
 
-
             map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
-            words = new List<string>();
-            String stuff = "This is a public service announcement for the sake of a new moon on the shores of Albermarle county";
-            String[] stuffA = stuff.Split(new char[] { ' ' });
-            words.Add("Hello");
-            words.Add("how");
-            words.Add("are");
-            words.Add("you");
-            words.Add("Hello");
-            ////map.WordClouds.Add(new WordCloudData(new Vector2(300, 80), 50, new Vector2(100, 200), 90, words));
-            //map.WordClouds.Add(new WordCloudData(new Vector2(100, 200), 50, new Vector2(300, 80), 90, words));
-            //Random rand = new Random();
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    List<String> ws = new List<string>();
-            //    for (int j = 0; rand.NextDouble() < 0.75; j++)
-            //    {
-            //        ws.Add(stuffA[rand.Next(stuffA.Length)]);
-            //    }
-            //    int time1 = rand.Next(330);
-            //    int time2 = rand.Next(360 - time1) + time1;
-            //    int w = 700;
-            //    int dw = -w / 2;
-            //    map.WordClouds.Add(new WordCloudData(new Vector2(dw + rand.Next(w), dw + rand.Next(w)), time1, new Vector2(dw + rand.Next(w), dw + rand.Next(w)), time2, ws));
-            //}
             draw();
         }
 

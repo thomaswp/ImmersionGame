@@ -107,7 +107,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatedHero.cs" />
+    <Compile Include="AnimatedSprite.cs" />
     <Compile Include="Background.cs" />
+    <Compile Include="Flipbook.cs" />
     <Compile Include="GameAction.cs" />
     <Compile Include="Hero.cs" />
     <Compile Include="InputManager.cs" />
