@@ -18,7 +18,8 @@ namespace Immersion
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Hero myHero;
+        //Hero myHero;
+        AnimatedHero myAnimatedHero;
         Background background;
         List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
         Vector2 myScreenSize, offset = new Vector2();
@@ -29,21 +30,14 @@ namespace Immersion
         MapData map;
 
 
-        public Game1(String mapFile = null)
+        public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            //graphics.PreferredBackBufferWidth = 2000;
-            //graphics.PreferredBackBufferHeight = 1250;
-            graphics.PreferredBackBufferWidth = 1200;
-            graphics.PreferredBackBufferHeight = 750;
+            graphics.PreferredBackBufferWidth = 2000;
+            graphics.PreferredBackBufferHeight = 1250;
             graphics.ApplyChanges();
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-
-            if (mapFile != null)
-            {
-                map = MapData.ReadFromFile(mapFile);
-            }
         }
 
         /// <summary>
@@ -65,16 +59,13 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            if (map == null)
-            {
-                map = MapData.ReadFromFile("../../../../../Map3.map");
-            }
+            map = MapData.ReadFromFile("../../../../../Map3.map");
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Vector2 center = myScreenSize / 2;
-            if (map.Platforms.Count > 1) map.Platforms[1].item = new ItemData("Wine", "wine-bottle");
+            map.Platforms[2].item = new ItemData("Wine", "wine-bottle");
             Texture2D bgSprite = Content.Load<Texture2D>("space");
             background = new Background(bgSprite, (int)myScreenSize.X, (int)myScreenSize.Y);
 
@@ -82,7 +73,12 @@ namespace Immersion
             // Make the hero
             Texture2D heroImage = Content.Load<Texture2D>("hero");
             Texture2D shadow = Content.Load<Texture2D>("shadow");
-            myHero = new Hero(heroImage, shadow, center);
+            Texture2D[] heroImages = {Content.Load<Texture2D>("hero0"),
+                                         Content.Load<Texture2D>("hero1"),
+                                         Content.Load<Texture2D>("hero2"),
+                                         Content.Load<Texture2D>("hero3")};
+            //myHero = new Hero(heroImage, shadow, center);
+            myAnimatedHero = new AnimatedHero(heroImages, shadow, center, myScreenSize);
 
             //Make a Platform
             Texture2D plat45 = Content.Load<Texture2D>("platform45squished");
@@ -103,10 +99,11 @@ namespace Immersion
                 }
             }
 
-            myHero.myPosition = myPlatforms[0].myPosition;
+            myAnimatedHero.myPosition = myPlatforms[0].myPosition;
             offset = center;
 
-            mySprites.Add(myHero);
+            //mySprites.Add(myHero);
+            mySprites.Add(myAnimatedHero);
         }
 
         /// <summary>
@@ -133,7 +130,7 @@ namespace Immersion
             InputManager.ActKeyboard(Keyboard.GetState());
             InputManager.ActMouse(Mouse.GetState());
             // TODO: Add your update logic here
-            myHero.UpdateCurrentPlatform(myPlatforms);
+            myAnimatedHero.UpdateCurrentPlatform(myPlatforms);
             foreach (Sprite s in mySprites)
             {
                 s.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -144,12 +141,12 @@ namespace Immersion
             }
 
             int buffer = 300;
-            Vector2 heroPos = myHero.myPosition + offset;
+            Vector2 heroPos = myAnimatedHero.myPosition + offset;
             if (heroPos.X < buffer) heroPos.X = buffer;
             if (heroPos.X > myScreenSize.X - buffer) heroPos.X = myScreenSize.X - buffer;
             if (heroPos.Y < buffer) heroPos.Y = buffer;
             if (heroPos.Y > myScreenSize.Y - buffer) heroPos.Y = myScreenSize.Y - buffer;
-            offset = offset * 0.9f + (heroPos - myHero.myPosition) * 0.1f;
+            offset = offset * 0.9f + (heroPos - myAnimatedHero.myPosition) * 0.1f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {

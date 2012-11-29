@@ -23,10 +23,23 @@ namespace Immersion
         protected internal float myScale = 1f;
         protected internal Color myColor = Color.White;
 
+
         public Sprite(Texture2D texture, Vector2 position)
         {
             this.myTexture = texture;
             this.myPosition = position;
+        }
+
+
+        public Sprite(Texture2D texture2D, Vector2 position, Vector2 velocity, float angle, float angleVelocity, float scale)
+        {
+            // TODO: Complete member initialization
+            this.myTexture = texture2D;
+            this.myPosition = position;
+            this.myVelocity = velocity;
+            this.myAngle = angle;
+            this.myAngularVelocity = angleVelocity;
+            this.myScale = scale;
         }
 
         public virtual void Update(float elapsedTime)
