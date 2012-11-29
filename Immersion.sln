@@ -6,6 +6,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersionContent", "Immersion\ImmersionContent\ImmersionContent.contentproj", "{7134E733-DA45-47FA-AF6B-0BD3CC4C5B9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LevelEditor", "LevelEditor\LevelEditor.csproj", "{FF0E2752-217F-470C-B003-62AF0C2F29D3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{84E0C9AB-EFE5-4F8B-9949-11B491292979} = {84E0C9AB-EFE5-4F8B-9949-11B491292979}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersionData", "ImmersionData\ImmersionData.csproj", "{23FADD6B-D740-4681-BAA1-5E79BE9E5D27}"
 EndProject

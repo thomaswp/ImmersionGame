@@ -74,7 +74,7 @@ namespace Immersion
         {
             for (int i = 0; i < Words.Count; i++)
             {
-                Words[i].GeneratePath(i / (float)Words.Count);
+                Words[i].GeneratePath(i - Words.Count / 2);// / (float)Words.Count);
             }
         }
 

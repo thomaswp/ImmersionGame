@@ -29,14 +29,21 @@ namespace Immersion
         MapData map;
 
 
-        public Game1()
+        public Game1(String mapFile = null)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            graphics.PreferredBackBufferWidth = 2000;
-            graphics.PreferredBackBufferHeight = 1250;
+            //graphics.PreferredBackBufferWidth = 2000;
+            //graphics.PreferredBackBufferHeight = 1250;
+            graphics.PreferredBackBufferWidth = 1200;
+            graphics.PreferredBackBufferHeight = 750;
             graphics.ApplyChanges();
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            if (mapFile != null)
+            {
+                map = MapData.ReadFromFile(mapFile);
+            }
         }
 
         /// <summary>
@@ -58,13 +65,16 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            map = MapData.ReadFromFile("../../../../../Map3.map");
+            if (map == null)
+            {
+                map = MapData.ReadFromFile("../../../../../Map3.map");
+            }
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             Vector2 center = myScreenSize / 2;
-            map.Platforms[1].item = new ItemData("Wine", "wine-bottle");
+            if (map.Platforms.Count > 1) map.Platforms[1].item = new ItemData("Wine", "wine-bottle");
             Texture2D bgSprite = Content.Load<Texture2D>("space");
             background = new Background(bgSprite, (int)myScreenSize.X, (int)myScreenSize.Y);
 

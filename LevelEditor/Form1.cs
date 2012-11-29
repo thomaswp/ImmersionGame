@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Immersion;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 using System.IO;
+using System.Diagnostics;
+using System.Threading;
 
 namespace LevelEditor
 {
@@ -42,6 +44,7 @@ namespace LevelEditor
             mapRenderer = new MapRenderer(editorState);
 
             MapData map = editorState.Map;
+
 
             map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
             words = new List<string>();
@@ -164,6 +167,15 @@ namespace LevelEditor
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 editorState.Map = MapData.ReadFromFile(openFileDialog.FileName);
+                Vector2 offset = Vector2.Zero;
+                foreach (PlatformData platform in editorState.Map.Platforms)
+                {
+                    platform.StartPos += offset;
+                    foreach (PlatformSegue segue in platform.segues)
+                    {
+                        segue.Destination += offset;
+                    }
+                }
                 draw();
             }
         }
@@ -189,6 +201,33 @@ namespace LevelEditor
         private void pictureBoxWorld_Click(object sender, EventArgs e)
         {
             uiHandler.OnDoubleClick(e);
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            String dir = Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName;
+            dir += @"\Immersion\Immersion\bin\x86\Debug";
+            ProcessStartInfo psi = new ProcessStartInfo(dir + @"\Immersion.exe");
+            psi.WorkingDirectory = dir;
+            editorState.Map.WriteToFile("testing.map");
+            psi.Arguments = Directory.GetCurrentDirectory() + @"\testing.map";
+            psi.RedirectStandardError = true;
+            psi.UseShellExecute = false;
+            Process p = Process.Start(psi);
+
+            ParameterizedThreadStart ts = new ParameterizedThreadStart(debugTest);
+            Thread t = new Thread(ts);
+            t.Start(p);
+        }
+
+        private void debugTest(object obj)
+        {
+            Process p = (Process)obj;
+            while (p.StandardError.Peek() != -1)
+            {
+                Console.WriteLine(p.StandardError.ReadLine());
+            }
         }
 
 

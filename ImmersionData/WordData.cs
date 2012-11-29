@@ -89,7 +89,9 @@ namespace Immersion
             degreeOffset = (float)(posDegreeStart + posDegreeEnd) / 2 -
                 (Parent.StartDegree + Parent.EndDegree) / 2 * revolutions * dir;
 
-            wordOffset = -10 * percentThrough;
+            float speed = (Parent.StartPosition - Parent.EndPosition).Length() /
+                Math.Abs(Parent.StartDegree - Parent.EndDegree);
+            wordOffset = -100 * percentThrough / speed;
 
             float startRadius = Parent.StartPosition.Length();
             float endRadius = Parent.EndPosition.Length();
@@ -129,7 +131,7 @@ namespace Immersion
             //Rachel Edit This
             double degThrough = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
             Vector2 linearOffset = new Vector2((float)Math.Cos(degThrough), (float)Math.Sin(degThrough)) * 30;
-            Vector2 linearPoint = Parent.GetForcedPath(timeDeg) + linearOffset;
+            Vector2 linearPoint = Parent.GetForcedPath(timeDeg) +linearOffset;
 
             float disFromStart = Math.Abs(timeDeg - Parent.StartDegree);//,
             disFromStart = Math.Min(disFromStart, Math.Abs(timeDeg - 360 - Parent.StartDegree));

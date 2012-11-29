@@ -44,6 +44,7 @@
             this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWorld)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegree)).BeginInit();
@@ -52,12 +53,13 @@
             // 
             // pictureBoxWorld
             // 
-            this.pictureBoxWorld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxWorld.Location = new System.Drawing.Point(0, 62);
+            this.pictureBoxWorld.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxWorld.Location = new System.Drawing.Point(0, 76);
+            this.pictureBoxWorld.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBoxWorld.Name = "pictureBoxWorld";
-            this.pictureBoxWorld.Size = new System.Drawing.Size(506, 389);
+            this.pictureBoxWorld.Size = new System.Drawing.Size(675, 479);
             this.pictureBoxWorld.TabIndex = 0;
             this.pictureBoxWorld.TabStop = false;
             this.pictureBoxWorld.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBoxWorld_MouseDown);
@@ -66,12 +68,13 @@
             // 
             // trackBarDegree
             // 
-            this.trackBarDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBarDegree.Location = new System.Drawing.Point(0, 26);
+            this.trackBarDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBarDegree.Location = new System.Drawing.Point(0, 32);
+            this.trackBarDegree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.trackBarDegree.Maximum = 359;
             this.trackBarDegree.Name = "trackBarDegree";
-            this.trackBarDegree.Size = new System.Drawing.Size(604, 45);
+            this.trackBarDegree.Size = new System.Drawing.Size(805, 56);
             this.trackBarDegree.TabIndex = 1;
             this.trackBarDegree.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
@@ -79,28 +82,31 @@
             // 
             this.listBoxAction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxAction.FormattingEnabled = true;
+            this.listBoxAction.ItemHeight = 16;
             this.listBoxAction.Items.AddRange(new object[] {
             "Move",
             "Select/Move",
             "New Platform",
             "New Segue"});
-            this.listBoxAction.Location = new System.Drawing.Point(512, 79);
+            this.listBoxAction.Location = new System.Drawing.Point(683, 97);
+            this.listBoxAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listBoxAction.Name = "listBoxAction";
-            this.listBoxAction.Size = new System.Drawing.Size(160, 95);
+            this.listBoxAction.Size = new System.Drawing.Size(212, 116);
             this.listBoxAction.TabIndex = 2;
             this.listBoxAction.SelectedIndexChanged += new System.EventHandler(this.listBoxActions_SelectedIndexChanged);
             // 
             // nudDegree
             // 
             this.nudDegree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudDegree.Location = new System.Drawing.Point(610, 26);
+            this.nudDegree.Location = new System.Drawing.Point(813, 32);
+            this.nudDegree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.nudDegree.Maximum = new decimal(new int[] {
             359,
             0,
             0,
             0});
             this.nudDegree.Name = "nudDegree";
-            this.nudDegree.Size = new System.Drawing.Size(51, 20);
+            this.nudDegree.Size = new System.Drawing.Size(68, 22);
             this.nudDegree.TabIndex = 3;
             this.nudDegree.ValueChanged += new System.EventHandler(this.nudDegree_ValueChanged);
             // 
@@ -108,13 +114,14 @@
             // 
             this.listBoxSegues.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxSegues.FormattingEnabled = true;
+            this.listBoxSegues.ItemHeight = 16;
             this.listBoxSegues.Items.AddRange(new object[] {
             "Linear",
             "Curved"});
-            this.listBoxSegues.Location = new System.Drawing.Point(512, 193);
-            this.listBoxSegues.Margin = new System.Windows.Forms.Padding(2);
+            this.listBoxSegues.Location = new System.Drawing.Point(683, 238);
+            this.listBoxSegues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBoxSegues.Name = "listBoxSegues";
-            this.listBoxSegues.Size = new System.Drawing.Size(161, 82);
+            this.listBoxSegues.Size = new System.Drawing.Size(213, 100);
             this.listBoxSegues.TabIndex = 4;
             this.listBoxSegues.Visible = false;
             this.listBoxSegues.SelectedIndexChanged += new System.EventHandler(this.listBoxSegues_SelectedIndexChanged);
@@ -123,10 +130,9 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(512, 176);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(683, 217);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.Size = new System.Drawing.Size(56, 17);
             this.label1.TabIndex = 5;
             this.label1.Text = "Segues";
             // 
@@ -134,10 +140,9 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(512, 62);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(683, 76);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 13);
+            this.label2.Size = new System.Drawing.Size(54, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Actions";
             // 
@@ -145,10 +150,9 @@
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(512, 276);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(683, 340);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(54, 13);
+            this.label3.Size = new System.Drawing.Size(73, 17);
             this.label3.TabIndex = 7;
             this.label3.Text = "Properties";
             // 
@@ -156,10 +160,11 @@
             // 
             this.listBoxProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxProperties.FormattingEnabled = true;
-            this.listBoxProperties.Location = new System.Drawing.Point(514, 292);
-            this.listBoxProperties.Margin = new System.Windows.Forms.Padding(2);
+            this.listBoxProperties.ItemHeight = 16;
+            this.listBoxProperties.Location = new System.Drawing.Point(685, 359);
+            this.listBoxProperties.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBoxProperties.Name = "listBoxProperties";
-            this.listBoxProperties.Size = new System.Drawing.Size(158, 95);
+            this.listBoxProperties.Size = new System.Drawing.Size(209, 116);
             this.listBoxProperties.TabIndex = 8;
             this.listBoxProperties.Visible = false;
             this.listBoxProperties.SelectedIndexChanged += new System.EventHandler(this.listBoxProperties_SelectedIndexChanged);
@@ -175,11 +180,12 @@
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiFile});
+            this.tsmiFile,
+            this.testToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(673, 24);
+            this.menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            this.menuStrip.Size = new System.Drawing.Size(897, 28);
             this.menuStrip.TabIndex = 9;
             this.menuStrip.Text = "menuStrip";
             // 
@@ -190,34 +196,41 @@
             this.tsmiOpen,
             this.tsmiSave});
             this.tsmiFile.Name = "tsmiFile";
-            this.tsmiFile.Size = new System.Drawing.Size(37, 20);
+            this.tsmiFile.Size = new System.Drawing.Size(44, 24);
             this.tsmiFile.Text = "File";
             // 
             // tsmiNew
             // 
             this.tsmiNew.Name = "tsmiNew";
-            this.tsmiNew.Size = new System.Drawing.Size(103, 22);
+            this.tsmiNew.Size = new System.Drawing.Size(114, 24);
             this.tsmiNew.Text = "New";
             // 
             // tsmiOpen
             // 
             this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(103, 22);
+            this.tsmiOpen.Size = new System.Drawing.Size(114, 24);
             this.tsmiOpen.Text = "Open";
             this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(103, 22);
+            this.tsmiSave.Size = new System.Drawing.Size(114, 24);
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(48, 24);
+            this.testToolStripMenuItem.Text = "Test";
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(673, 461);
+            this.ClientSize = new System.Drawing.Size(897, 567);
             this.Controls.Add(this.listBoxProperties);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -230,6 +243,7 @@
             this.Controls.Add(this.trackBarDegree);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load_1);
@@ -264,6 +278,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiNew;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpen;
         private System.Windows.Forms.ToolStripMenuItem tsmiSave;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
     }
 }
 
