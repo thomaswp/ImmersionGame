@@ -17,8 +17,34 @@ namespace Immersion
         public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
+        public String Name
+        {
+            get
+            {
+                String name = "";
+                foreach (WordData word in Words)
+                {
+                    if (name != "") name += " ";
+                    name += word.Text;
+                }
+                return name;
+            }
+        }
 
         public readonly List<WordData> Words;
+
+
+        private static List<String> extractWords(WordCloudData data)
+        {
+            List<String> words = new List<string>();
+            foreach (WordData word in data.Words)
+            {
+                words.Add(word.Text);
+            }
+            return words;
+        }
+
+        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { }
 
         public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words) : 
             this(new LinearPath(startPosition, startDegree, endPosition, endDegree), startDegree, endDegree, words) {}
@@ -44,12 +70,13 @@ namespace Immersion
             return PathedObject.GetPosition(degree);
         }
 
-        private void GeneratePaths()
+        public void GeneratePaths()
         {
             for (int i = 0; i < Words.Count; i++)
             {
                 Words[i].GeneratePath(i / (float)Words.Count);
             }
         }
+
     }
 }

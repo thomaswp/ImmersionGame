@@ -114,16 +114,6 @@ namespace LevelEditor
             else if (CurrentActionType == Actions.Platform)
             {
                 draggingPlatform = new PlatformData(pos, Degree);
-
-                //just to test adding words
-                List<string> words = new List<string>();
-                words.Add("Hello");
-                words.Add("how");
-                words.Add("are");
-                words.Add("you");
-                words.Add("Hello");
-                map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
-
                 draggingItemOffset = new Vector2();
                 map.Platforms.Add(draggingPlatform);
             }
@@ -133,48 +123,49 @@ namespace LevelEditor
                 SelectedPlatform = null;
                 SelectedSegue = null;
 
-                //look for a platform first
                 foreach (PlatformData platform in map.Platforms)
                 {
-                    if (platform.contains(pos, Degree))
-                        SelectedPlatform = platform;
-                }
-                //drag the selected platform
-                draggingPlatform = SelectedPlatform;
-                if (draggingPlatform != null)
-                {
-                    draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
-                }
-
-                //if we aren't selecting one, look for a segue
-                if (draggingPlatform == null)
-                {
-                    foreach (PlatformData platform in map.Platforms)
+                    //check the start "segue" which is really just
+                    //the start position of the platform
+                    //but you can move that, so it's selectable
+                    if (segueContains(platform.StartSegue, pos))
                     {
-                        //check the start "segue" which is really just
-                        //the start position of the platform
-                        //but you can move that, so it's selectable
-                        if (segueContains(platform.StartSegue, pos))
+                        SelectedSegue = platform.StartSegue;
+                        break;
+                    }
+                    //and check all the rest
+                    foreach (PlatformSegue segue in platform.segues)
+                    {
+                        if (segueContains(segue, pos))
                         {
-                            SelectedSegue = platform.StartSegue;
+                            SelectedSegue = segue;
                             break;
-                        }
-                        //and check all the rest
-                        foreach (PlatformSegue segue in platform.segues)
-                        {
-                            if (segueContains(segue, pos))
-                            {
-                                SelectedSegue = segue;
-                                break;
-                            }
                         }
                     }
                 }
+
                 //drag the selected segue
                 draggingSegue = SelectedSegue;
                 if (draggingSegue != null)
                 {
                     draggingItemOffset = SelectedSegue.Destination - pos;
+                }
+
+                if (SelectedSegue == null)
+                {
+                    //look for a platform first
+                    foreach (PlatformData platform in map.Platforms)
+                    {
+                        if (platform.contains(pos, Degree))
+                            SelectedPlatform = platform;
+                    }
+                }
+
+                //drag the selected platform
+                draggingPlatform = SelectedPlatform;
+                if (draggingPlatform != null)
+                {
+                    draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
                 }
 
                 //if we're not selecting anything, just drag the map
@@ -354,7 +345,7 @@ namespace LevelEditor
 
         private bool segueContains(PlatformSegue segue, Vector2 pos)
         {
-            return (segue.Destination - pos).Length() < MapRenderer.SEGUE_DRAW_RAD;
+            return (segue.Destination - pos).Length() < MapRenderer.SEGUE_DRAW_RADIUS;
         }
     }
 }

@@ -12,8 +12,9 @@ namespace LevelEditor
     public class MapRenderer
     {
 
-        public const int SEGUE_DRAW_RAD = 47;
-        public const float SEGUE_RATIO = 9 / 14f;
+        public const int SEGUE_DRAW_RADIUS = 10;
+        public const int SEGMENT_DRAW_SIZE = 47;
+        public const float SEGMENT_RATIO = 9 / 14f;
 
         private EditorState editorState;
         private int Degree { get { return editorState.Degree; } }
@@ -85,7 +86,7 @@ namespace LevelEditor
 
         private void DrawSegment(Point center, Graphics g, XNAPoint point)
         {
-            int rX = SEGUE_DRAW_RAD, rY = (int)(SEGUE_DRAW_RAD * SEGUE_RATIO);
+            int rX = SEGMENT_DRAW_SIZE, rY = (int)(SEGMENT_DRAW_SIZE * SEGMENT_RATIO);
             Point p = new Point((point.Y - point.X) * rX, (point.X + point.Y) * rY);
             p.Offset(center);
 
@@ -104,7 +105,9 @@ namespace LevelEditor
             {
                 pen = Pens.Red;
             }
-            g.DrawEllipse(pen, new Rectangle(sPos.X - 10, sPos.Y - 10, 20, 20));
+            g.DrawEllipse(pen, new Rectangle(sPos.X - SEGUE_DRAW_RADIUS, 
+                sPos.Y - SEGUE_DRAW_RADIUS, 
+                SEGUE_DRAW_RADIUS * 2, SEGUE_DRAW_RADIUS * 2));
         }
 
         private void DrawWordCloud(Graphics g, WordCloudData wordCloud)
