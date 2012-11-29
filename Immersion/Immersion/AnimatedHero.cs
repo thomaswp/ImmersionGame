@@ -177,6 +177,17 @@ namespace Immersion
                 Debug.WriteLine(currentPlatform.Velocity);
             }
             moved = false;
+
+            if (currentPlatform != null)
+            {
+                if (currentPlatform.Item != null)
+                {
+                    if ((myPosition - currentPlatform.Item.myPosition).Length() < 25)
+                    {
+                        currentPlatform.Item.IsCollected = true;
+                    }
+                }
+            }
         }
 
         public override void Draw(SpriteBatch batch, Vector2 offset)

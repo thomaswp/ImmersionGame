@@ -16,7 +16,7 @@ namespace Immersion
     public class PlatformSprite : Sprite, IPathedSprite
     {
         protected PlatformData data;
-        private ItemSprite item;
+        public ItemSprite Item {get; set;}
         float degree = 0;
         float timeMult = 30;
 
@@ -44,6 +44,11 @@ namespace Immersion
             degree = (degree + elapsedTime * timeMult) % 360;
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
             Velocity = data.getVelocity(degree) * MapData.DISTANCE_MULTIPLIER * timeMult;
+
+            if (Item != null)
+            {
+                Item.myPosition = myPosition + data.itemOffset;
+            }
         }
 
         public bool Contains(Vector2 pos)
@@ -76,9 +81,9 @@ namespace Immersion
             {
                 base.Draw(batch, offset + getPointOffset(p));
             }
-            if (item != null)
+            if (Item != null)
             {
-                item.Draw(batch, myPosition + offset);
+                Item.Draw(batch, offset);
             }
         }
 
@@ -92,7 +97,7 @@ namespace Immersion
         {
             if (data.item != null)
             {
-                item = new ItemSprite(content.Load<Texture2D>(data.item.ImageName),shadow,data.itemOffset);
+                Item = new ItemSprite(content.Load<Texture2D>(data.item.ImageName), shadow, data.itemOffset);
             }
         }
             
