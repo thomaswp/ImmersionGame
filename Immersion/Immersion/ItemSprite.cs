@@ -33,7 +33,7 @@ namespace Immersion
         {
             if (!IsCollected)
             {
-                myVelocityZ = 1;
+                myPosition.Y += myVelocityZ;
             }
         }
 
@@ -41,6 +41,7 @@ namespace Immersion
         {
             float shadowScale = myScale * .75f; //0.35f;
 
+            // If collected draw the shadow and the item
             if (!IsCollected)
             {
                 batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, 100), 0f,
@@ -49,9 +50,8 @@ namespace Immersion
 
                 base.Draw(batch, offset);
             }
+            //else Draw nothing
         }
-                //batch.Draw(shadowImage, myPosition + offset, null, Color.White, 0f, new Vector2(myTexture.Width / 2, myTexture.Height / 2),
-                //itemScale, SpriteEffects.None, 0f);
            
             
 
@@ -60,7 +60,7 @@ namespace Immersion
             base.Update(elapsedTime);
             if (!IsCollected)
             {
-               // Bobble();
+               //Bobble();
             }
         }
     }
