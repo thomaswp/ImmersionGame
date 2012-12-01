@@ -66,7 +66,7 @@ namespace LevelEditor
 
         public void OnKeyDown(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
+            if (e.KeyCode == Keys.D0)
             {
                 if (SelectedPlatform != null)
                 {
@@ -85,10 +85,16 @@ namespace LevelEditor
                     }
                     SelectedPlatform = null;
                 }
-                if (SelectedSegue != null)
-                {
-                    //TODO
-                }
+                //Need to figure our how to remove and add seues
+           
+                //if (SelectedSegue != null)
+                //{
+                //    SelectedPlatform.segues.Remove(SelectedSegue);
+                //}
+            }
+            if (e.KeyCode == Keys.P)
+            {
+                PlatformActionMethod(new Vector2(10, 10), editorState.Map);
             }
         }
 
@@ -99,6 +105,22 @@ namespace LevelEditor
         public void OnDoubleClick(EventArgs e)
         {
         }
+        public void PlatformActionMethod(Vector2 pos, MapData map)
+        {
+            draggingPlatform = new PlatformData(pos, Degree);
+
+            //just to test adding words
+            List<string> words = new List<string>();
+            words.Add("Hello");
+            words.Add("how");
+            words.Add("are");
+            words.Add("you");
+            words.Add("Hello");
+            map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
+
+            draggingItemOffset = new Vector2();
+            map.Platforms.Add(draggingPlatform);
+        }
 
         //Ugly method that handles all mouse down events. Needs to be cleaned
         public void MouseDown(MouseEventArgs e)
@@ -106,28 +128,7 @@ namespace LevelEditor
             Vector2 pos = editorState.MousePosOnMap(e.Location);
             MapData map = editorState.Map;
 
-
-            if (CurrentActionType == Actions.Move)
-            {
-                startMapDrag(e);
-            }
-            else if (CurrentActionType == Actions.Platform)
-            {
-                draggingPlatform = new PlatformData(pos, Degree);
-
-                //just to test adding words
-                List<string> words = new List<string>();
-                words.Add("Hello");
-                words.Add("how");
-                words.Add("are");
-                words.Add("you");
-                words.Add("Hello");
-                map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
-
-                draggingItemOffset = new Vector2();
-                map.Platforms.Add(draggingPlatform);
-            }
-            else if (CurrentActionType == Actions.Select)
+            if (e.Button == MouseButtons.Left)
             {
                 //set selections to nul
                 SelectedPlatform = null;
@@ -168,7 +169,7 @@ namespace LevelEditor
                                 break;
                             }
                         }
-                    }
+                    
                 }
                 //drag the selected segue
                 draggingSegue = SelectedSegue;
@@ -191,7 +192,101 @@ namespace LevelEditor
                     platformDialog.MapData = map;
                     platformDialog.ShowDialog();
                 }
+                startMapDrag(e);
             }
+            }
+            // Been made a function of selection
+            //if (CurrentActionType == Actions.Move)
+            //{
+            //    startMapDrag(e);
+            //}
+            
+                //Been made a separate method called by pressing "p"
+            //else if (CurrentActionType == Actions.Platform)
+            //{
+            //    PlatformActionMethod(pos,map);
+            //    draggingPlatform = new PlatformData(pos, Degree);
+
+            //    //just to test adding words
+            //    List<string> words = new List<string>();
+            //    words.Add("Hello");
+            //    words.Add("how");
+            //    words.Add("are");
+            //    words.Add("you");
+            //    words.Add("Hello");
+            //    map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
+
+            //    draggingItemOffset = new Vector2();
+            //    map.Platforms.Add(draggingPlatform);
+            //}
+
+
+            //Now contained in an if statement dependent upon the left mouse button
+            //else if (CurrentActionType == Actions.Select)
+            //{
+            //    //set selections to nul
+            //    SelectedPlatform = null;
+            //    SelectedSegue = null;
+
+            //    //look for a platform first
+            //    foreach (PlatformData platform in map.Platforms)
+            //    {
+            //        if (platform.contains(pos, Degree))
+            //            SelectedPlatform = platform;
+            //    }
+            //    //drag the selected platform
+            //    draggingPlatform = SelectedPlatform;
+            //    if (draggingPlatform != null)
+            //    {
+            //        draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
+            //    }
+
+            //    //if we aren't selecting one, look for a segue
+            //    if (draggingPlatform == null)
+            //    {
+            //        foreach (PlatformData platform in map.Platforms)
+            //        {
+            //            //check the start "segue" which is really just
+            //            //the start position of the platform
+            //            //but you can move that, so it's selectable
+            //            if (segueContains(platform.StartSegue, pos))
+            //            {
+            //                SelectedSegue = platform.StartSegue;
+            //                break;
+            //            }
+            //            //and check all the rest
+            //            foreach (PlatformSegue segue in platform.segues)
+            //            {
+            //                if (segueContains(segue, pos))
+            //                {
+            //                    SelectedSegue = segue;
+            //                    break;
+            //                }
+            //            }
+            //        }
+            //    }
+            //    //drag the selected segue
+            //    draggingSegue = SelectedSegue;
+            //    if (draggingSegue != null)
+            //    {
+            //        draggingItemOffset = SelectedSegue.Destination - pos;
+            //    }
+
+            //    //if we're not selecting anything, just drag the map
+            //    if (SelectedPlatform == null && SelectedSegue == null)
+            //    {
+            //        startMapDrag(e);
+            //    }
+
+
+            //    if (SelectedPlatform != null && e.Clicks == 2)
+            //    {
+            //        draggingPlatform = null;
+            //        platformDialog.PlatformData = SelectedPlatform;
+            //        platformDialog.MapData = map;
+            //        platformDialog.ShowDialog();
+            //    }
+            //}
             else if (CurrentActionType == Actions.Segue)
             {
                 //add a new segue and start dragging it
