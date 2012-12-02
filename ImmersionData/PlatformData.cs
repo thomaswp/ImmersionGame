@@ -22,6 +22,8 @@ namespace Immersion
         public ItemData item;
         public Vector2 itemOffset;
         public List<Point> Segments = new List<Point>();
+        public int FallTime;
+        public bool SafePlatform;
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 

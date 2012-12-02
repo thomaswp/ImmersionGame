@@ -40,6 +40,15 @@ namespace Immersion
             graphics.PreferredBackBufferHeight = 750;
 
             graphics.ApplyChanges();
+
+            //BlendState bs = new BlendState();
+            //bs.AlphaSourceBlend = Blend.One;
+            //bs.AlphaDestinationBlend = Blend.Zero;
+            //bs.ColorSourceBlend = Blend.One;
+            //bs.ColorDestinationBlend = Blend.One;
+            //bs.AlphaBlendFunction = BlendFunction.Add;
+            //graphics.GraphicsDevice.BlendState = bs;
+
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             if (mapFile != null)
@@ -69,7 +78,7 @@ namespace Immersion
         {
             if (map == null)
             {
-                map = MapData.ReadFromFile("../../../../../Map3.map");
+                map = MapData.ReadFromFile("../../../../../Map1.map");
             }
 
             // Create a new SpriteBatch, which can be used to draw textures.
@@ -120,7 +129,7 @@ namespace Immersion
             myAnimatedHero.myPosition = myPlatforms[0].myPosition;
             offset = center;
 
-            //mySprites.Add(myHero);
+            //It's important to keep Hero added after the other sprites!
             mySprites.Add(myAnimatedHero);
         }
 
@@ -147,15 +156,17 @@ namespace Immersion
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
             InputManager.ActMouse(Mouse.GetState());
-            // TODO: Add your update logic here
-            myAnimatedHero.UpdateCurrentPlatform(myPlatforms);
+
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            myAnimatedHero.UpdateCurrentPlatform(elapsedTime, myPlatforms);
             foreach (Sprite s in mySprites)
             {
-                s.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                s.Update(elapsedTime);
             }
             foreach (WordSprite word in myWordSprites)
             {
-                word.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                word.Update(elapsedTime);
             }
 
             int buffer = 300;
@@ -197,7 +208,7 @@ namespace Immersion
             background.Draw(spriteBatch, offset, (float)Math.Sqrt(worldScale));
             spriteBatch.End();
 
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, m);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, m);
 
             foreach (WordSprite word in myWordSprites)
             {

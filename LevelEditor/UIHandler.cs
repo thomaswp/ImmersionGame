@@ -35,6 +35,7 @@ namespace LevelEditor
 
         //if the user is draggin the mouse, keeps track of where the drag started
         private Point startDragMouse, startDragMap;
+        private bool shiftDrag;
         private bool draggingMap;
 
         //platform being dragged
@@ -105,7 +106,7 @@ namespace LevelEditor
         {
             Vector2 pos = editorState.MousePosOnMap(e.Location);
             MapData map = editorState.Map;
-
+            shiftDrag = false;
 
             if (CurrentActionType == Actions.Move)
             {
@@ -158,6 +159,10 @@ namespace LevelEditor
                     {
                         if (platform.contains(pos, Degree))
                             SelectedPlatform = platform;
+                    }
+                    if (SelectedPlatform != null)
+                    {
+                        shiftDrag = Control.ModifierKeys == Keys.Shift;
                     }
                 }
 
@@ -234,7 +239,19 @@ namespace LevelEditor
                 else
                 {
                     //if there are segues, offset the platform's start degree
-                    updatePlatformOffset(SelectedPlatform, Degree, mousePosOnMap(e.Location));
+                    if (shiftDrag)
+                    {
+                        Vector2 offset = pos + draggingItemOffset - draggingPlatform.GetPosition(Degree);
+                        draggingPlatform.StartPos += offset;
+                        foreach (PlatformSegue segue in draggingPlatform.segues)
+                        {
+                            segue.Destination += offset;
+                        }
+                    }
+                    else
+                    {
+                        updatePlatformOffset(SelectedPlatform, Degree, mousePosOnMap(e.Location));
+                    }
                     //updatePlatformWeights(Degree, mousePosOnMap(e.Location));
                 }
             }

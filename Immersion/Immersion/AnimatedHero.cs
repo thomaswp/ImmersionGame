@@ -23,7 +23,7 @@ namespace Immersion
         protected Texture2D shadowImage;
         protected PlatformSprite currentPlatform;
         protected Vector2 pushoffVelocity;
-        protected PlatformSprite lastPlatform;
+        protected PlatformSprite respawnPlatform;
         protected bool falling;
         protected Flipbook myBook;
 
@@ -96,18 +96,25 @@ namespace Immersion
             }
         }
 
-        public void UpdateCurrentPlatform(List<PlatformSprite> platforms)
+        public void UpdateCurrentPlatform(float elapsedTime, List<PlatformSprite> platforms)
         {
+            foreach (PlatformSprite platform in platforms)
+            {
+                platform.UpdateHeroOnPlatform(currentPlatform == platform && IsGrounded && !falling, elapsedTime);
+            }
             if (!IsGrounded || falling) return;
             currentPlatform = null;
             foreach (PlatformSprite platform in platforms)
             {
-                if (platform.Contains(myPosition))
+                if (platform.Solid && platform.Contains(myPosition))
                 {
                     currentPlatform = platform;
-                    lastPlatform = currentPlatform;
-                    break;
+                    if (platform.Safe)
+                    {
+                        respawnPlatform = currentPlatform;
+                    }
                 }
+                platform.RespawnPlatform = respawnPlatform == platform;
             }
         }
 
@@ -130,7 +137,7 @@ namespace Immersion
                     myScale = 1;
                     myPositionZ = 0;
                     myVelocityZ = 0;
-                    currentPlatform = lastPlatform;
+                    currentPlatform = respawnPlatform;
                     if (currentPlatform != null)
                         myPosition = currentPlatform.myPosition;
                     falling = false;
@@ -171,10 +178,13 @@ namespace Immersion
             {
                 if (IsGrounded)
                 {
+                    myPosition += currentPlatform.LastFrameMovement;
                     pushoffVelocity = currentPlatform.Velocity;
                 }
-                myPosition += pushoffVelocity * elapsedTime;
-                Debug.WriteLine(currentPlatform.Velocity);
+                else
+                {
+                    myPosition += pushoffVelocity * elapsedTime;
+                }
             }
             moved = false;
 

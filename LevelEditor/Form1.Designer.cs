@@ -57,7 +57,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxWorld.Location = new System.Drawing.Point(0, 76);
-            this.pictureBoxWorld.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBoxWorld.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxWorld.Name = "pictureBoxWorld";
             this.pictureBoxWorld.Size = new System.Drawing.Size(675, 479);
             this.pictureBoxWorld.TabIndex = 0;
@@ -71,7 +71,7 @@
             this.trackBarDegree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBarDegree.Location = new System.Drawing.Point(0, 32);
-            this.trackBarDegree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBarDegree.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarDegree.Maximum = 359;
             this.trackBarDegree.Name = "trackBarDegree";
             this.trackBarDegree.Size = new System.Drawing.Size(805, 56);
@@ -89,7 +89,7 @@
             "New Platform",
             "New Segue"});
             this.listBoxAction.Location = new System.Drawing.Point(683, 97);
-            this.listBoxAction.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.listBoxAction.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxAction.Name = "listBoxAction";
             this.listBoxAction.Size = new System.Drawing.Size(212, 116);
             this.listBoxAction.TabIndex = 2;
@@ -99,7 +99,7 @@
             // 
             this.nudDegree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDegree.Location = new System.Drawing.Point(813, 32);
-            this.nudDegree.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.nudDegree.Margin = new System.Windows.Forms.Padding(4);
             this.nudDegree.Maximum = new decimal(new int[] {
             359,
             0,
@@ -202,26 +202,31 @@
             // tsmiNew
             // 
             this.tsmiNew.Name = "tsmiNew";
-            this.tsmiNew.Size = new System.Drawing.Size(114, 24);
+            this.tsmiNew.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.tsmiNew.Size = new System.Drawing.Size(167, 24);
             this.tsmiNew.Text = "New";
+            this.tsmiNew.Click += new System.EventHandler(this.tsmiNew_Click);
             // 
             // tsmiOpen
             // 
             this.tsmiOpen.Name = "tsmiOpen";
-            this.tsmiOpen.Size = new System.Drawing.Size(114, 24);
+            this.tsmiOpen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.tsmiOpen.Size = new System.Drawing.Size(167, 24);
             this.tsmiOpen.Text = "Open";
             this.tsmiOpen.Click += new System.EventHandler(this.tsmiOpen_Click);
             // 
             // tsmiSave
             // 
             this.tsmiSave.Name = "tsmiSave";
-            this.tsmiSave.Size = new System.Drawing.Size(114, 24);
+            this.tsmiSave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.tsmiSave.Size = new System.Drawing.Size(167, 24);
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F5;
             this.testToolStripMenuItem.Size = new System.Drawing.Size(48, 24);
             this.testToolStripMenuItem.Text = "Test";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
@@ -243,9 +248,10 @@
             this.Controls.Add(this.trackBarDegree);
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load_1);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);

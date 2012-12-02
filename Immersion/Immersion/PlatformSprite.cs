@@ -16,11 +16,18 @@ namespace Immersion
     public class PlatformSprite : Sprite, IPathedSprite
     {
         protected PlatformData data;
-        public ItemSprite Item {get; set;}
-        float degree = 0;
-        float timeMult = 30;
+        protected float degree = 0;
+        protected float timeMult = 30;
+        protected float heroOnPlatform = 0;
+        protected float heroLastOnPlatform = 0;
+        protected byte baseOpacity = 200;
 
         public Vector2 Velocity;
+        public Vector2 LastFrameMovement;
+        public ItemSprite Item { get; set; }
+        public bool Solid { get { return data.FallTime <= 0 || heroOnPlatform < data.FallTime; } }
+        public bool Safe { get { return data.SafePlatform; } }
+        public bool RespawnPlatform { set { byte color = (byte)(value ? 200 : 255); myColor.R = color; myColor.B = color; } }
 
         public float Size
         {
@@ -33,17 +40,43 @@ namespace Immersion
             this.data = data;
             this.timeMult = 30;// timeMult;
             myScale = 0.5f;
-            myColor.A = 100;
+            myColor.A = baseOpacity;
+        }
+
+        public void UpdateHeroOnPlatform(bool onPlatform, float elapsedTime)
+        {
+            float ms = elapsedTime * 1000;
+            if (onPlatform)
+            {
+                heroOnPlatform += ms;
+                heroOnPlatform = Math.Min(heroOnPlatform, data.FallTime);
+                heroLastOnPlatform = 1000;
+            }
+            else
+            {
+                if (heroLastOnPlatform > 0)
+                {
+                    heroLastOnPlatform -= ms;
+                }
+                else
+                {
+                    heroOnPlatform = Math.Max(0, heroOnPlatform - ms);
+                }
+            }
         }
 
         public override void Update(float elapsedTime)
         {
+            Vector2 lastPos = myPosition;
+
             base.Update(elapsedTime);
             float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
             if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
             degree = (degree + elapsedTime * timeMult) % 360;
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
-            Velocity = data.getVelocity(degree) * MapData.DISTANCE_MULTIPLIER * timeMult;
+
+            LastFrameMovement = myPosition - lastPos;
+            Velocity = LastFrameMovement / elapsedTime;
 
             if (Item != null)
             {
@@ -77,6 +110,10 @@ namespace Immersion
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
+            if (data.FallTime > 0)
+            {
+                myColor.A = (byte)Math.Max(0, baseOpacity * (data.FallTime - heroOnPlatform) / data.FallTime);
+            }
             foreach (Point p in data.Segments)
             {
                 base.Draw(batch, offset + getPointOffset(p));

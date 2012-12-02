@@ -39,6 +39,9 @@ namespace LevelEditor
             {
                 segments.Add(new Point(point.X, point.Y));
             }
+            nudFallTime.Value = new Decimal(PlatformData.FallTime);
+            checkBoxSafe.Checked = PlatformData.SafePlatform;
+            nudSpeed.Value = PlatformData.Repeats;
 
             editingCloud = null;
             originalWordClouds.Clear();
@@ -63,6 +66,27 @@ namespace LevelEditor
             }
 
             draw();
+        }
+
+        private void buttonOk_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            PlatformData.Segments.Clear();
+            foreach (Point point in segments)
+            {
+                PlatformData.Segments.Add(new XNAPoint(point.X, point.Y));
+            }
+            PlatformData.FallTime = (int)nudFallTime.Value;
+            PlatformData.SafePlatform = checkBoxSafe.Checked;
+            PlatformData.Repeats = (int)nudSpeed.Value;
+
+            saveWordCloud();
+            foreach (WordCloudData wordCloud in originalWordClouds)
+            {
+                MapData.WordClouds.Remove(wordCloud);
+            }
+            MapData.WordClouds.AddRange(wordClouds);
+            this.Close();
         }
 
         private void UpdateWordClouds()
@@ -90,23 +114,6 @@ namespace LevelEditor
             textBoxWords.Enabled = enabled;
             comboBoxWordClouds.Enabled = enabled;
             buttonDelete.Enabled = enabled;
-        }
-
-        private void buttonOk_Click(object sender, EventArgs e)
-        {
-            this.DialogResult = DialogResult.OK;
-            PlatformData.Segments.Clear();
-            foreach (Point point in segments)
-            {
-                PlatformData.Segments.Add(new XNAPoint(point.X, point.Y));
-            }
-            saveWordCloud();
-            foreach (WordCloudData wordCloud in originalWordClouds)
-            {
-                MapData.WordClouds.Remove(wordCloud);
-            }
-            MapData.WordClouds.AddRange(wordClouds);
-            this.Close();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

@@ -26,6 +26,7 @@ namespace LevelEditor
         EditorState editorState;
         UIHandler uiHandler;
         MapRenderer mapRenderer;
+        List<Process> processes = new List<Process>();
 
         public Form1()
         {
@@ -35,17 +36,45 @@ namespace LevelEditor
             this.pictureBoxWorld.MouseWheel += new MouseEventHandler(Form1_MouseWheel);
         }
 
-        List<String> words;
-
         private void Form1_Load_1(object sender, EventArgs e)
         {
             editorState = new EditorState(new MapData(), this.pictureBoxWorld.Size);
             uiHandler = new UIHandler(editorState);
             mapRenderer = new MapRenderer(editorState);
 
-            MapData map = editorState.Map;
+            String lastSave = Properties.Settings.Default.lastSave;
+            if (File.Exists(lastSave))
+            {
+                LoadGame(lastSave);
+            }
+            else
+            {
+                NewGame(); 
+            }
+        }
 
-            map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
+        private void LoadGame(String game)
+        {
+            try
+            {
+                editorState.Map = MapData.ReadFromFile(game);
+                this.Text = game.Split('\\').Last();
+                Properties.Settings.Default.lastSave = game;
+                Properties.Settings.Default.Save();
+                draw();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                NewGame();
+            }
+        }
+
+        private void NewGame()
+        {
+            editorState.Map = new MapData();
+            editorState.Map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
+            editorState.Map.Platforms[0].SafePlatform = true;
             draw();
         }
 
@@ -141,7 +170,7 @@ namespace LevelEditor
         {
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                editorState.Map = MapData.ReadFromFile(openFileDialog.FileName);
+                LoadGame(openFileDialog.FileName);
                 Vector2 offset = Vector2.Zero;
                 foreach (PlatformData platform in editorState.Map.Platforms)
                 {
@@ -160,6 +189,8 @@ namespace LevelEditor
             if (this.saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 editorState.Map.WriteToFile(saveFileDialog.FileName);
+                Properties.Settings.Default.lastSave = saveFileDialog.FileName;
+                Properties.Settings.Default.Save();
             }
         }
 
@@ -193,6 +224,7 @@ namespace LevelEditor
 
             ParameterizedThreadStart ts = new ParameterizedThreadStart(debugTest);
             Thread t = new Thread(ts);
+            processes.Add(p);
             t.Start(p);
         }
 
@@ -202,6 +234,20 @@ namespace LevelEditor
             while (p.StandardError.Peek() != -1)
             {
                 Console.WriteLine(p.StandardError.ReadLine());
+            }
+            processes.Remove(p);
+        }
+
+        private void tsmiNew_Click(object sender, EventArgs e)
+        {
+            NewGame();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (Process p in processes)
+            {
+                p.Kill();
             }
         }
 
