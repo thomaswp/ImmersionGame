@@ -59,6 +59,8 @@ namespace LevelEditor
             get { return editorState.SelectedSegue; }
             set { editorState.SelectedSegue = value; }
         }
+        private List<PlatformData> SelectedPlatforms { get { return editorState.SelectedPlatforms;} }
+        private List<PlatformSegue> SelectedSegues { get { return editorState.SelectedSegues; } }
         
         public UIHandler(EditorState editorState)
         {
@@ -120,36 +122,52 @@ namespace LevelEditor
             }
             else if (CurrentActionType == Actions.Select)
             {
-                //set selections to nul
-                SelectedPlatform = null;
-                SelectedSegue = null;
 
-                foreach (PlatformData platform in map.Platforms)
+                if (Control.ModifierKeys != Keys.Control)
                 {
-                    //check the start "segue" which is really just
-                    //the start position of the platform
-                    //but you can move that, so it's selectable
-                    if (segueContains(platform.StartSegue, pos))
+                    //set selections to null
+                    SelectedPlatform = null;
+                    SelectedSegue = null;
+                    SelectedPlatforms.Clear();
+                    SelectedSegues.Clear();
+                }
+                draggingPlatform = null;
+                draggingSegue = null;
+
+                if (SelectedPlatform == null)
+                {
+                    foreach (PlatformData platform in map.Platforms)
                     {
-                        SelectedSegue = platform.StartSegue;
-                        break;
-                    }
-                    //and check all the rest
-                    foreach (PlatformSegue segue in platform.segues)
-                    {
-                        if (segueContains(segue, pos))
+                        //check the start "segue" which is really just
+                        //the start position of the platform
+                        //but you can move that, so it's selectable
+                        if (segueContains(platform.StartSegue, pos))
                         {
-                            SelectedSegue = segue;
+                            SelectedSegue = platform.StartSegue;
+                            draggingSegue = SelectedSegue;
                             break;
+                        }
+                        //and check all the rest
+                        foreach (PlatformSegue segue in platform.segues)
+                        {
+                            if (segueContains(segue, pos))
+                            {
+                                SelectedSegue = segue;
+                                draggingSegue = SelectedSegue;
+                                break;
+                            }
                         }
                     }
                 }
 
                 //drag the selected segue
-                draggingSegue = SelectedSegue;
                 if (draggingSegue != null)
                 {
                     draggingItemOffset = SelectedSegue.Destination - pos;
+                }
+                if (SelectedSegue != null && !SelectedSegues.Contains(SelectedSegue))
+                {
+                    SelectedSegues.Add(SelectedSegue);
                 }
 
                 if (SelectedSegue == null)
@@ -158,10 +176,14 @@ namespace LevelEditor
                     foreach (PlatformData platform in map.Platforms)
                     {
                         if (platform.contains(pos, Degree))
+                        {
                             SelectedPlatform = platform;
+                            draggingPlatform = platform;
+                        }
                     }
                     if (SelectedPlatform != null)
                     {
+                        SelectedPlatforms.Add(SelectedPlatform);
                         shiftDrag = Control.ModifierKeys == Keys.Shift;
                     }
                 }

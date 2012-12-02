@@ -63,7 +63,8 @@ namespace LevelEditor
             Vector2 pos = platform.GetPosition(Degree);
             Point canvasPos = MapPointOnCanvas(pos);
 
-            Pen pen = editorState.SelectedPlatform == platform ? Pens.Red : Pens.Black;
+            Pen pen = editorState.SelectedPlatforms.Contains(platform) ? Pens.DarkRed : Pens.Black;
+            if (editorState.SelectedPlatform == platform) pen = Pens.Red;
 
             foreach (XNAPoint point in platform.Segments)
             {
@@ -101,9 +102,16 @@ namespace LevelEditor
         private void DrawSegue(Graphics g, PlatformSegue segue, Pen pen)
         {
             Point sPos = MapPointOnCanvas(segue.Destination);
-            if (segue == editorState.SelectedSegue)
+            if (editorState.SelectedSegues.Contains(segue))
             {
-                pen = Pens.Red;
+                if (editorState.SelectedSegue == segue)
+                {
+                    pen = Pens.Red;
+                }
+                else
+                {
+                    pen = Pens.DarkRed;
+                }
             }
             g.DrawEllipse(pen, new Rectangle(sPos.X - SEGUE_DRAW_RADIUS, 
                 sPos.Y - SEGUE_DRAW_RADIUS, 

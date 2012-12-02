@@ -60,7 +60,7 @@ namespace Immersion
                 }
                 else
                 {
-                    heroOnPlatform = Math.Max(0, heroOnPlatform - ms);
+                    heroOnPlatform = Math.Max(0, heroOnPlatform - data.FallTime * ms / 1000);
                 }
             }
         }

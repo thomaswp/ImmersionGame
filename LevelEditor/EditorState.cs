@@ -17,6 +17,8 @@ namespace LevelEditor
 
         public PlatformData SelectedPlatform;
         public PlatformSegue SelectedSegue;
+        public List<PlatformData> SelectedPlatforms = new List<PlatformData>();
+        public List<PlatformSegue> SelectedSegues = new List<PlatformSegue>();
 
         public EditorState(MapData map, Size renderSize)
         {
