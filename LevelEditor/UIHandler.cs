@@ -66,7 +66,7 @@ namespace LevelEditor
 
         public void OnKeyDown(KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.D0)
+            if (e.KeyCode == Keys.Delete)
             {
                 if (SelectedPlatform != null)
                 {
@@ -87,144 +87,174 @@ namespace LevelEditor
                 }
                 if (SelectedSegue != null)
                 {
-                    SelectedPlatform.segues.Remove(SelectedSegue);
+                //Could cause a problem may need to do foreach loop to find matching one
+                    editorState.Map.currentPlatform.segues.Remove(SelectedSegue);
                 }
             }
-            if (e.KeyCode == Keys.P)
-            {
-                if (SelectedPlatform != null)
-                {
-                    editorState.Map.Platforms.Add(new PlatformData(SelectedPlatform.StartPos));
-                }
-                if (SelectedSegue != null)
-                {
-                    editorState.Map.Platforms.Add(new PlatformData(SelectedSegue.Destination));
-                }
-            }
+        //    if (e.KeyCode == Keys.P)
+        //    {
+        //        if (SelectedPlatform != null)
+        //        {
+        //            editorState.Map.Platforms.Add(new PlatformData(SelectedPlatform.StartPos));
+        //        }
+        //        if (SelectedSegue != null)
+        //        {
+        //            editorState.Map.Platforms.Add(new PlatformData(SelectedSegue.Destination));
+        //        }
+           //}
         }
 
         public void OnKeyPress(KeyPressEventArgs e)
         {
         }
-
+        public void OnRightClick(MouseEventArgs e)
+        {
+            if (SelectedPlatform != null) SegueAdd(e);
+            else if (SelectedSegue != null) SegueAdd(e);
+            //SegueInsert(SelectedSegue.Destination);
+            else PlatformAdd(e);
+        }
         public void OnDoubleClick(EventArgs e)
         {
         }
+        public void SegueInsert(Vector2 destination)
+        {
+            PlatformSegue segue = null;
+            if (CurrentSegueType == Segues.Linear)
+            {
+                segue = new PlatformSegueLinear(destination);
+            }
+            else if (CurrentSegueType == Segues.Curved)
+            {
+                segue = new PlatformSegueCurved(destination);
+            }
 
+            if (segue == null) return;
+
+            SelectedPlatform.segues.Insert(SelectedPlatform.segues.IndexOf(SelectedSegue), segue);
+            draggingSegue = segue;
+            draggingItemOffset = new Vector2();
+        }
+        public void SegueAdd(MouseEventArgs e)
+        {
+            Vector2 pos = editorState.MousePosOnMap(e.Location);
+            MapData map = editorState.Map;
+            //add a new segue and start dragging it
+            if (SelectedPlatform == null) return;
+            PlatformSegue segue = null;
+
+
+            if (CurrentSegueType == Segues.Linear)
+            {
+                segue = new PlatformSegueLinear(pos);
+            }
+            else if (CurrentSegueType == Segues.Curved)
+            {
+                segue = new PlatformSegueCurved(pos);
+            }
+
+            if (segue == null) return;
+
+            SelectedPlatform.segues.Add(segue);
+            draggingSegue = segue;
+            draggingItemOffset = new Vector2();
+        }
+        public void PlatformAdd(MouseEventArgs e)
+        {
+            Vector2 pos = editorState.MousePosOnMap(e.Location);
+            MapData map = editorState.Map;
+            draggingPlatform = new PlatformData(pos, Degree);
+            draggingItemOffset = new Vector2();
+            map.Platforms.Add(draggingPlatform);
+
+                ////just to test adding words
+                //List<string> words = new List<string>();
+                //words.Add("Hello");
+                //words.Add("how");
+                //words.Add("are");
+                //words.Add("you");
+                //words.Add("Hello");
+                //map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
+        }
+        public void ClickMethod(MouseEventArgs e)
+        {
+            Vector2 pos = editorState.MousePosOnMap(e.Location);
+            MapData map = editorState.Map;
+            //set all selections to null
+            SelectedPlatform = null;
+            SelectedSegue = null;
+            //Selection hierarchy: look for platforms first
+            foreach (PlatformData platform in map.Platforms)
+            {
+                if (platform.contains(pos, Degree))
+                    SelectedPlatform = platform;
+            }
+            //drag the selected platform
+            draggingPlatform = SelectedPlatform;
+            if (draggingPlatform != null)
+            {
+                draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
+            }
+
+            //if we aren't selecting one, look for a segue
+            if (draggingPlatform == null)
+            {
+                foreach (PlatformData platform in map.Platforms)
+                {
+                    //check the start "segue" which is really just
+                    //the start position of the platform
+                    //but you can move that, so it's selectable
+                    if (segueContains(platform.StartSegue, pos))
+                    {
+                        map.currentPlatform=platform;
+                        SelectedSegue = platform.StartSegue;
+                        break;
+                    }
+                    //and check all the rest
+                    foreach (PlatformSegue segue in platform.segues)
+                    {
+                        if (segueContains(segue, pos))
+                        {
+                            map.currentPlatform=platform;
+                            SelectedSegue = segue;
+                            break;
+                        }
+                    }
+                }
+            }
+            //drag the selected segue
+            draggingSegue = SelectedSegue;
+            if (draggingSegue != null)
+            {
+                draggingItemOffset = SelectedSegue.Destination - pos;
+            }
+
+            //if we're not selecting anything, just drag the map
+            if (SelectedPlatform == null && SelectedSegue == null)
+            {
+                startMapDrag(e);
+            }
+
+
+            if (SelectedPlatform != null && e.Clicks == 2)
+            {
+                draggingPlatform = null;
+                platformDialog.PlatformData = SelectedPlatform;
+                platformDialog.MapData = map;
+                platformDialog.ShowDialog();
+            }
+           //may need to call right click in here to make it work right
+        }
         //Ugly method that handles all mouse down events. Needs to be cleaned
         public void MouseDown(MouseEventArgs e)
         {
             Vector2 pos = editorState.MousePosOnMap(e.Location);
             MapData map = editorState.Map;
+            //May need to remove left button if statement to make right click work
+            //if (e.Button == MouseButtons.Left) ClickMethod(e);
+            ClickMethod(e);
+            if(e.Button==MouseButtons.Right) OnRightClick(e);
 
-
-            if (CurrentActionType == Actions.Move)
-            {
-                startMapDrag(e);
-            }
-            else if (CurrentActionType == Actions.Platform)
-            {
-                draggingPlatform = new PlatformData(pos, Degree);
-
-                //just to test adding words
-                List<string> words = new List<string>();
-                words.Add("Hello");
-                words.Add("how");
-                words.Add("are");
-                words.Add("you");
-                words.Add("Hello");
-                map.WordClouds.Add(new WordCloudData(draggingPlatform, 30, 120, words));
-
-                draggingItemOffset = new Vector2();
-                map.Platforms.Add(draggingPlatform);
-            }
-            else if (CurrentActionType == Actions.Select)
-            {
-                //set selections to nul
-                SelectedPlatform = null;
-                SelectedSegue = null;
-
-                //look for a platform first
-                foreach (PlatformData platform in map.Platforms)
-                {
-                    if (platform.contains(pos, Degree))
-                        SelectedPlatform = platform;
-                }
-                //drag the selected platform
-                draggingPlatform = SelectedPlatform;
-                if (draggingPlatform != null)
-                {
-                    draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
-                }
-
-                //if we aren't selecting one, look for a segue
-                if (draggingPlatform == null)
-                {
-                    foreach (PlatformData platform in map.Platforms)
-                    {
-                        //check the start "segue" which is really just
-                        //the start position of the platform
-                        //but you can move that, so it's selectable
-                        if (segueContains(platform.StartSegue, pos))
-                        {
-                            SelectedSegue = platform.StartSegue;
-                            break;
-                        }
-                        //and check all the rest
-                        foreach (PlatformSegue segue in platform.segues)
-                        {
-                            if (segueContains(segue, pos))
-                            {
-                                SelectedSegue = segue;
-                                break;
-                            }
-                        }
-                    }
-                }
-                //drag the selected segue
-                draggingSegue = SelectedSegue;
-                if (draggingSegue != null)
-                {
-                    draggingItemOffset = SelectedSegue.Destination - pos;
-                }
-
-                //if we're not selecting anything, just drag the map
-                if (SelectedPlatform == null && SelectedSegue == null)
-                {
-                    startMapDrag(e);
-                }
-
-
-                if (SelectedPlatform != null && e.Clicks == 2)
-                {
-                    draggingPlatform = null;
-                    platformDialog.PlatformData = SelectedPlatform;
-                    platformDialog.MapData = map;
-                    platformDialog.ShowDialog();
-                }
-            }
-            else if (CurrentActionType == Actions.Segue)
-            {
-                //add a new segue and start dragging it
-                if (SelectedPlatform == null) return;
-                PlatformSegue segue = null;
-
-
-                if (CurrentSegueType == Segues.Linear)
-                {
-                    segue = new PlatformSegueLinear(pos);
-                }
-                else if (CurrentSegueType == Segues.Curved)
-                {
-                    segue = new PlatformSegueCurved(pos);
-                }
-
-                if (segue == null) return;
-
-                SelectedPlatform.segues.Add(segue);
-                draggingSegue = segue;
-                draggingItemOffset = new Vector2();
-            }
         }
 
         public void MouseUp(MouseEventArgs e)

@@ -17,6 +17,7 @@ namespace LevelEditor
 
         private EditorState editorState;
         private int Degree { get { return editorState.Degree; } }
+        public int check=0;
 
         public MapRenderer(EditorState editorState)
         {
@@ -33,6 +34,7 @@ namespace LevelEditor
             MapData map = editorState.Map;
 
             g.Clear(Color.CornflowerBlue);
+           
             g.DrawString(Degree.ToString(), new Font("Arial", 12), Brushes.Black, new PointF(0, 0));
             g.DrawString("(" + mapOffset.X + ", " + mapOffset.Y + ")", new Font("Arial", 12), Brushes.Black, new PointF(50, 0));
             
@@ -109,6 +111,8 @@ namespace LevelEditor
 
         private void DrawWordCloud(Graphics g, WordCloudData wordCloud)
         {
+            if(check % 2 == 0)
+            {
             Font smallFont = new Font("Arial", 7);
             Pen linePen = new Pen(Color.DarkBlue, 5);
             g.DrawLine(linePen, MapPointOnCanvas(wordCloud.StartPosition),
@@ -128,6 +132,7 @@ namespace LevelEditor
 
                 g.DrawString(word.Text, smallFont, Brushes.Black,
                     MapPointOnCanvas(word.GetPosition(Degree)));
+            }
             }
         }
 

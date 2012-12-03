@@ -24,6 +24,8 @@ namespace Immersion
         public List<PlatformData> Platforms = new List<PlatformData>();
         public List<WordCloudData> WordClouds = new List<WordCloudData>();
         public float speed = 30;
+        public PlatformData currentPlatform { get; set; }
+
 
         public static MapData ReadFromFile(String path)
         {

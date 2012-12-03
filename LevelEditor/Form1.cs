@@ -143,11 +143,11 @@ namespace LevelEditor
             draw();
         }
 
-        private void listBoxActions_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            uiHandler.CurrentActionType = (UIHandler.Actions)listBoxAction.SelectedIndex;
-            listBoxSegues.Visible = uiHandler.CurrentActionType == UIHandler.Actions.Segue;
-        }
+        //private void listBoxActions_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    uiHandler.CurrentActionType = (UIHandler.Actions)listBoxAction.SelectedIndex;
+        //    listBoxSegues.Visible = uiHandler.CurrentActionType == UIHandler.Actions.Segue;
+        //}
 
         private void listBoxSegues_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -189,6 +189,11 @@ namespace LevelEditor
         private void pictureBoxWorld_Click(object sender, EventArgs e)
         {
             uiHandler.OnDoubleClick(e);
+        }
+
+        private void wordCloudShow(object sender, EventArgs e)
+        {
+            mapRenderer.check++;
         }
 
 

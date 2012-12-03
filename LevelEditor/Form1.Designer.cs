@@ -30,11 +30,9 @@
         {
             this.pictureBoxWorld = new System.Windows.Forms.PictureBox();
             this.trackBarDegree = new System.Windows.Forms.TrackBar();
-            this.listBoxAction = new System.Windows.Forms.ListBox();
             this.nudDegree = new System.Windows.Forms.NumericUpDown();
             this.listBoxSegues = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.listBoxProperties = new System.Windows.Forms.ListBox();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
@@ -44,6 +42,7 @@
             this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWorld)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegree)).BeginInit();
@@ -75,21 +74,6 @@
             this.trackBarDegree.TabIndex = 1;
             this.trackBarDegree.Scroll += new System.EventHandler(this.trackBar1_Scroll);
             // 
-            // listBoxAction
-            // 
-            this.listBoxAction.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxAction.FormattingEnabled = true;
-            this.listBoxAction.Items.AddRange(new object[] {
-            "Move",
-            "Select/Move",
-            "New Platform",
-            "New Segue"});
-            this.listBoxAction.Location = new System.Drawing.Point(512, 79);
-            this.listBoxAction.Name = "listBoxAction";
-            this.listBoxAction.Size = new System.Drawing.Size(160, 95);
-            this.listBoxAction.TabIndex = 2;
-            this.listBoxAction.SelectedIndexChanged += new System.EventHandler(this.listBoxActions_SelectedIndexChanged);
-            // 
             // nudDegree
             // 
             this.nudDegree.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -111,7 +95,7 @@
             this.listBoxSegues.Items.AddRange(new object[] {
             "Linear",
             "Curved"});
-            this.listBoxSegues.Location = new System.Drawing.Point(512, 193);
+            this.listBoxSegues.Location = new System.Drawing.Point(512, 77);
             this.listBoxSegues.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxSegues.Name = "listBoxSegues";
             this.listBoxSegues.Size = new System.Drawing.Size(161, 82);
@@ -123,29 +107,18 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(512, 176);
+            this.label1.Location = new System.Drawing.Point(509, 62);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(43, 13);
             this.label1.TabIndex = 5;
             this.label1.Text = "Segues";
             // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(512, 62);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Actions";
-            // 
             // label3
             // 
             this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(512, 276);
+            this.label3.Location = new System.Drawing.Point(509, 161);
             this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(54, 13);
@@ -156,7 +129,7 @@
             // 
             this.listBoxProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxProperties.FormattingEnabled = true;
-            this.listBoxProperties.Location = new System.Drawing.Point(514, 292);
+            this.listBoxProperties.Location = new System.Drawing.Point(512, 176);
             this.listBoxProperties.Margin = new System.Windows.Forms.Padding(2);
             this.listBoxProperties.Name = "listBoxProperties";
             this.listBoxProperties.Size = new System.Drawing.Size(158, 95);
@@ -213,18 +186,30 @@
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(512, 287);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(104, 17);
+            this.checkBox1.TabIndex = 10;
+            this.checkBox1.Text = "WordCloud Path";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.wordCloudShow);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(673, 461);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.listBoxProperties);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBoxSegues);
             this.Controls.Add(this.nudDegree);
-            this.Controls.Add(this.listBoxAction);
             this.Controls.Add(this.pictureBoxWorld);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.trackBarDegree);
@@ -250,11 +235,9 @@
 
         private System.Windows.Forms.PictureBox pictureBoxWorld;
         private System.Windows.Forms.TrackBar trackBarDegree;
-        private System.Windows.Forms.ListBox listBoxAction;
         private System.Windows.Forms.NumericUpDown nudDegree;
         private System.Windows.Forms.ListBox listBoxSegues;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox listBoxProperties;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
@@ -264,6 +247,7 @@
         private System.Windows.Forms.ToolStripMenuItem tsmiNew;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpen;
         private System.Windows.Forms.ToolStripMenuItem tsmiSave;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 
