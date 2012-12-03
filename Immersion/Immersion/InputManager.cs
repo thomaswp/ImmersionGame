@@ -18,7 +18,7 @@ namespace Immersion
 {
     // This is a static object.  Only one exists, (you can't say "new") and
     // it is accessible by anyone.
-    static class InputManager
+    public class InputManager
     {
         // XNA doesn't provide me with a collection of mouse things, so I ennumerate them here.
         public const int LEFT_BUTTON = 0;
@@ -31,9 +31,19 @@ namespace Immersion
         // This is the mapping from Keyboard Keys to GameAction objects
         static Dictionary<Keys, List<GameAction>> myKeyboardMap = new Dictionary<Keys, List<GameAction>>();
 
+        static Dictionary<Keys, List<GameAction>> myKeyboardPressMap = new Dictionary<Keys, List<GameAction>>();
+        static List<Keys> myPressedKeys = new List<Keys>();
+
+        static InputManager myInstance = new InputManager();
+
+        public static void AddToMap<T>(Dictionary<T, List<GameAction>> map, T key, GameAction action)
+        {
+            myInstance.AddToMyMap<T>(map, key, action);
+        }
+
         // Anyone can add a new mapping from key to action.  This method is generic, since I don't
         // want to copy and paste this method for the two different types of Dictionaries I deal with.
-        public static void AddToMap<T>(Dictionary<T, List<GameAction>> map, T key, GameAction action)
+        public void AddToMyMap<T>(Dictionary<T, List<GameAction>> map, T key, GameAction action)
         {
 
             List<GameAction> keyList = new List<GameAction>();
@@ -55,6 +65,11 @@ namespace Immersion
         public static void AddToKeyboardMap(Keys key, GameAction action)
         {
             AddToMap<Keys>(myKeyboardMap, key, action);
+        }
+
+        public static void AddToKeyboardPressMap(Keys key, GameAction action)
+        {
+            AddToMap<Keys>(myKeyboardPressMap, key, action);
         }
 
         // Perform the functions in the MouseDictionary, given the current MouseState.
@@ -105,7 +120,22 @@ namespace Immersion
                         action.Invoke();
                     }
                 }
+
+                if (myKeyboardPressMap.ContainsKey(k))
+                {
+                    if (!myPressedKeys.Contains(k))
+                    {
+                        List<GameAction> actionList = myKeyboardPressMap[k];
+                        foreach (GameAction action in actionList)
+                        {
+                            action.Invoke();
+                        }
+                    }
+                }
             }
+
+            myPressedKeys.Clear();
+            myPressedKeys.AddRange(allPressed);
         }
     }
 }

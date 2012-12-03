@@ -8,7 +8,7 @@ namespace Immersion
 {
     // This class contains everything needed to call a Sprite's 
     // method using reflection.
-    class GameAction
+    public class GameAction
     {
         Sprite myActor;
         MethodInfo myMethod;

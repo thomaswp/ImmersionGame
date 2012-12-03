@@ -90,7 +90,13 @@ namespace LevelEditor
                 }
                 if (SelectedSegue != null)
                 {
-                    //TODO
+                    foreach (PlatformData platform in editorState.Map.Platforms)
+                    {
+                        if (platform.segues.Contains(SelectedSegue))
+                        {
+                            platform.segues.Remove(SelectedSegue);
+                        }
+                    }
                 }
             }
         }

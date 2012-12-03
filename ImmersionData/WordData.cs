@@ -18,6 +18,7 @@ namespace Immersion
 
         float degreeOffset, radMult, avgRadius, wordOffset;
         int revolutions, dir, radDegreeMult;
+        Vector2 center;
 
         float percentThrough;
 
@@ -27,74 +28,58 @@ namespace Immersion
             this.Parent = parent;
         }
 
-        public void GeneratePath(float percentThrough)
+        public void GeneratePath(float percentThrough, Vector2 center)
         {
             this.percentThrough = percentThrough;
-
-            
-
-            //int pointCount = 75 * revolutions;
-            //for (int i = 0; i < pointCount; i++)
-            //{
-            //    float timeDeg = i / (float)pointCount * 360 + wordOffset;
-
-            //    float degree = degreeOffset + timeDeg * revolutions * dir;
-            //    double timDegRadians = timeDeg * Math.PI / 180;
-            //    float rad = avgRadius * (float)(Math.Sin(timDegRadians * radDegreeMult + degreeOffset) * (radMult) + 1);
-
-            //    float lPerc = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree);
-            //    Vector2 linearPoint = (1 - lPerc) * Parent.StartPosition + lPerc * Parent.EndPosition;
-
-            //    double degreeRadians = degree / 180 * Math.PI;
-            //    Vector2 radialPoint = new Vector2((float)Math.Cos(degreeRadians), (float)Math.Sin(degreeRadians)) * rad;
-
-
-            //    float disFromStart = Math.Abs(timeDeg - Parent.StartDegree);//,
-            //        //Math.Abs(timeDeg - 360 - Parent.StartDegree));
-            //    float disFromEnd = Math.Abs(timeDeg - Parent.EndDegree);//,
-            //        //Math.Abs(timeDeg + 360 - Parent.EndDegree));
-            //    float dis = Math.Min(disFromStart, disFromEnd);
-            //    if (timeDeg >= Parent.StartDegree && timeDeg <= Parent.EndDegree)
-            //    {
-            //        dis = 0;
-            //    }
-            //    dis /= 180;
-            //    dis = Math.Max(dis, 0);
-
-            //    float rate = 1 - dis;
-            //    rate = (float)Math.Pow(rate, 10);
-
-            //    points.Add(linearPoint * (rate) + radialPoint * (1 - rate));
-            //    //points.Add(radialPoint);
-            //}
+            this.center = center;
         }
 
         private void Update()
         {
-            double posDegreeStart = Math.Atan2(Parent.StartPosition.Y, Parent.StartPosition.X) * 180 / Math.PI;
-            double posDegreeEnd = Math.Atan2(Parent.EndPosition.Y, Parent.EndPosition.X) * 180 / Math.PI;
+            Vector2 relativeParentStart = Parent.StartPosition - center;
+            Vector2 relativeParentEnd = Parent.EndPosition - center;
+
+            double posDegreeStart = Math.Atan2(relativeParentStart.Y, relativeParentStart.X) * 180 / Math.PI;
+            double posDegreeEnd = Math.Atan2(relativeParentEnd.Y, relativeParentEnd.X) * 180 / Math.PI;
             if (Math.Abs(posDegreeStart - posDegreeEnd) > 180)
             {
 
             }
 
-            revolutions = (int)Math.Round((posDegreeStart - posDegreeEnd) / (Parent.StartDegree - Parent.EndDegree));
+            revolutions = 1;
+            if (Parent.StartDegree != Parent.EndDegree)
+            {
+                Math.Abs((int)Math.Round((posDegreeStart - posDegreeEnd) / (Parent.StartDegree - Parent.EndDegree)));
+            }
             if (revolutions < 1) revolutions = 1;
             int posDegreesPassed = 360 * revolutions;
 
             double posDegreeWedge = posDegreeEnd - posDegreeStart;
             if (posDegreeWedge > 180) posDegreeWedge -= 360;
-            dir = Math.Sign(posDegreeWedge / (Parent.EndDegree - Parent.StartDegree));
+            if (posDegreeWedge < -180) posDegreeWedge += 360;
+
+            dir = 0;
+            if (Parent.StartDegree != Parent.EndDegree)
+            {
+                dir = Math.Sign(posDegreeWedge / (Parent.EndDegree - Parent.StartDegree));
+            }
+
+            if (dir == 0) dir++;
 
             degreeOffset = (float)(posDegreeStart + posDegreeEnd) / 2 -
                 (Parent.StartDegree + Parent.EndDegree) / 2 * revolutions * dir;
+            degreeOffset = (float)posDegreeStart - Parent.StartDegree;
 
-            float speed = (Parent.StartPosition - Parent.EndPosition).Length() /
-                Math.Abs(Parent.StartDegree - Parent.EndDegree);
-            wordOffset = -100 * percentThrough / speed;
+            float speed = 1;
+            if (Parent.StartDegree != Parent.EndDegree)
+            {
+                speed = (Parent.StartPosition - Parent.EndPosition).Length() /
+                    Math.Abs(Parent.StartDegree - Parent.EndDegree);
+            }
+            wordOffset = -100 * percentThrough / Math.Max(speed, 1);
 
-            float startRadius = Parent.StartPosition.Length();
-            float endRadius = Parent.EndPosition.Length();
+            float startRadius = relativeParentStart.Length();
+            float endRadius = relativeParentEnd.Length();
             avgRadius = (startRadius + endRadius) / 2;
 
             int hash = Math.Abs(Text.GetHashCode() + percentThrough.GetHashCode());
@@ -102,7 +87,7 @@ namespace Immersion
             float hash2 = ((hash / 100) % 100) / 100f;
 
             radMult = 0.1f + hash1 * 1.5f;
-            radDegreeMult = (int)Math.Round((0.5f + hash2) / radMult * 360 / avgRadius);
+            radDegreeMult = (int)Math.Round((0.5f + hash2) / radMult * 360 / 1000 * Math.Pow(avgRadius, 0.3));// / avgRadius);
             radDegreeMult = Math.Max(radDegreeMult, 1);
         }
 
@@ -118,26 +103,46 @@ namespace Immersion
 
             float degree = degreeOffset + timeDeg * revolutions * dir;
             double timDegRadians = timeDeg * Math.PI / 180;
-            float rad = avgRadius * (float)(Math.Sin(timDegRadians * radDegreeMult + degreeOffset) * (radMult) + 1);
+            float rad = avgRadius * (float)(Math.Sin(timDegRadians * radDegreeMult) * (radMult) + 1);
 
-            float lPerc = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree);
-            //Vector2 linearPoint = (1 - lPerc) * Parent.StartPosition + lPerc * Parent.EndPosition;
+            float lPerc = 0;
+            if (Parent.StartDegree != Parent.EndDegree)
+            {
+                lPerc = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree);
+            }
             
 
             double degreeRadians = degree / 180 * Math.PI;
             Vector2 radialPoint = new Vector2((float)Math.Cos(degreeRadians), (float)Math.Sin(degreeRadians)) * rad;
-
+            radialPoint += center;
 
             //Rachel Edit This
-            double degThrough = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
-            Vector2 linearOffset = new Vector2((float)Math.Cos(degThrough), (float)Math.Sin(degThrough)) * 30;
-            Vector2 linearPoint = Parent.GetForcedPath(timeDeg) +linearOffset;
+            double degThrough = 0;
+            if (Parent.StartDegree != Parent.EndDegree)
+            {
+                degThrough = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
+            }
 
-            float disFromStart = Math.Abs(timeDeg - Parent.StartDegree);//,
-            disFromStart = Math.Min(disFromStart, Math.Abs(timeDeg - 360 - Parent.StartDegree));
-            float disFromEnd = Math.Abs(timeDeg - Parent.EndDegree);//,
-            disFromEnd = Math.Min(disFromEnd, Math.Abs(timeDeg + 360 - Parent.EndDegree));
-            float dis = Math.Min(disFromStart, disFromEnd);
+
+            float disFromStart = Math.Abs(timeDeg - Parent.StartDegree);
+            float modDisFromStart = Math.Abs(timeDeg - 360 - Parent.StartDegree);
+            float disFromEnd = Math.Abs(timeDeg - Parent.EndDegree);
+            float modDisFromEnd = Math.Abs(timeDeg + 360 - Parent.EndDegree);
+            float dis = Math.Min(disFromStart, Math.Min(disFromEnd, Math.Min(modDisFromEnd, modDisFromStart)));
+
+            //if (dis == modDisFromStart)
+            //{
+            //    timeDeg = Math.Max(timeDeg - 360, 0);
+            //}
+            //else if (dis == modDisFromEnd)
+            //{
+            //    timeDeg = Math.Min(timeDeg + 360, 360);
+            //}
+
+            Vector2 linearOffset = new Vector2((float)Math.Cos(degThrough), (float)Math.Sin(degThrough)) * 20;
+            Vector2 linearPoint = Parent.GetForcedPath(timeDeg);
+            linearPoint += linearOffset;
+
             if (timeDeg >= Parent.StartDegree && timeDeg <= Parent.EndDegree)
             {
                 dis = 0;
@@ -147,6 +152,11 @@ namespace Immersion
 
             float rate = 1 - dis;
             rate = (float)Math.Pow(rate, 10);
+
+
+
+
+            //rate = 1;
 
            return linearPoint * (rate) + radialPoint * (1 - rate);
         }

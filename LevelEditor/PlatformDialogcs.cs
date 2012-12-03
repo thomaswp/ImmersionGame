@@ -41,6 +41,8 @@ namespace LevelEditor
             }
             nudFallTime.Value = new Decimal(PlatformData.FallTime);
             checkBoxSafe.Checked = PlatformData.SafePlatform;
+            checkBoxStart.Checked = PlatformData == MapData.startPlatform;
+            checkBoxInvisible.Checked = PlatformData.Invisible;
             nudSpeed.Value = PlatformData.Repeats;
 
             editingCloud = null;
@@ -78,6 +80,15 @@ namespace LevelEditor
             }
             PlatformData.FallTime = (int)nudFallTime.Value;
             PlatformData.SafePlatform = checkBoxSafe.Checked;
+            PlatformData.Invisible = checkBoxInvisible.Checked;
+            if (checkBoxStart.Checked)
+            {
+                MapData.startPlatform = PlatformData;
+            }
+            else if (MapData.startPlatform == PlatformData)
+            {
+                MapData.startPlatform = null;
+            }
             PlatformData.Repeats = (int)nudSpeed.Value;
 
             saveWordCloud();
@@ -98,6 +109,8 @@ namespace LevelEditor
                 comboBoxWordClouds.Text = "";
                 nudFrom.Value = 0;
                 nudTo.Value = 0;
+                nudOffsetX.Value = 0;
+                nudOffsetY.Value = 0;
                 textBoxWords.Clear();
             }
 
@@ -111,9 +124,12 @@ namespace LevelEditor
 
             nudFrom.Enabled = enabled;
             nudTo.Enabled = enabled;
+            nudOffsetX.Enabled = enabled;
+            nudOffsetY.Enabled = enabled;
             textBoxWords.Enabled = enabled;
             comboBoxWordClouds.Enabled = enabled;
             buttonDelete.Enabled = enabled;
+            buttonOnPlatform.Enabled = enabled;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -247,6 +263,8 @@ namespace LevelEditor
                 editingCloud = wordClouds[comboBoxWordClouds.SelectedIndex];
                 nudFrom.Value = new Decimal(editingCloud.StartDegree);
                 nudTo.Value = new Decimal(editingCloud.EndDegree);
+                nudOffsetX.Value = new Decimal(editingCloud.Center.X);
+                nudOffsetY.Value = new Decimal(editingCloud.Center.Y);
                 foreach (WordData word in editingCloud.Words)
                 {
                     if (textBoxWords.Text != "")
@@ -264,6 +282,8 @@ namespace LevelEditor
             {
                 editingCloud.StartDegree = (float)nudFrom.Value;
                 editingCloud.EndDegree = (float)nudTo.Value;
+                editingCloud.Center = new Microsoft.Xna.Framework.Vector2(
+                    (float)nudOffsetX.Value, (float)nudOffsetY.Value);
                 editingCloud.Words.Clear();
                 foreach (String line in textBoxWords.Lines)
                 {
@@ -296,6 +316,12 @@ namespace LevelEditor
 
         private void textBoxWords_TextChanged(object sender, EventArgs e)
         {
+        }
+
+        private void buttonOnPlatform_Click(object sender, EventArgs e)
+        {
+            nudOffsetX.Value = new Decimal(PlatformData.StartPos.X);
+            nudOffsetY.Value = new Decimal(PlatformData.StartPos.Y);
         }
 
     }

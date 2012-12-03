@@ -13,6 +13,8 @@ namespace LevelEditor
     {
 
         public const int SEGUE_DRAW_RADIUS = 10;
+        public const int CIRCLE_DRAW_RADIUS = 10;
+
         public const int SEGMENT_DRAW_SIZE = 47;
         public const float SEGMENT_RATIO = 9 / 14f;
 
@@ -66,9 +68,21 @@ namespace LevelEditor
             Pen pen = editorState.SelectedPlatforms.Contains(platform) ? Pens.DarkRed : Pens.Black;
             if (editorState.SelectedPlatform == platform) pen = Pens.Red;
 
-            foreach (XNAPoint point in platform.Segments)
+            Pen circlePen = new Pen(pen.Color, 4);
+
+            if (!platform.Invisible)
             {
-                DrawSegment(canvasPos, g, point);
+                foreach (XNAPoint point in platform.Segments)
+                {
+                    DrawSegment(canvasPos, g, point);
+                }
+            }
+            else
+            {
+                Color c = pen.Color;
+                c = Color.FromArgb(100, c.R, c.G, c.B);
+                pen = new Pen(c);
+                circlePen = new Pen(c);
             }
 
             DrawPath(g, platform, pen);
@@ -81,8 +95,8 @@ namespace LevelEditor
             {
                 DrawSegue(g, segue, pen);
             }
-            pen = new Pen(pen.Color, 4);
-            g.DrawEllipse(pen, new Rectangle(canvasPos.X - 25, canvasPos.Y - 25, 50, 50));
+
+            g.DrawEllipse(circlePen, new Rectangle(canvasPos.X - 25, canvasPos.Y - 25, 50, 50));
         }
 
         private void DrawSegment(Point center, Graphics g, XNAPoint point)
@@ -122,10 +136,21 @@ namespace LevelEditor
         {
             Font smallFont = new Font("Arial", 7);
             Pen linePen = new Pen(Color.DarkBlue, 5);
-            g.DrawLine(linePen, MapPointOnCanvas(wordCloud.StartPosition),
-                MapPointOnCanvas(wordCloud.EndPosition));
-
             Pen dashPen = Pens.Black;
+
+            if (wordCloud.PathedObject.GetType() == typeof(CirclePath))
+            {
+                CirclePath path = (CirclePath)wordCloud.PathedObject;
+                Point center = MapPointOnCanvas(path.center);
+                g.DrawEllipse(dashPen, center.X - CIRCLE_DRAW_RADIUS, center.Y - CIRCLE_DRAW_RADIUS,
+                    CIRCLE_DRAW_RADIUS * 2, CIRCLE_DRAW_RADIUS * 2);
+            }
+            else
+            {
+                g.DrawLine(linePen, MapPointOnCanvas(wordCloud.StartPosition),
+                    MapPointOnCanvas(wordCloud.EndPosition));
+            }
+
             foreach (WordData word in wordCloud.Words)
             {
                 for (int i = 0; i < word.points.Count; i++)

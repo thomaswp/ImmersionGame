@@ -24,6 +24,7 @@ namespace Immersion
         public List<Point> Segments = new List<Point>();
         public int FallTime;
         public bool SafePlatform;
+        public bool Invisible;
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 

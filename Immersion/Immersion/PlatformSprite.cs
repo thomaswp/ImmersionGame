@@ -86,6 +86,7 @@ namespace Immersion
 
         public bool Contains(Vector2 pos)
         {
+            if (data.Invisible) return false;
             foreach (Point p in data.Segments)
             {
                 if (SegmentContains(pos - getPointOffset(p)))
@@ -110,6 +111,7 @@ namespace Immersion
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
+            if (data.Invisible) return;
             if (data.FallTime > 0)
             {
                 myColor.A = (byte)Math.Max(0, baseOpacity * (data.FallTime - heroOnPlatform) / data.FallTime);

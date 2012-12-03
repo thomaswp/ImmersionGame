@@ -58,6 +58,10 @@ namespace LevelEditor
             try
             {
                 editorState.Map = MapData.ReadFromFile(game);
+                //List<String> words = new List<string>();
+                //words.Add("Hello"); words.Add("Howre"); words.Add("You");
+                //WordCloudData wc = new WordCloudData(editorState.Map.Platforms[0], 0, 0, words);
+                //editorState.Map.WordClouds.Add(wc);
                 this.Text = game.Split('\\').Last();
                 Properties.Settings.Default.lastSave = game;
                 Properties.Settings.Default.Save();

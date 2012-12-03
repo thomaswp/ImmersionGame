@@ -11,12 +11,15 @@ namespace Immersion
     public class WordCloudData
     {
         private float startDegree, endDegree;
+        private Vector2 center;
         public IPathed PathedObject;
 
         public Vector2 StartPosition { get { return GetForcedPath(startDegree); } }
         public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
+        public Vector2 Center { get { return center; } set { center = value; GeneratePaths(); } }
+
         public String Name
         {
             get
@@ -44,7 +47,7 @@ namespace Immersion
             return words;
         }
 
-        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { }
+        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { this.center = toCopy.center; }
 
         public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words) : 
             this(new LinearPath(startPosition, startDegree, endPosition, endDegree), startDegree, endDegree, words) {}
@@ -74,7 +77,7 @@ namespace Immersion
         {
             for (int i = 0; i < Words.Count; i++)
             {
-                Words[i].GeneratePath(i - Words.Count / 2);// / (float)Words.Count);
+                Words[i].GeneratePath(i - Words.Count / 2, center);// / (float)Words.Count);
             }
         }
 

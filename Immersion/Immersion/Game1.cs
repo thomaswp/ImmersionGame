@@ -18,7 +18,6 @@ namespace Immersion
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        //Hero myHero;
         AnimatedHero myAnimatedHero;
         Background background;
         List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
@@ -26,6 +25,13 @@ namespace Immersion
         List<Sprite> mySprites = new List<Sprite>();
         List<WordSprite> myWordSprites = new List<WordSprite>();
         float worldScale = 1;
+        Overlay overlay;
+
+        public float WorldScale
+        {
+            get { return worldScale; }
+            set { worldScale = value; }
+        }
 
         MapData map;
 
@@ -41,20 +47,13 @@ namespace Immersion
 
             graphics.ApplyChanges();
 
-            //BlendState bs = new BlendState();
-            //bs.AlphaSourceBlend = Blend.One;
-            //bs.AlphaDestinationBlend = Blend.Zero;
-            //bs.ColorSourceBlend = Blend.One;
-            //bs.ColorDestinationBlend = Blend.One;
-            //bs.AlphaBlendFunction = BlendFunction.Add;
-            //graphics.GraphicsDevice.BlendState = bs;
-
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             if (mapFile != null)
             {
                 map = MapData.ReadFromFile(mapFile);
             }
+
         }
 
         /// <summary>
@@ -83,6 +82,7 @@ namespace Immersion
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
 
             Vector2 center = myScreenSize / 2;
             if (map.Platforms.Count > 2)
@@ -126,11 +126,24 @@ namespace Immersion
                 }
             }
 
-            myAnimatedHero.myPosition = myPlatforms[0].myPosition;
-            offset = center;
 
             //It's important to keep Hero added after the other sprites!
             mySprites.Add(myAnimatedHero);
+
+
+            int startIndex = map.Platforms.IndexOf(map.startPlatform);
+            if (startIndex >= 0)
+            {
+                PlatformSprite startPlatform = myPlatforms[startIndex];
+                startPlatform.Update(0);
+                myAnimatedHero.myPosition = myPlatforms[startIndex].myPosition;
+                myAnimatedHero.currentPlatform = myPlatforms[startIndex];
+            }
+
+            Update(new GameTime());
+            offset = center - myAnimatedHero.myPosition;
+
+            overlay = new SplashScreen(GraphicsDevice, Content);
         }
 
         /// <summary>
@@ -142,6 +155,7 @@ namespace Immersion
             // TODO: Unload any non ContentManager content here
         }
 
+        bool escDown;
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -149,9 +163,33 @@ namespace Immersion
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                if (!escDown && overlay == null)
+                {
+                    overlay = new GameMenu(GraphicsDevice, Content);
+                }
+                escDown = true;
+            }
+            else
+            {
+                escDown = false;
+            }
+
+            if (overlay != null)
+            {
+                overlay.Update(gameTime);
+                overlay.UpdateGame(this);
+
+                if (overlay.IsFinished())
+                {
+                    overlay = null;
+                }
+                else
+                {
+                    return;
+                }
+            }
 
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
@@ -178,17 +216,17 @@ namespace Immersion
             offset = offset * 0.9f + (heroPos - myAnimatedHero.myPosition) * 0.1f;
 
             
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                if (worldScale > 0.2f)
-                    worldScale *= 0.99f;
-                offset = myScreenSize / worldScale / 2;
-            }
-            else
-            {
-                if (worldScale < 1)
-                    worldScale *= 1.01f;
-            }
+            //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //{
+            //    if (worldScale > 0.2f)
+            //        worldScale *= 0.99f;
+            //    offset = myScreenSize / worldScale / 2;
+            //}
+            //else
+            //{
+            //    if (worldScale < 1)
+            //        worldScale *= 1.01f;
+            //}
 
             base.Update(gameTime);
         }
@@ -199,6 +237,7 @@ namespace Immersion
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+
             GraphicsDevice.Clear(Color.Aqua);
 
             // TODO: Add your drawing code here
@@ -220,6 +259,12 @@ namespace Immersion
                 s.Draw(spriteBatch, offset);
             }
             spriteBatch.End();
+
+            if (overlay != null)
+            {
+                overlay.Draw(gameTime);
+            }
+
             base.Draw(gameTime);
         }
     }

@@ -18,10 +18,12 @@ namespace Immersion
     class AnimatedHero : Sprite 
     {
 
+        const float MAX_PLATFORM_JUMP = 30;
+
         protected float myPositionZ;
         protected float myVelocityZ;
         protected Texture2D shadowImage;
-        protected PlatformSprite currentPlatform;
+        public PlatformSprite currentPlatform;
         protected Vector2 pushoffVelocity;
         protected PlatformSprite respawnPlatform;
         protected bool falling;
@@ -75,7 +77,7 @@ namespace Immersion
             InputManager.AddToKeyboardMap(Keys.S, isMovingDown);
             InputManager.AddToKeyboardMap(Keys.A, isMovingLeft);
             InputManager.AddToKeyboardMap(Keys.D, isMovingRight);
-            InputManager.AddToKeyboardMap(Keys.Space, isJumping);
+            InputManager.AddToKeyboardPressMap(Keys.Space, isJumping);
         }
 
         public void Move(Vector2 direction)
@@ -178,7 +180,10 @@ namespace Immersion
             {
                 if (IsGrounded)
                 {
-                    myPosition += currentPlatform.LastFrameMovement;
+                    if (currentPlatform.LastFrameMovement.Length() < MAX_PLATFORM_JUMP)
+                    {
+                        myPosition += currentPlatform.LastFrameMovement;
+                    }
                     pushoffVelocity = currentPlatform.Velocity;
                 }
                 else
