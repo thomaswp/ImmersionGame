@@ -31,7 +31,7 @@ namespace Immersion
 
         public override void UpdateGame(Game1 game)
         {
-            
+            game.WorldScale = .5f;
         }
 
         public override bool IsFinished()
@@ -47,6 +47,7 @@ namespace Immersion
             }
             else if (escUp && Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
+                
                 finishing = true;
             }
 

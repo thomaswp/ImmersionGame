@@ -87,10 +87,10 @@ namespace Immersion
             Vector2 center = myScreenSize / 2;
             if (map.Platforms.Count > 2)
             {
-                map.Platforms[2].item = new ItemData("Wine", "wine-bottle");
+                map.Platforms[0].item = new ItemData("Wine", "wine-bottle");
                 if (map.Platforms.Count > 4)
                 {
-                    map.Platforms[4].item = new ItemData("Card", "phoenixcard");
+                    map.Platforms[2].item = new ItemData("Card", "phoenixcard");
                 }
             }
             Texture2D bgSprite = Content.Load<Texture2D>("space");
@@ -184,6 +184,7 @@ namespace Immersion
                 if (overlay.IsFinished())
                 {
                     overlay = null;
+                    worldScale = 1f;
                 }
                 else
                 {
@@ -215,12 +216,13 @@ namespace Immersion
             if (heroPos.Y > myScreenSize.Y - buffer) heroPos.Y = myScreenSize.Y - buffer;
             offset = offset * 0.9f + (heroPos - myAnimatedHero.myPosition) * 0.1f;
 
-            
+
             //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             //{
             //    if (worldScale > 0.2f)
-            //        worldScale *= 0.99f;
+            //        worldScale *= 0.9f;
             //    offset = myScreenSize / worldScale / 2;
+
             //}
             //else
             //{

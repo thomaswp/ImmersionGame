@@ -17,14 +17,13 @@ namespace Immersion
     {
         public bool IsCollected { get; set; }
         protected float myPositionZ = 0f;
-        protected float myVelocityZ = 0f;
+        protected float myVelocityZ = 0.25f;
         protected Texture2D shadowImage;
         protected PlatformSprite currentPlatform;
 
         public ItemSprite(Texture2D image, Texture2D shadow, Vector2 position)
             : base(image, position)
         {
-
             this.shadowImage = shadow;
             this.myScale = 0.25f;
         }
@@ -50,7 +49,12 @@ namespace Immersion
 
                 base.Draw(batch, offset);
             }
-            //else Draw nothing
+            //else Draw collected item animation
+            else
+            {
+                batch.Draw(myTexture, myPosition + offset, null,
+                Color.White, myAngularVelocity, Vector2.Zero, myScale, SpriteEffects.None, 0f);
+            }
         }
            
             

@@ -26,7 +26,7 @@ namespace Immersion
         protected override void LoadContent(ContentManager content)
         {
             base.LoadContent(content);
-            splashScreen = content.Load<Texture2D>("splash");
+            splashScreen = content.Load<Texture2D>("splash-screen");
             font = content.Load<SpriteFont>("MenuFont");
         }
 
