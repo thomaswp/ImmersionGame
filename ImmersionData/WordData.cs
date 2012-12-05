@@ -76,7 +76,7 @@ namespace Immersion
                 speed = (Parent.StartPosition - Parent.EndPosition).Length() /
                     Math.Abs(Parent.StartDegree - Parent.EndDegree);
             }
-            wordOffset = -100 * percentThrough / Math.Max(speed, 1);
+            wordOffset = -100 * percentThrough / 10;// / Math.Max(speed, 1);
 
             float startRadius = relativeParentStart.Length();
             float endRadius = relativeParentEnd.Length();

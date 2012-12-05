@@ -34,7 +34,7 @@ namespace Immersion
 
         public override void UpdateGame(Game1 game)
         {
-            game.WorldScale = .5f;
+            game.WorldScale = Game1.Lerp(game.WorldScale, 0.3f, 0.7f);
         }
 
         public override bool IsFinished()

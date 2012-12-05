@@ -163,6 +163,8 @@ namespace Immersion
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            UpdateOffset();
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 if (!escDown && overlay == null)
@@ -184,13 +186,14 @@ namespace Immersion
                 if (overlay.IsFinished())
                 {
                     overlay = null;
-                    worldScale = 1f;
                 }
                 else
                 {
                     return;
                 }
             }
+
+            worldScale = Lerp(worldScale, 1, 0.8f);
 
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
@@ -208,15 +211,45 @@ namespace Immersion
                 word.Update(elapsedTime);
             }
 
-            int buffer = 300;
-            Vector2 heroPos = myAnimatedHero.myPosition + offset;
-            if (heroPos.X < buffer) heroPos.X = buffer;
-            if (heroPos.X > myScreenSize.X - buffer) heroPos.X = myScreenSize.X - buffer;
-            if (heroPos.Y < buffer) heroPos.Y = buffer;
-            if (heroPos.Y > myScreenSize.Y - buffer) heroPos.Y = myScreenSize.Y - buffer;
-            offset = offset * 0.9f + (heroPos - myAnimatedHero.myPosition) * 0.1f;
+
+            //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //{
+            //    if (worldScale > 0.2f)
+            //        worldScale *= 0.9f;
+            //    offset = myScreenSize / worldScale / 2;
+
+            //}
+            //else
+            //{
+            //    if (worldScale < 1)
+            //        worldScale *= 1.01f;
+            //}
 
             base.Update(gameTime);
+        }
+
+        private void UpdateOffset()
+        {
+
+            int buffer = 350;// (int)(350 / worldScale);
+            int width = (int)myScreenSize.X; // (int)(myScreenSize.X / worldScale);
+            int height = (int)(myScreenSize.Y);// / worldScale);
+            Vector2 heroPos = myAnimatedHero.myPosition + offset;
+            if (heroPos.X < buffer) heroPos.X = buffer;
+            if (heroPos.X > width - buffer) heroPos.X = myScreenSize.X - buffer;
+            if (heroPos.Y < buffer) heroPos.Y = buffer;
+            if (heroPos.Y > height - buffer) heroPos.Y = myScreenSize.Y - buffer;
+            offset = Lerp(offset, heroPos - myAnimatedHero.myPosition, 0.9f);
+        }
+
+        public static Vector2 Lerp(Vector2 x0, Vector2 x1, float friction)
+        {
+            return x0 * friction + x1 * (1 - friction);
+        }
+
+        public static float Lerp(float x0, float x1, float friction)
+        {
+            return x0 * friction + x1 * (1 - friction);
         }
 
         /// <summary>
@@ -229,7 +262,10 @@ namespace Immersion
             GraphicsDevice.Clear(Color.Aqua);
 
             // TODO: Add your drawing code here
-            Matrix m = Matrix.CreateScale(worldScale);
+            Matrix m = Matrix.Identity;
+            m = Matrix.Multiply(Matrix.CreateTranslation(myScreenSize.X / 2, myScreenSize.Y / 2, 0), m);
+            m = Matrix.Multiply(Matrix.CreateScale(worldScale), m);
+            m = Matrix.Multiply(Matrix.CreateTranslation(offset.X - myScreenSize.X / 2, offset.Y - myScreenSize.Y / 2, 0), m);
 
             spriteBatch.Begin();
             background.Draw(spriteBatch, offset, (float)Math.Sqrt(worldScale));
@@ -237,14 +273,15 @@ namespace Immersion
 
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.Default, RasterizerState.CullNone, null, m);
 
+            Vector2 localOffset = Vector2.Zero;
             foreach (WordSprite word in myWordSprites)
             {
-                word.Draw(spriteBatch, offset);
+                word.Draw(spriteBatch, localOffset);
             }
 
             foreach (Sprite s in mySprites)
             {
-                s.Draw(spriteBatch, offset);
+                s.Draw(spriteBatch, localOffset);
             }
             spriteBatch.End();
 
@@ -257,3 +294,4 @@ namespace Immersion
         }
     }
 }
+
