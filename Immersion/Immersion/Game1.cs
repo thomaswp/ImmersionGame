@@ -24,8 +24,10 @@ namespace Immersion
         Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
         List<WordSprite> myWordSprites = new List<WordSprite>();
-        float worldScale = 1;
+        float worldScale = NORMAL_SCALE;
         Overlay overlay;
+
+        const float NORMAL_SCALE = 0.8f;
 
         public float WorldScale
         {
@@ -193,7 +195,7 @@ namespace Immersion
                 }
             }
 
-            worldScale = Lerp(worldScale, 1, 0.8f);
+            worldScale = Lerp(worldScale, NORMAL_SCALE, 0.8f);
 
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
