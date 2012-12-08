@@ -8,13 +8,16 @@ using System.Text;
 using System.Windows.Forms;
 using Immersion;
 using XNAPoint = Microsoft.Xna.Framework.Point;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace LevelEditor
 {
     public partial class PlatformDialog : Form
     {
-        public PlatformData PlatformData { get; set; }
-        public MapData MapData { get; set; }
+        public EditorState EditorState { get; set; }
+
+        private PlatformData PlatformData { get { return EditorState.SelectedPlatform; } }
+        private MapData MapData { get { return EditorState.Map; } }
 
         private Point selection;
         private int size = 100;
@@ -22,6 +25,7 @@ namespace LevelEditor
         private List<WordCloudData> originalWordClouds = new List<WordCloudData>();
         private List<WordCloudData> wordClouds = new List<WordCloudData>();
         private WordCloudData editingCloud;
+        private Point itemOffset;
 
         private Point offset;
         private Point startPan;
@@ -44,6 +48,34 @@ namespace LevelEditor
             checkBoxStart.Checked = PlatformData == MapData.startPlatform;
             checkBoxInvisible.Checked = PlatformData.Invisible;
             nudSpeed.Value = PlatformData.Repeats;
+            checkBoxItem.Checked = PlatformData.Item != null;
+            if (PlatformData.Item != null)
+            {
+                textBoxItemName.Text = PlatformData.Item.Name;
+                comboBoxItemTexture.Text = PlatformData.Item.ImageName;
+                itemOffset = new Point(PlatformData.ItemOffset.X, PlatformData.ItemOffset.Y);
+            }
+            else
+            {
+                textBoxItemName.Text = "";
+                comboBoxItemTexture.Text = "";
+                itemOffset = new Point();
+            }
+
+            comboBoxNextLevel.Items.Clear();
+            comboBoxNextLevel.Items.Add("None");
+            foreach (MapData map in EditorState.Game.Maps)
+            {
+                comboBoxNextLevel.Items.Add(map.Name);
+            }
+            if (PlatformData.NextMap != null)
+            {
+                comboBoxNextLevel.SelectedIndex = EditorState.Game.Maps.IndexOf(PlatformData.NextMap) + 1;
+            }
+            else
+            {
+                comboBoxNextLevel.SelectedIndex = 0;
+            }
 
             editingCloud = null;
             originalWordClouds.Clear();
@@ -81,6 +113,21 @@ namespace LevelEditor
             PlatformData.FallTime = (int)nudFallTime.Value;
             PlatformData.SafePlatform = checkBoxSafe.Checked;
             PlatformData.Invisible = checkBoxInvisible.Checked;
+            if (comboBoxNextLevel.SelectedIndex > 0)
+            {
+                PlatformData.NextMap = EditorState.Game.Maps[comboBoxNextLevel.SelectedIndex - 1];
+            }
+            if (checkBoxItem.Checked)
+            {
+                PlatformData.Item = new ItemData(textBoxItemName.Text, comboBoxItemTexture.Text);
+                PlatformData.ItemOffset = new XNAPoint(itemOffset.X, itemOffset.Y);
+            }
+            else
+            {
+                PlatformData.Item = null;
+                PlatformData.ItemOffset = new XNAPoint();
+            }
+
             if (checkBoxStart.Checked)
             {
                 MapData.startPlatform = PlatformData;
@@ -175,6 +222,12 @@ namespace LevelEditor
                 }
             }
 
+            if (checkBoxItem.Checked)
+            {
+                Point sPoint = IsoToImage(itemOffset);
+                g.DrawEllipse(new Pen(Color.Black), new Rectangle(sPoint.X - 30, sPoint.Y - 30, 60, 60));
+            }
+
             this.pictureBoxDisplay.Refresh();
         }
 
@@ -193,14 +246,21 @@ namespace LevelEditor
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
-                selection = ImageToIso(e.Location);
-                if (segments.Contains(selection))
+                if (Control.ModifierKeys == Keys.Control && checkBoxItem.Checked)
                 {
-                    segments.Remove(selection);
+                    itemOffset = ImageToIso(e.Location);
                 }
                 else
                 {
-                    segments.Add(selection);
+                    selection = ImageToIso(e.Location);
+                    if (segments.Contains(selection))
+                    {
+                        segments.Remove(selection);
+                    }
+                    else
+                    {
+                        segments.Add(selection);
+                    }
                 }
             }
             else
@@ -258,7 +318,7 @@ namespace LevelEditor
         {
             saveWordCloud();
             textBoxWords.Text = "";
-            if (comboBoxWordClouds.SelectedIndex >= 0)
+            if (comboBoxWordClouds.SelectedIndex >= 0 && comboBoxWordClouds.SelectedIndex < wordClouds.Count)
             {
                 editingCloud = wordClouds[comboBoxWordClouds.SelectedIndex];
                 nudFrom.Value = new Decimal(editingCloud.StartDegree);
@@ -322,6 +382,14 @@ namespace LevelEditor
         {
             nudOffsetX.Value = new Decimal(PlatformData.StartPos.X);
             nudOffsetY.Value = new Decimal(PlatformData.StartPos.Y);
+        }
+
+        private void checkBoxItem_CheckedChanged(object sender, EventArgs e)
+        {
+            bool check = this.checkBoxItem.Checked;
+            this.textBoxItemName.Enabled = check;
+            this.comboBoxItemTexture.Enabled = check;
+            draw();
         }
 
     }

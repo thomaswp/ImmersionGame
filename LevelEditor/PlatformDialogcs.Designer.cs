@@ -32,7 +32,15 @@
             this.buttonOk = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.buttonOnPlatform = new System.Windows.Forms.Button();
+            this.nudOffsetY = new System.Windows.Forms.NumericUpDown();
+            this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBoxNextLevel = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.checkBoxInvisible = new System.Windows.Forms.CheckBox();
+            this.checkBoxStart = new System.Windows.Forms.CheckBox();
             this.nudSpeed = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxSafe = new System.Windows.Forms.CheckBox();
@@ -49,22 +57,21 @@
             this.comboBoxWordClouds = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBoxDisplay = new System.Windows.Forms.PictureBox();
-            this.checkBoxStart = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
-            this.nudOffsetY = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxInvisible = new System.Windows.Forms.CheckBox();
-            this.buttonOnPlatform = new System.Windows.Forms.Button();
+            this.checkBoxItem = new System.Windows.Forms.CheckBox();
+            this.labelItemName = new System.Windows.Forms.Label();
+            this.textBoxItemName = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBoxItemTexture = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpeed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFallTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudTo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDisplay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
@@ -133,12 +140,72 @@
             this.panel1.Size = new System.Drawing.Size(482, 530);
             this.panel1.TabIndex = 3;
             // 
+            // buttonOnPlatform
+            // 
+            this.buttonOnPlatform.Location = new System.Drawing.Point(226, 290);
+            this.buttonOnPlatform.Name = "buttonOnPlatform";
+            this.buttonOnPlatform.Size = new System.Drawing.Size(94, 23);
+            this.buttonOnPlatform.TabIndex = 14;
+            this.buttonOnPlatform.Text = "On Platform";
+            this.buttonOnPlatform.UseVisualStyleBackColor = true;
+            this.buttonOnPlatform.Click += new System.EventHandler(this.buttonOnPlatform_Click);
+            // 
+            // nudOffsetY
+            // 
+            this.nudOffsetY.Location = new System.Drawing.Point(133, 290);
+            this.nudOffsetY.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudOffsetY.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
+            this.nudOffsetY.Name = "nudOffsetY";
+            this.nudOffsetY.Size = new System.Drawing.Size(64, 22);
+            this.nudOffsetY.TabIndex = 13;
+            // 
+            // nudOffsetX
+            // 
+            this.nudOffsetX.Location = new System.Drawing.Point(59, 290);
+            this.nudOffsetX.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.nudOffsetX.Minimum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            -2147483648});
+            this.nudOffsetX.Name = "nudOffsetX";
+            this.nudOffsetX.Size = new System.Drawing.Size(64, 22);
+            this.nudOffsetX.TabIndex = 12;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 292);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 17);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "Offset:";
+            // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.comboBoxItemTexture);
+            this.panel2.Controls.Add(this.label9);
+            this.panel2.Controls.Add(this.textBoxItemName);
+            this.panel2.Controls.Add(this.labelItemName);
+            this.panel2.Controls.Add(this.checkBoxItem);
+            this.panel2.Controls.Add(this.comboBoxNextLevel);
+            this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.checkBoxInvisible);
             this.panel2.Controls.Add(this.checkBoxStart);
             this.panel2.Controls.Add(this.nudSpeed);
@@ -150,6 +217,43 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(476, 202);
             this.panel2.TabIndex = 10;
+            // 
+            // comboBoxNextLevel
+            // 
+            this.comboBoxNextLevel.FormattingEnabled = true;
+            this.comboBoxNextLevel.Location = new System.Drawing.Point(90, 82);
+            this.comboBoxNextLevel.Name = "comboBoxNextLevel";
+            this.comboBoxNextLevel.Size = new System.Drawing.Size(199, 24);
+            this.comboBoxNextLevel.TabIndex = 9;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(6, 85);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(78, 17);
+            this.label8.TabIndex = 8;
+            this.label8.Text = "Next Level:";
+            // 
+            // checkBoxInvisible
+            // 
+            this.checkBoxInvisible.AutoSize = true;
+            this.checkBoxInvisible.Location = new System.Drawing.Point(253, 33);
+            this.checkBoxInvisible.Name = "checkBoxInvisible";
+            this.checkBoxInvisible.Size = new System.Drawing.Size(80, 21);
+            this.checkBoxInvisible.TabIndex = 7;
+            this.checkBoxInvisible.Text = "Invisible";
+            this.checkBoxInvisible.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxStart
+            // 
+            this.checkBoxStart.AutoSize = true;
+            this.checkBoxStart.Location = new System.Drawing.Point(130, 33);
+            this.checkBoxStart.Name = "checkBoxStart";
+            this.checkBoxStart.Size = new System.Drawing.Size(116, 21);
+            this.checkBoxStart.TabIndex = 6;
+            this.checkBoxStart.Text = "Start Platform";
+            this.checkBoxStart.UseVisualStyleBackColor = true;
             // 
             // nudSpeed
             // 
@@ -329,78 +433,56 @@
             this.pictureBoxDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxDisplay_MouseMove);
             this.pictureBoxDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBoxDisplay_MouseUp);
             // 
-            // checkBoxStart
+            // checkBoxItem
             // 
-            this.checkBoxStart.AutoSize = true;
-            this.checkBoxStart.Location = new System.Drawing.Point(130, 33);
-            this.checkBoxStart.Name = "checkBoxStart";
-            this.checkBoxStart.Size = new System.Drawing.Size(116, 21);
-            this.checkBoxStart.TabIndex = 6;
-            this.checkBoxStart.Text = "Start Platform";
-            this.checkBoxStart.UseVisualStyleBackColor = true;
+            this.checkBoxItem.AutoSize = true;
+            this.checkBoxItem.Location = new System.Drawing.Point(9, 113);
+            this.checkBoxItem.Name = "checkBoxItem";
+            this.checkBoxItem.Size = new System.Drawing.Size(85, 21);
+            this.checkBoxItem.TabIndex = 10;
+            this.checkBoxItem.Text = "Has Item";
+            this.checkBoxItem.UseVisualStyleBackColor = true;
+            this.checkBoxItem.CheckedChanged += new System.EventHandler(this.checkBoxItem_CheckedChanged);
             // 
-            // label7
+            // labelItemName
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 292);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 17);
-            this.label7.TabIndex = 11;
-            this.label7.Text = "Offset:";
+            this.labelItemName.AutoSize = true;
+            this.labelItemName.Location = new System.Drawing.Point(100, 113);
+            this.labelItemName.Name = "labelItemName";
+            this.labelItemName.Size = new System.Drawing.Size(79, 17);
+            this.labelItemName.TabIndex = 11;
+            this.labelItemName.Text = "Item Name:";
             // 
-            // nudOffsetX
+            // textBoxItemName
             // 
-            this.nudOffsetX.Location = new System.Drawing.Point(59, 290);
-            this.nudOffsetX.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.nudOffsetX.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
-            this.nudOffsetX.Name = "nudOffsetX";
-            this.nudOffsetX.Size = new System.Drawing.Size(64, 22);
-            this.nudOffsetX.TabIndex = 12;
+            this.textBoxItemName.Enabled = false;
+            this.textBoxItemName.Location = new System.Drawing.Point(189, 110);
+            this.textBoxItemName.Name = "textBoxItemName";
+            this.textBoxItemName.Size = new System.Drawing.Size(144, 22);
+            this.textBoxItemName.TabIndex = 12;
             // 
-            // nudOffsetY
+            // label9
             // 
-            this.nudOffsetY.Location = new System.Drawing.Point(133, 290);
-            this.nudOffsetY.Maximum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            0});
-            this.nudOffsetY.Minimum = new decimal(new int[] {
-            100000,
-            0,
-            0,
-            -2147483648});
-            this.nudOffsetY.Name = "nudOffsetY";
-            this.nudOffsetY.Size = new System.Drawing.Size(64, 22);
-            this.nudOffsetY.TabIndex = 13;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(100, 141);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(90, 17);
+            this.label9.TabIndex = 13;
+            this.label9.Text = "Item Texture:";
             // 
-            // checkBoxInvisible
+            // comboBoxItemTexture
             // 
-            this.checkBoxInvisible.AutoSize = true;
-            this.checkBoxInvisible.Location = new System.Drawing.Point(253, 33);
-            this.checkBoxInvisible.Name = "checkBoxInvisible";
-            this.checkBoxInvisible.Size = new System.Drawing.Size(80, 21);
-            this.checkBoxInvisible.TabIndex = 7;
-            this.checkBoxInvisible.Text = "Invisible";
-            this.checkBoxInvisible.UseVisualStyleBackColor = true;
-            // 
-            // buttonOnPlatform
-            // 
-            this.buttonOnPlatform.Location = new System.Drawing.Point(226, 290);
-            this.buttonOnPlatform.Name = "buttonOnPlatform";
-            this.buttonOnPlatform.Size = new System.Drawing.Size(94, 23);
-            this.buttonOnPlatform.TabIndex = 14;
-            this.buttonOnPlatform.Text = "On Platform";
-            this.buttonOnPlatform.UseVisualStyleBackColor = true;
-            this.buttonOnPlatform.Click += new System.EventHandler(this.buttonOnPlatform_Click);
+            this.comboBoxItemTexture.Enabled = false;
+            this.comboBoxItemTexture.FormattingEnabled = true;
+            this.comboBoxItemTexture.Items.AddRange(new object[] {
+            "thoughtCloud",
+            "orb",
+            "wine-bottle",
+            "phoenixcard"});
+            this.comboBoxItemTexture.Location = new System.Drawing.Point(195, 141);
+            this.comboBoxItemTexture.Name = "comboBoxItemTexture";
+            this.comboBoxItemTexture.Size = new System.Drawing.Size(138, 24);
+            this.comboBoxItemTexture.TabIndex = 14;
             // 
             // PlatformDialog
             // 
@@ -422,6 +504,8 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudSpeed)).EndInit();
@@ -429,8 +513,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudTo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDisplay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -464,5 +546,12 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBoxInvisible;
         private System.Windows.Forms.Button buttonOnPlatform;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxNextLevel;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox textBoxItemName;
+        private System.Windows.Forms.Label labelItemName;
+        private System.Windows.Forms.CheckBox checkBoxItem;
+        private System.Windows.Forms.ComboBox comboBoxItemTexture;
     }
 }

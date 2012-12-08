@@ -37,14 +37,22 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.listBoxProperties = new System.Windows.Forms.ListBox();
-            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveGameDialog = new System.Windows.Forms.SaveFileDialog();
+            this.openGameDialog = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiNew = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiMap = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSelectMap = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiNewLevel = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEditLevel = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiExportMap = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openMapDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveMapDialog = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxWorld)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDegree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudDegree)).BeginInit();
@@ -169,18 +177,19 @@
             this.listBoxProperties.Visible = false;
             this.listBoxProperties.SelectedIndexChanged += new System.EventHandler(this.listBoxProperties_SelectedIndexChanged);
             // 
-            // saveFileDialog
+            // saveGameDialog
             // 
-            this.saveFileDialog.Filter = "Map Files|*.map";
+            this.saveGameDialog.Filter = "Game Files|*.game|Map Files|*.map";
             // 
-            // openFileDialog
+            // openGameDialog
             // 
-            this.openFileDialog.Filter = "Map Files|*.map";
+            this.openGameDialog.Filter = "Game or Map Files|*.game;*.map";
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiFile,
+            this.tsmiMap,
             this.testToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -223,6 +232,52 @@
             this.tsmiSave.Text = "Save";
             this.tsmiSave.Click += new System.EventHandler(this.tsmiSave_Click);
             // 
+            // tsmiMap
+            // 
+            this.tsmiMap.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSelectMap,
+            this.tsmiNewLevel,
+            this.tsmiEditLevel,
+            this.importToolStripMenuItem,
+            this.tsmiExportMap});
+            this.tsmiMap.Name = "tsmiMap";
+            this.tsmiMap.Size = new System.Drawing.Size(51, 24);
+            this.tsmiMap.Text = "Map";
+            // 
+            // tsmiSelectMap
+            // 
+            this.tsmiSelectMap.Name = "tsmiSelectMap";
+            this.tsmiSelectMap.Size = new System.Drawing.Size(152, 24);
+            this.tsmiSelectMap.Text = "Select";
+            // 
+            // tsmiNewLevel
+            // 
+            this.tsmiNewLevel.Name = "tsmiNewLevel";
+            this.tsmiNewLevel.Size = new System.Drawing.Size(152, 24);
+            this.tsmiNewLevel.Text = "New";
+            this.tsmiNewLevel.Click += new System.EventHandler(this.tsmiNewLevel_Click);
+            // 
+            // tsmiEditLevel
+            // 
+            this.tsmiEditLevel.Name = "tsmiEditLevel";
+            this.tsmiEditLevel.Size = new System.Drawing.Size(152, 24);
+            this.tsmiEditLevel.Text = "Edit";
+            this.tsmiEditLevel.Click += new System.EventHandler(this.tsmiEditLevel_Click);
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.importToolStripMenuItem.Text = "Import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
+            // 
+            // tsmiExportMap
+            // 
+            this.tsmiExportMap.Name = "tsmiExportMap";
+            this.tsmiExportMap.Size = new System.Drawing.Size(152, 24);
+            this.tsmiExportMap.Text = "Export";
+            this.tsmiExportMap.Click += new System.EventHandler(this.tsmiExportMap_Click);
+            // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
@@ -230,6 +285,15 @@
             this.testToolStripMenuItem.Size = new System.Drawing.Size(48, 24);
             this.testToolStripMenuItem.Text = "Test";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
+            // openMapDialog
+            // 
+            this.openMapDialog.FileName = "openMapDialog";
+            this.openMapDialog.Filter = "Map Files|*.map";
+            // 
+            // saveMapDialog
+            // 
+            this.saveMapDialog.Filter = "Map Files|*.map";
             // 
             // Form1
             // 
@@ -277,14 +341,22 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox listBoxProperties;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog;
-        private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveGameDialog;
+        private System.Windows.Forms.OpenFileDialog openGameDialog;
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem tsmiFile;
         private System.Windows.Forms.ToolStripMenuItem tsmiNew;
         private System.Windows.Forms.ToolStripMenuItem tsmiOpen;
         private System.Windows.Forms.ToolStripMenuItem tsmiSave;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiMap;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSelectMap;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEditLevel;
+        private System.Windows.Forms.ToolStripMenuItem tsmiNewLevel;
+        private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.OpenFileDialog openMapDialog;
+        private System.Windows.Forms.SaveFileDialog saveMapDialog;
+        private System.Windows.Forms.ToolStripMenuItem tsmiExportMap;
     }
 }
 

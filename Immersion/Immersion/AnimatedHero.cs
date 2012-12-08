@@ -19,6 +19,7 @@ namespace Immersion
     {
 
         const float MAX_PLATFORM_JUMP = 30;
+        const float MAP_TRANSITION_TIME = 2;
 
         protected float myPositionZ;
         protected float myVelocityZ;
@@ -28,12 +29,20 @@ namespace Immersion
         protected PlatformSprite respawnPlatform;
         protected bool falling;
         protected Flipbook myBook;
+        protected float transitionTime;
+
+        public List<ItemData> Items = new List<ItemData>();
 
         private bool moved;
 
         public bool IsGrounded
         {
             get { return myPositionZ == 0; }
+        }
+
+        public bool IsTransitioned
+        {
+            get { return transitionTime > MAP_TRANSITION_TIME; }
         }
 
         public AnimatedHero(Texture2D[] images, Texture2D shadow, Vector2 position, Vector2 screenSize)
@@ -120,6 +129,13 @@ namespace Immersion
             }
         }
 
+        public void Reset()
+        {
+            transitionTime = 0;
+            myPosition = new Vector2();
+            myPositionZ = 0;
+        }
+
         public override void Update(float elapsedTime)
         {
             base.Update(elapsedTime);
@@ -152,26 +168,31 @@ namespace Immersion
             myPositionZ = Math.Max(myPositionZ, 0);
 
             float maxVel = 400;
+            float factor = 1f;
             if (!moved)
             {
+                factor = 0.9f;
                 if (IsGrounded)
                 {
-                    if (Keyboard.GetState().IsKeyDown(Keys.L))
+                    if (!Keyboard.GetState().IsKeyDown(Keys.L))
                     {
-
-                        myVelocity *= 0.9f;
+                        factor = 0.3f;
                     }
-                    else
-                    {
-
-                        myVelocity *= 0.3f;
-                    }
-                }
-                else
-                {
-                    myVelocity *= 0.9f;
                 }
             }
+            myVelocity *= factor;
+            Vector2 edge;
+            if (IsGrounded &&  currentPlatform != null && (edge = currentPlatform.NearEdge(myPosition)) != Vector2.Zero)
+            {
+                Vector2 nV = myVelocity; nV.Normalize();
+                edge.Normalize();
+                if ((nV + edge).Length() > Math.Sqrt(2))
+                {
+                    myVelocity /= 20;
+                }
+            }
+
+
             if (myVelocity.Length() > maxVel)
             {
                 myVelocity *= maxVel / myVelocity.Length();
@@ -193,26 +214,35 @@ namespace Immersion
             }
             moved = false;
 
+            float transTime = 0;
             if (currentPlatform != null)
             {
                 if (currentPlatform.Item != null)
                 {
-                    if ((myPosition - currentPlatform.Item.myPosition).Length() < 25)
+                    if ((myPosition - currentPlatform.Item.myPosition).Length() < 35)
                     {
                         currentPlatform.Item.IsCollected = true;
+                        Items.Add(currentPlatform.data.Item);
                     }
                 }
+
+                if (IsGrounded && currentPlatform.OnMapTransition(myPosition))
+                {
+                    transTime = transitionTime + elapsedTime;
+                }
             }
+            transitionTime = transTime;
         }
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
             float heroScale = 0.4f * myScale;
             float shadowScale = heroScale * 0.35f;
+            float trans = Math.Max(0, (1 - transitionTime / MAP_TRANSITION_TIME));
 
             if (!falling)
             {
-                batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, 100), 0f,
+                batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, (byte)(100 * trans)), 0f,
                     new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
                     shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
             }
@@ -220,7 +250,10 @@ namespace Immersion
             Vector2 jumpingPos = myPosition + offset;
             jumpingPos.Y -= myPositionZ;
 
-            batch.Draw(myBook.GetImage(), jumpingPos, null, Color.White, 0f, new Vector2(myBook.GetImage().Width / 2 - 10,
+            Color transColor = Color.White;
+            transColor.A = (byte)(255 * trans);
+
+            batch.Draw(myBook.GetImage(), jumpingPos, null, transColor, 0f, new Vector2(myBook.GetImage().Width / 2 - 10,
                myBook.GetImage().Height - 10), heroScale, SpriteEffects.None, 0f);
         }
     }

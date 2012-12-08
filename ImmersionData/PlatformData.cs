@@ -19,12 +19,13 @@ namespace Immersion
         public List<PlatformSegue> segues = new List<PlatformSegue>();
         public int Repeats = 1;
         public float DegreeOffset = 0;
-        public ItemData item;
-        public Vector2 itemOffset;
+        public ItemData Item;
+        public Point ItemOffset = new Point();
         public List<Point> Segments = new List<Point>();
         public int FallTime;
         public bool SafePlatform;
         public bool Invisible;
+        public MapData NextMap;
 
         public PlatformData(Vector2 startPos) : this(startPos, 0) { }
 
