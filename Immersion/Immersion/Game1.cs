@@ -16,6 +16,8 @@ namespace Immersion
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        const float DEFAULT_SCALE = 0.8f;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         AnimatedHero myAnimatedHero;
@@ -24,7 +26,7 @@ namespace Immersion
         Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
         List<WordSprite> myWordSprites = new List<WordSprite>();
-        float worldScale = 1;
+        float worldScale = DEFAULT_SCALE;
         Overlay overlay;
 
         public float WorldScale
@@ -207,7 +209,7 @@ namespace Immersion
                 }
             }
 
-            worldScale = Lerp(worldScale, 1, 0.8f);
+            worldScale = Lerp(worldScale, DEFAULT_SCALE, 0.8f);
 
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());

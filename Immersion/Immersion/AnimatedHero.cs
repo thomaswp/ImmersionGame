@@ -205,7 +205,7 @@ namespace Immersion
                     {
                         myPosition += currentPlatform.LastFrameMovement;
                     }
-                    pushoffVelocity = currentPlatform.Velocity;
+                    //pushoffVelocity = currentPlatform.Velocity;
                 }
                 else
                 {
