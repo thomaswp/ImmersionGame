@@ -31,6 +31,7 @@ namespace Immersion
         public bool Solid { get { return data.FallTime <= 0 || heroOnPlatformMs < data.FallTime; } }
         public bool Safe { get { return data.SafePlatform; } }
         public bool RespawnPlatform { get; set; }
+        public bool ForceJump { get; set; }
 
         public float Size
         {
@@ -79,6 +80,7 @@ namespace Immersion
 
             float dd = elapsedTime * timeMult;
             Console.WriteLine(heroOnPlatformMs);
+            ForceJump = data.Jump(degree, dd);
             if (!data.Wait(degree, dd) || heroOnPlatform)
             {
                 degree = (degree + dd) % 360;

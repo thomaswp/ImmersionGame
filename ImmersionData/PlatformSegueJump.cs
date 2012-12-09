@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework;
 namespace Immersion
 {
     [Serializable]
-    public class PlatformSegueWait: PlatformSegue
+    public class PlatformSegueJump: PlatformSegue
     {
-        public PlatformSegueWait(Vector2 destination) : base(destination) { }
+        public PlatformSegueJump(Vector2 destination) : base(destination) { }
 
         public override Vector2 GetPosition(Vector2 start, float perc)
         {

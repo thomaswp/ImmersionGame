@@ -21,7 +21,7 @@ namespace LevelEditor
         //segues from the listbox
         public enum Segues
         {
-            Linear, Curved, Wait
+            Linear, Curved, Wait, Jump
         }
 
         public Actions CurrentActionType { get; set; }
@@ -116,17 +116,65 @@ namespace LevelEditor
             MapData map = editorState.Map;
             shiftDrag = false;
 
-            if (CurrentActionType == Actions.Move)
+            if (e.Button == MouseButtons.Right)
             {
-                startMapDrag(e);
+                if (SelectedPlatform != null || SelectedSegue != null)
+                {
+                    PlatformData addTo = SelectedPlatform;
+
+                    if (addTo == null)
+                    {
+                        foreach (PlatformData platform in map.Platforms)
+                        {
+                            if (platform.StartSegue == SelectedSegue || platform.segues.Contains(SelectedSegue))
+                            {
+                                addTo = platform;
+                                break;
+                            }
+                        }
+                    }
+
+                    //add a new segue and start dragging it
+                    if (addTo == null) return;
+
+                    PlatformSegue segue = null;
+                    if (CurrentSegueType == Segues.Linear)
+                    {
+                        segue = new PlatformSegueLinear(pos);
+                    }
+                    else if (CurrentSegueType == Segues.Curved)
+                    {
+                        segue = new PlatformSegueCurved(pos);
+                    }
+                    else if (CurrentSegueType == Segues.Wait)
+                    {
+                        segue = new PlatformSegueJump(pos);
+                    }
+                    else if (CurrentSegueType == Segues.Jump)
+                    {
+                        segue = new PlatformSegueJump(pos);
+                    }
+
+                    if (segue == null) return;
+
+                    int index = addTo.segues.Count;
+                    if (SelectedSegue != null)
+                    {
+                        index = addTo.segues.IndexOf(SelectedSegue) + 1;
+                    }
+
+                    addTo.segues.Insert(index, segue);
+                    draggingSegue = segue;
+                    draggingItemOffset = new Vector2();
+                }
+                else
+                {
+                    draggingPlatform = new PlatformData(pos, Degree);
+                    draggingItemOffset = new Vector2();
+                    map.Platforms.Add(draggingPlatform);
+                }
             }
-            else if (CurrentActionType == Actions.Platform)
-            {
-                draggingPlatform = new PlatformData(pos, Degree);
-                draggingItemOffset = new Vector2();
-                map.Platforms.Add(draggingPlatform);
-            }
-            else if (CurrentActionType == Actions.Select)
+            else
             {
 
                 if (Control.ModifierKeys != Keys.Control)
@@ -215,32 +263,6 @@ namespace LevelEditor
                     platformDialog.ShowDialog();
                 }
             }
-            else if (CurrentActionType == Actions.Segue)
-            {
-                //add a new segue and start dragging it
-                if (SelectedPlatform == null) return;
-                PlatformSegue segue = null;
-
-
-                if (CurrentSegueType == Segues.Linear)
-                {
-                    segue = new PlatformSegueLinear(pos);
-                }
-                else if (CurrentSegueType == Segues.Curved)
-                {
-                    segue = new PlatformSegueCurved(pos);
-                }
-                else if (CurrentSegueType == Segues.Wait)
-                {
-                    segue = new PlatformSegueWait(pos);
-                }
-
-                if (segue == null) return;
-
-                SelectedPlatform.segues.Add(segue);
-                draggingSegue = segue;
-                draggingItemOffset = new Vector2();
-            }
         }
 
         public void MouseUp(MouseEventArgs e)
@@ -290,6 +312,23 @@ namespace LevelEditor
             {
                 //move the dragging segue
                 draggingSegue.Destination = pos + draggingItemOffset;
+                foreach (PlatformData platform in editorState.Map.Platforms)
+                {
+                    if (platform.segues.Contains(draggingSegue) || platform.StartSegue == draggingSegue)
+                    {
+                        if (platform.StartSegue != draggingSegue && (platform.StartSegue.Destination - draggingSegue.Destination).Length() < 5)
+                        {
+                            draggingSegue.Destination = platform.StartSegue.Destination;
+                        }
+                        foreach (PlatformSegue segue in platform.segues)
+                        {
+                            if (segue != draggingSegue && (segue.Destination - draggingSegue.Destination).Length() < 5)
+                            {
+                                draggingSegue.Destination = segue.Destination;
+                            }
+                        }
+                    }
+                }
             }
         }
 

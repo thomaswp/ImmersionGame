@@ -73,15 +73,23 @@ namespace Immersion
 
         public bool Wait(float degree, float dd)
         {
-            int index; 
+            return NextSegue(degree, dd).GetType() == typeof(PlatformSegueWait);
+        }
+
+        public bool Jump(float degree, float dd)
+        {
+            return NextSegue(degree, dd).GetType() == typeof(PlatformSegueJump);
+        }
+
+        public PlatformSegue NextSegue(float degree, float dd)
+        {
+            int index;
             if ((index = GetCurrentSegueIndex(degree)) != GetCurrentSegueIndex(degree + dd))
             {
-                if (segues[(index + 1) % segues.Count].GetType() == typeof(PlatformSegueWait))
-                {
-                    return true;
-                }
+                return segues[(index + 1) % segues.Count];
             }
-            return false;
+            if (index >= 0) return segues[index];
+            return StartSegue;
         }
 
         public int GetCurrentSegueIndex(float degree)

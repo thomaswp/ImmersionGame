@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CirclePathcs.cs" />
+    <Compile Include="PlatformSegueJump.cs" />
     <Compile Include="PlatformSegueWait.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="IPathed.cs" />

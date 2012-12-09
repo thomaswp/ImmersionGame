@@ -196,7 +196,7 @@ namespace LevelEditor
         private void listBoxActions_SelectedIndexChanged(object sender, EventArgs e)
         {
             uiHandler.CurrentActionType = (UIHandler.Actions)listBoxAction.SelectedIndex;
-            listBoxSegues.Visible = uiHandler.CurrentActionType == UIHandler.Actions.Segue;
+            //listBoxSegues.Visible = uiHandler.CurrentActionType == UIHandler.Actions.Segue;
         }
 
         private void listBoxSegues_SelectedIndexChanged(object sender, EventArgs e)

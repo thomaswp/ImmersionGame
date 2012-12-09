@@ -101,6 +101,7 @@
             this.listBoxAction.Name = "listBoxAction";
             this.listBoxAction.Size = new System.Drawing.Size(212, 116);
             this.listBoxAction.TabIndex = 2;
+            this.listBoxAction.Visible = false;
             this.listBoxAction.SelectedIndexChanged += new System.EventHandler(this.listBoxActions_SelectedIndexChanged);
             // 
             // nudDegree
@@ -126,13 +127,13 @@
             this.listBoxSegues.Items.AddRange(new object[] {
             "Linear",
             "Curved",
-            "Wait"});
+            "Wait",
+            "Jump"});
             this.listBoxSegues.Location = new System.Drawing.Point(683, 238);
             this.listBoxSegues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBoxSegues.Name = "listBoxSegues";
             this.listBoxSegues.Size = new System.Drawing.Size(213, 100);
             this.listBoxSegues.TabIndex = 4;
-            this.listBoxSegues.Visible = false;
             this.listBoxSegues.SelectedIndexChanged += new System.EventHandler(this.listBoxSegues_SelectedIndexChanged);
             // 
             // label1
@@ -154,6 +155,7 @@
             this.label2.Size = new System.Drawing.Size(54, 17);
             this.label2.TabIndex = 6;
             this.label2.Text = "Actions";
+            this.label2.Visible = false;
             // 
             // label3
             // 

@@ -163,6 +163,11 @@ namespace Immersion
                 return;
             }
 
+            if (currentPlatform != null && currentPlatform.ForceJump)
+            {
+                Jump();
+            }
+
             myVelocityZ += -2000f * elapsedTime;
             myPositionZ += myVelocityZ * elapsedTime;
             myPositionZ = Math.Max(myPositionZ, 0);
