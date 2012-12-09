@@ -87,7 +87,9 @@ namespace Immersion
             }
             else
             {
-                if ((degree + data.DegreeOffset) % 360 + dd >= 360) degree = data.DegreeOffset;
+                float sdd = 0.001f;
+                while (!data.Wait(degree, sdd)) degree += sdd;
+                //if ((degree + data.DegreeOffset) % 360 + dd >= 360) degree = data.DegreeOffset;
             }
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
 
