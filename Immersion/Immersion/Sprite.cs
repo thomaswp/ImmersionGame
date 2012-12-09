@@ -42,7 +42,7 @@ namespace Immersion
             this.myScale = scale;
         }
 
-        public virtual void Update(float elapsedTime)
+        public virtual void Update(float elapsedTime, GameState gameState)
         {
             myPosition += myVelocity * elapsedTime;
             myAngle += myAngularVelocity * elapsedTime;

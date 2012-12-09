@@ -31,7 +31,6 @@ namespace Immersion
         public bool Solid { get { return data.FallTime <= 0 || heroOnPlatformMs < data.FallTime; } }
         public bool Safe { get { return data.SafePlatform; } }
         public bool RespawnPlatform { get; set; }
-        public bool ForceJump { get; set; }
 
         public float Size
         {
@@ -70,17 +69,19 @@ namespace Immersion
             }
         }
 
-        public override void Update(float elapsedTime)
+        public override void Update(float elapsedTime, GameState gameState)
         {
             Vector2 lastPos = myPosition;
 
-            base.Update(elapsedTime);
+            base.Update(elapsedTime, gameState);
             float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
             if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
 
             float dd = elapsedTime * timeMult;
-            Console.WriteLine(heroOnPlatformMs);
-            ForceJump = data.Jump(degree, dd);
+            if (gameState.myAnimatedHero.currentPlatform == this && data.Jump(degree, dd))
+            {
+                gameState.myAnimatedHero.Jump();
+            }
             if (!data.Wait(degree, dd) || heroOnPlatform)
             {
                 degree = (degree + dd) % 360;

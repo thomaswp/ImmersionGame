@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Immersion
 {
-    class Flipbook
+    public class Flipbook
     {
         // The actual images
         private Texture2D[] myImages;

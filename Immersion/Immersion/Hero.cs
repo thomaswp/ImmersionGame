@@ -98,9 +98,9 @@ namespace Immersion
             }
         }
 
-        public override void Update(float elapsedTime)
+        public override void Update(float elapsedTime, GameState gameState)
         {
-            base.Update(elapsedTime);
+            base.Update(elapsedTime, gameState);
             if (currentPlatform == null)
             {
                 falling = true;

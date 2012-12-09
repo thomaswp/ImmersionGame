@@ -56,12 +56,12 @@ namespace Immersion
                 Color.White, myAngularVelocity, Vector2.Zero, myScale, SpriteEffects.None, 0f);
             }
         }
-           
-            
 
-        public override void Update(float elapsedTime)
+
+
+        public override void Update(float elapsedTime, GameState gameState)
         {
-            base.Update(elapsedTime);
+            base.Update(elapsedTime, gameState);
             if (!IsCollected)
             {
                //Bobble();

@@ -20,14 +20,17 @@ namespace Immersion
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        AnimatedHero myAnimatedHero;
         Background background;
-        List<PlatformSprite> myPlatforms = new List<PlatformSprite>();
-        Vector2 myScreenSize, offset = new Vector2();
-        List<Sprite> mySprites = new List<Sprite>();
-        List<WordSprite> myWordSprites = new List<WordSprite>();
         float worldScale = DEFAULT_SCALE;
         Overlay overlay;
+        GameState gameState;
+
+        AnimatedHero myAnimatedHero { get { return gameState.myAnimatedHero; } set { gameState.myAnimatedHero = value; } }
+        Vector2 myScreenSize { get { return gameState.myScreenSize; } set { gameState.myScreenSize = value; } }
+        Vector2 offset { get { return gameState.offset; } set { gameState.offset = value; } }
+        List<PlatformSprite> myPlatforms { get { return gameState.myPlatforms; } }
+        List<Sprite> mySprites { get { return gameState.mySprites; } }
+        List<WordSprite> myWordSprites { get { return gameState.myWordSprites; } }
 
         public float WorldScale
         {
@@ -41,6 +44,8 @@ namespace Immersion
 
         public Game1(String gameFile = null)
         {
+            gameState = new GameState();
+
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             //graphics.PreferredBackBufferWidth = 2000;
@@ -153,7 +158,7 @@ namespace Immersion
             if (startIndex >= 0)
             {
                 PlatformSprite startPlatform = myPlatforms[startIndex];
-                startPlatform.Update(0);
+                startPlatform.Update(0, gameState);
                 myAnimatedHero.myPosition = myPlatforms[startIndex].myPosition;
                 myAnimatedHero.currentPlatform = myPlatforms[startIndex];
             }
@@ -219,13 +224,12 @@ namespace Immersion
 
             foreach (Sprite s in mySprites)
             {
-                s.Update(elapsedTime);
+                s.Update(elapsedTime, gameState);
             }
             foreach (WordSprite word in myWordSprites)
             {
                 word.Update(elapsedTime);
             }
-            myAnimatedHero.UpdateCurrentPlatform(elapsedTime, myPlatforms);
 
             if (myAnimatedHero.IsTransitioned)
             {

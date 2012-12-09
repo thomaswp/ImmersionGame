@@ -15,7 +15,7 @@ using System.Diagnostics;
 
 namespace Immersion
 {
-    class AnimatedHero : Sprite 
+    public class AnimatedHero : Sprite 
     {
 
         const float MAX_PLATFORM_JUMP = 50;
@@ -91,8 +91,15 @@ namespace Immersion
 
         public void Move(Vector2 direction)
         {
+            float maxSpeed = Math.Max(myVelocity.Length(), 400 - pushoffVelocity.Length());
             myVelocity += direction * 50;
             moved = true;
+            if (myVelocity.Length() > maxSpeed)
+            {
+                myVelocity.Normalize();
+                myVelocity *= maxSpeed;
+            }
+            Debug.Write(myVelocity);
         }
 
         public void Jump()
@@ -100,6 +107,14 @@ namespace Immersion
             if (IsGrounded)
             {
                 myVelocityZ = 600;
+                if (currentPlatform != null && currentPlatform.data.Launch)
+                {
+                    pushoffVelocity = currentPlatform.Velocity;
+                }
+                else
+                {
+                    pushoffVelocity = Vector2.Zero;
+                }
             }
             else
             {
@@ -107,12 +122,17 @@ namespace Immersion
             }
         }
 
-        public void UpdateCurrentPlatform(float elapsedTime, List<PlatformSprite> platforms)
+        private void UpdateCurrentPlatform(float elapsedTime, GameState gameState)
         {
+            myVelocityZ += -2000f * elapsedTime;
+            myPositionZ += myVelocityZ * elapsedTime;
+            myPositionZ = Math.Max(myPositionZ, 0);
+
             if (IsGrounded && !falling)
             {
+                PlatformSprite lastPlatform = currentPlatform;
                 currentPlatform = null;
-                foreach (PlatformSprite platform in platforms)
+                foreach (PlatformSprite platform in gameState.myPlatforms)
                 {
                     if (platform.Solid && platform.Contains(myPosition))
                     {
@@ -121,11 +141,16 @@ namespace Immersion
                         {
                             respawnPlatform = currentPlatform;
                         }
+                        if (currentPlatform != lastPlatform && pushoffVelocity != Vector2.Zero)
+                        {
+                            myVelocity += pushoffVelocity;
+                            pushoffVelocity = Vector2.Zero;
+                        }
                     }
                     platform.RespawnPlatform = respawnPlatform == platform;
                 }
             }
-            foreach (PlatformSprite platform in platforms)
+            foreach (PlatformSprite platform in gameState.myPlatforms)
             {
                 platform.UpdateHeroOnPlatform(currentPlatform == platform && IsGrounded && !falling, elapsedTime);
             }
@@ -138,10 +163,12 @@ namespace Immersion
             myPositionZ = 0;
         }
 
-        public override void Update(float elapsedTime)
+        public override void Update(float elapsedTime, GameState gameState)
         {
-            base.Update(elapsedTime);
+            base.Update(elapsedTime, gameState);
             myBook.Update((double)elapsedTime);
+            UpdateCurrentPlatform(elapsedTime, gameState);
+
             if (currentPlatform == null)
             {
                 falling = true;
@@ -165,16 +192,7 @@ namespace Immersion
                 return;
             }
 
-            if (currentPlatform != null && currentPlatform.ForceJump)
-            {
-                Jump();
-            }
 
-            myVelocityZ += -2000f * elapsedTime;
-            myPositionZ += myVelocityZ * elapsedTime;
-            myPositionZ = Math.Max(myPositionZ, 0);
-
-            float maxVel = 400;
             float slideFactor = (float)Math.Pow(currentPlatform.data.Slide, 0.1);
             float factor = 1f;
             if (!moved)
@@ -200,11 +218,6 @@ namespace Immersion
                 }
             }
 
-
-            if (myVelocity.Length() > maxVel)
-            {
-                myVelocity *= maxVel / myVelocity.Length();
-            }
             if (currentPlatform != null)
             {
                 if (IsGrounded)
@@ -212,15 +225,6 @@ namespace Immersion
                     if (currentPlatform.LastFrameMovement.Length() < MAX_PLATFORM_JUMP)
                     {
                         myPosition += currentPlatform.LastFrameMovement;
-                    }
-
-                    if (currentPlatform.data.Launch)
-                    {
-                        pushoffVelocity = currentPlatform.Velocity;
-                    }
-                    else
-                    {
-                        pushoffVelocity = Vector2.Zero;
                     }
                 }
                 else
@@ -248,6 +252,8 @@ namespace Immersion
                 }
             }
             transitionTime = transTime;
+
+
         }
 
         public override void Draw(SpriteBatch batch, Vector2 offset)

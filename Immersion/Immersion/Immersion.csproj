@@ -112,6 +112,7 @@
     <Compile Include="Flipbook.cs" />
     <Compile Include="GameAction.cs" />
     <Compile Include="GameMenu.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Hero.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="ItemSprite.cs" />
