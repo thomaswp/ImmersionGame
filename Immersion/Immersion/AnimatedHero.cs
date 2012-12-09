@@ -176,10 +176,10 @@ namespace Immersion
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.L))
                     {
-                        factor = 0.3f + (float)Math.Pow(currentPlatform.data.Slide, 0.01) * 0.7f;
+                        factor = 0.3f;
                     }
                 }
-            } 
+            }
             myVelocity *= factor;
             Vector2 edge;
             if (IsGrounded &&  currentPlatform != null && (edge = currentPlatform.NearEdge(myPosition)) != Vector2.Zero)

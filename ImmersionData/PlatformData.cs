@@ -23,7 +23,6 @@ namespace Immersion
         public Point ItemOffset = new Point();
         public List<Point> Segments = new List<Point>();
         public int FallTime;
-        public float Slide;
         public bool SafePlatform;
         public bool Invisible;
         public MapData NextMap;
