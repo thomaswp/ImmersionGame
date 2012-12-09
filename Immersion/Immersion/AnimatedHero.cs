@@ -168,6 +168,7 @@ namespace Immersion
             myPositionZ = Math.Max(myPositionZ, 0);
 
             float maxVel = 400;
+            float slideFactor = (float)Math.Pow(currentPlatform.data.Slide, 0.1);
             float factor = 1f;
             if (!moved)
             {
@@ -176,7 +177,7 @@ namespace Immersion
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.L))
                     {
-                        factor = 0.3f + (float)Math.Pow(currentPlatform.data.Slide, 0.01) * 0.7f;
+                        factor = 0.3f + slideFactor * 0.7f;
                     }
                 }
             } 
@@ -188,7 +189,7 @@ namespace Immersion
                 edge.Normalize();
                 if ((nV + edge).Length() > Math.Sqrt(2))
                 {
-                    myVelocity /= 20;
+                    myVelocity /= Math.Max(20 * (1 - slideFactor), 1);
                 }
             }
 
