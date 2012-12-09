@@ -85,6 +85,10 @@ namespace Immersion
             {
                 degree = (degree + dd) % 360;
             }
+            else
+            {
+                if ((degree + data.DegreeOffset) % 360 + dd >= 360) degree = data.DegreeOffset;
+            }
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
 
             LastFrameMovement = myPosition - lastPos;

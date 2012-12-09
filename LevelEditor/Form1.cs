@@ -149,6 +149,19 @@ namespace LevelEditor
                 editorState.RenderSize = pictureBoxWorld.Size;
             }
             mapRenderer.Draw(bmp);
+            if (editorState.SelectedPlatform != null)
+            {
+                labelSelected.Text = "Selected Platform: " + editorState.Map.Platforms.IndexOf(editorState.SelectedPlatform);
+            }
+            else if (editorState.SelectedSegue != null)
+            {
+                labelSelected.Text = "Selected Segue:\n" + editorState.SelectedSegue.GetType().Name;
+            }
+            else
+            {
+                labelSelected.Text = "";
+            }
+
             pictureBoxWorld.Refresh();
         }
 

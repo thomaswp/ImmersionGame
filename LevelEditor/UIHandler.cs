@@ -148,7 +148,7 @@ namespace LevelEditor
                     }
                     else if (CurrentSegueType == Segues.Wait)
                     {
-                        segue = new PlatformSegueJump(pos);
+                        segue = new PlatformSegueWait(pos);
                     }
                     else if (CurrentSegueType == Segues.Jump)
                     {
