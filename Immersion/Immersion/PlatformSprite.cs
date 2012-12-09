@@ -18,6 +18,7 @@ namespace Immersion
         protected PlatformData data;
         protected float degree = 0;
         protected float timeMult = 30;
+        protected float sumTime;
         protected float heroOnPlatform = 0;
         protected float heroLastOnPlatform = 0;
         protected byte baseOpacity = 200;
@@ -81,8 +82,33 @@ namespace Immersion
             if (Item != null)
             {
                 Item.myPosition = myPosition + data.itemOffset;
-                Item.Update(elapsedTime);
-                
+                if (Item.IsCollected)
+                {
+                    sumTime = .01f;
+                    float currentTime = 0;
+
+                    while (sumTime != 0 && sumTime < 30)
+                    {
+                        sumTime += 1f;
+                        Item.myScale += .5f * elapsedTime;
+                        Item.myAngularVelocity += .5f * elapsedTime;
+                        currentTime = 31;
+                    }
+                    if (currentTime == 31)
+                    {
+                        while (currentTime != 0)
+                        {
+                            currentTime -= 1f;
+                            Item.myScale -= .5f * elapsedTime;
+                            Item.myAngularVelocity += .5f * elapsedTime;
+                            if (Item.myScale < 0.001f)
+                            {
+                                Item.myScale = 0f;
+                            }
+                        }
+                    }
+                    else { }
+                }
             }
         }
 

@@ -17,10 +17,9 @@ namespace Immersion
     {
         public bool IsCollected { get; set; }
         protected float myPositionZ = 0f;
+        protected float myVelocityZ = 0.25f;
         protected Texture2D shadowImage;
         protected PlatformSprite currentPlatform;
-        protected float time;
-        protected float sumTime;
 
         public ItemSprite(Texture2D image, Texture2D shadow, Vector2 position)
             : base(image, position)
@@ -33,13 +32,13 @@ namespace Immersion
         {
             if (!IsCollected)
             {
-                //myPositionZ = (1 + (float)Math.Sin(time * 2)) * 30;
+                myPosition.Y += myVelocityZ;
             }
         }
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
-            float shadowScale = myScale * .65f; //0.35f;
+            float shadowScale = myScale * .75f; //0.35f;
 
             // If collected draw the shadow and the item
             if (!IsCollected)
@@ -48,15 +47,13 @@ namespace Immersion
                     new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
                     shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
 
-                Vector2 jumpingPos = myPosition + offset;
-                jumpingPos.Y -= myPositionZ;
-                batch.Draw(myTexture, jumpingPos, null,
-                Color.White, myAngularVelocity, Vector2.Zero, myScale, SpriteEffects.None, 0f);
+                base.Draw(batch, offset);
             }
             //else Draw collected item animation
             else
             {
-                base.Draw(batch, offset);
+                batch.Draw(myTexture, myPosition + offset, null,
+                Color.White, myAngularVelocity, Vector2.Zero, myScale, SpriteEffects.None, 0f);
             }
         }
            
@@ -65,37 +62,9 @@ namespace Immersion
         public override void Update(float elapsedTime)
         {
             base.Update(elapsedTime);
-            time += elapsedTime;
-            if (IsCollected)
-            {
-                sumTime = .01f;
-                float currentTime = 0;
-
-                while (sumTime != 0 && sumTime < 30)
-                {
-                    sumTime += 1f;
-                    myScale += .5f * elapsedTime;
-                    myAngularVelocity += .5f * elapsedTime;
-                    currentTime = 31;
-                }
-                if (currentTime == 31)
-                {
-                    while (currentTime != 0)
-                    {
-                        currentTime -= 1f;
-                        myScale -= .5f * elapsedTime;
-                        myAngularVelocity += .5f * elapsedTime;
-                        if (myScale < 0.001f)
-                        {
-                            myScale = 0f;
-                        }
-                    }
-                }
-                else { }
-            }
             if (!IsCollected)
             {
-               Bobble();
+               //Bobble();
             }
         }
     }
