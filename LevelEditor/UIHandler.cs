@@ -366,6 +366,8 @@ namespace LevelEditor
 
             platform.DegreeOffset += desiredDegree - degree;
             platform.DegreeOffset = (platform.DegreeOffset + 360) % 360;
+            if (platform.DegreeOffset < 1) platform.DegreeOffset = 0;
+            if (platform.DegreeOffset > 359) platform.DegreeOffset = 0;
         }
 
         //experimental method to change segue "weights" to put the platform

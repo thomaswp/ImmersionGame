@@ -217,7 +217,6 @@ namespace Immersion
 
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            myAnimatedHero.UpdateCurrentPlatform(elapsedTime, myPlatforms);
             foreach (Sprite s in mySprites)
             {
                 s.Update(elapsedTime);
@@ -226,6 +225,7 @@ namespace Immersion
             {
                 word.Update(elapsedTime);
             }
+            myAnimatedHero.UpdateCurrentPlatform(elapsedTime, myPlatforms);
 
             if (myAnimatedHero.IsTransitioned)
             {

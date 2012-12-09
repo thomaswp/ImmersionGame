@@ -109,23 +109,25 @@ namespace Immersion
 
         public void UpdateCurrentPlatform(float elapsedTime, List<PlatformSprite> platforms)
         {
+            if (IsGrounded && !falling)
+            {
+                currentPlatform = null;
+                foreach (PlatformSprite platform in platforms)
+                {
+                    if (platform.Solid && platform.Contains(myPosition))
+                    {
+                        currentPlatform = platform;
+                        if (platform.Safe)
+                        {
+                            respawnPlatform = currentPlatform;
+                        }
+                    }
+                    platform.RespawnPlatform = respawnPlatform == platform;
+                }
+            }
             foreach (PlatformSprite platform in platforms)
             {
                 platform.UpdateHeroOnPlatform(currentPlatform == platform && IsGrounded && !falling, elapsedTime);
-            }
-            if (!IsGrounded || falling) return;
-            currentPlatform = null;
-            foreach (PlatformSprite platform in platforms)
-            {
-                if (platform.Solid && platform.Contains(myPosition))
-                {
-                    currentPlatform = platform;
-                    if (platform.Safe)
-                    {
-                        respawnPlatform = currentPlatform;
-                    }
-                }
-                platform.RespawnPlatform = respawnPlatform == platform;
             }
         }
 
