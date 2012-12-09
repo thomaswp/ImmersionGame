@@ -243,18 +243,32 @@ namespace Immersion
             base.Update(gameTime);
         }
 
+        private Vector2 lastOffset;
+        private Vector2 offsetVelocity;
         private void UpdateOffset()
         {
 
-            int buffer = 350;// (int)(350 / worldScale);
+            int heightBuffer = (int)(myScreenSize.Y / 2.5f);
+            int widthBuffer = (int)(myScreenSize.X / 2.5f);
             int width = (int)myScreenSize.X; // (int)(myScreenSize.X / worldScale);
             int height = (int)(myScreenSize.Y);// / worldScale);
             Vector2 heroPos = myAnimatedHero.myPosition + offset;
-            if (heroPos.X < buffer) heroPos.X = buffer;
-            if (heroPos.X > width - buffer) heroPos.X = myScreenSize.X - buffer;
-            if (heroPos.Y < buffer) heroPos.Y = buffer;
-            if (heroPos.Y > height - buffer) heroPos.Y = myScreenSize.Y - buffer;
-            offset = Lerp(offset, heroPos - myAnimatedHero.myPosition, 0.9f);
+            if (heroPos.X < widthBuffer) heroPos.X = widthBuffer;
+            if (heroPos.X > width - widthBuffer) heroPos.X = myScreenSize.X - widthBuffer;
+            if (heroPos.Y < heightBuffer) heroPos.Y = heightBuffer;
+            if (heroPos.Y > height - heightBuffer) heroPos.Y = myScreenSize.Y - heightBuffer;
+            Vector2 frameOffset = heroPos - myAnimatedHero.myPosition - offset;// +offsetVelocity * 5;
+            offset = Lerp(offset, offset + frameOffset, 0.9f);
+            Vector2 velocity = offset - lastOffset + offsetVelocity;
+            if (velocity.Length() > offsetVelocity.Length())
+            {
+                offsetVelocity = velocity;
+            }
+            else
+            {
+                offsetVelocity *= 0.99f;
+            }
+            lastOffset = offset;
         }
 
         public static Vector2 Lerp(Vector2 x0, Vector2 x1, float friction)
