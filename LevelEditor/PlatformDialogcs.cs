@@ -49,6 +49,7 @@ namespace LevelEditor
             checkBoxInvisible.Checked = PlatformData.Invisible;
             nudSpeed.Value = PlatformData.Repeats;
             checkBoxItem.Checked = PlatformData.Item != null;
+            nudSlide.Value = new Decimal(PlatformData.Slide);
             if (PlatformData.Item != null)
             {
                 textBoxItemName.Text = PlatformData.Item.Name;
@@ -111,6 +112,7 @@ namespace LevelEditor
                 PlatformData.Segments.Add(new XNAPoint(point.X, point.Y));
             }
             PlatformData.FallTime = (int)nudFallTime.Value;
+            PlatformData.Slide = (float)nudSlide.Value;
             PlatformData.SafePlatform = checkBoxSafe.Checked;
             PlatformData.Invisible = checkBoxInvisible.Checked;
             if (comboBoxNextLevel.SelectedIndex > 0)
