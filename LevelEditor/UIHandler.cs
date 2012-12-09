@@ -367,6 +367,18 @@ namespace LevelEditor
             platform.DegreeOffset += desiredDegree - degree;
             platform.DegreeOffset = (platform.DegreeOffset + 360) % 360;
         }
+        private void updateWordCloudLineUp()
+        {
+           //find nearest path position to the mouse to offset the wordcloud
+            float desiredDegree = 0;
+            float minDis = float.MaxValue;
+            for (float deg = 0; deg < 360; deg += 0.1f)
+            {
+                float dis=(
+            }
+
+
+        }
 
         //experimental method to change segue "weights" to put the platform
         //where it's being dragged
