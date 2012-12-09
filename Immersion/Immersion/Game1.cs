@@ -16,6 +16,8 @@ namespace Immersion
     /// </summary>
     public class Game1 : Microsoft.Xna.Framework.Game
     {
+        const float DEFAULT_SCALE = 0.8f;
+
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         AnimatedHero myAnimatedHero;
@@ -24,7 +26,7 @@ namespace Immersion
         Vector2 myScreenSize, offset = new Vector2();
         List<Sprite> mySprites = new List<Sprite>();
         List<WordSprite> myWordSprites = new List<WordSprite>();
-        float worldScale = 1;
+        float worldScale = DEFAULT_SCALE;
         Overlay overlay;
 
         public float WorldScale
@@ -33,10 +35,11 @@ namespace Immersion
             set { worldScale = value; }
         }
 
+        GameData game;
         MapData map;
 
 
-        public Game1(String mapFile = null)
+        public Game1(String gameFile = null)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -49,9 +52,10 @@ namespace Immersion
 
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-            if (mapFile != null)
+            if (gameFile != null)
             {
-                map = MapData.ReadFromFile(mapFile);
+                game = GameData.ReadFromFile(gameFile);
+                game.StartMap = game.LastEditedMap;
             }
 
         }
@@ -75,26 +79,19 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
-            if (map == null)
+            if (game == null)
             {
-                map = MapData.ReadFromFile("../../../../../Map1.map");
+                game = GameData.ReadFromFile("../../../../../Game1.game");
             }
+
+            map = game.StartMap;
 
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-
-            Vector2 center = myScreenSize / 2;
-            if (map.Platforms.Count > 2)
-            {
-                map.Platforms[0].item = new ItemData("Thought Cloud", "thoughtCloud");
-                if (map.Platforms.Count > 4)
-                {
-                    map.Platforms[2].item = new ItemData("Magic Orb", "orb");
-                }
-            }
             Texture2D bgSprite = Content.Load<Texture2D>("space");
             background = new Background(bgSprite, (int)myScreenSize.X, (int)myScreenSize.Y);
+
 
             // TODO: use this.Content to load your game content here
             // Make the hero
@@ -104,13 +101,34 @@ namespace Immersion
                                          Content.Load<Texture2D>("hero1"),
                                          Content.Load<Texture2D>("hero2"),
                                          Content.Load<Texture2D>("hero3")};
-            //myHero = new Hero(heroImage, shadow, center);
+            Vector2 center = myScreenSize / 2;
             myAnimatedHero = new AnimatedHero(heroImages, shadow, center, myScreenSize);
+
+            LoadMap(map);
+
+            overlay = new SplashScreen(GraphicsDevice, Content);
+        }
+
+        public void LoadMap(MapData map)
+        {
+            this.map = map;
+
+            mySprites.Clear();
+            myPlatforms.Clear();
+            myWordSprites.Clear();
+
+            Vector2 center = myScreenSize / 2;
+
+            Texture2D shadow = Content.Load<Texture2D>("shadow");
 
             //Make a Platform
             Texture2D plat45 = Content.Load<Texture2D>("platform45squished");
             foreach (PlatformData data in map.Platforms)
             {
+                if (myAnimatedHero.Items.Contains(data.Item))
+                {
+                    data.Item = null;
+                }
                 PlatformSprite platform = new PlatformSprite(plat45, data);
                 mySprites.Add(platform);
                 myPlatforms.Add(platform);
@@ -130,7 +148,7 @@ namespace Immersion
             //It's important to keep Hero added after the other sprites!
             mySprites.Add(myAnimatedHero);
 
-
+            myAnimatedHero.Reset();
             int startIndex = map.Platforms.IndexOf(map.startPlatform);
             if (startIndex >= 0)
             {
@@ -142,8 +160,6 @@ namespace Immersion
 
             Update(new GameTime());
             offset = center - myAnimatedHero.myPosition;
-
-            overlay = new SplashScreen(GraphicsDevice, Content);
         }
 
         /// <summary>
@@ -193,7 +209,7 @@ namespace Immersion
                 }
             }
 
-            worldScale = Lerp(worldScale, 1, 0.8f);
+            worldScale = Lerp(worldScale, DEFAULT_SCALE, 0.8f);
 
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
@@ -211,19 +227,18 @@ namespace Immersion
                 word.Update(elapsedTime);
             }
 
-
-            //if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //{
-            //    if (worldScale > 0.2f)
-            //        worldScale *= 0.9f;
-            //    offset = myScreenSize / worldScale / 2;
-
-            //}
-            //else
-            //{
-            //    if (worldScale < 1)
-            //        worldScale *= 1.01f;
-            //}
+            if (myAnimatedHero.IsTransitioned)
+            {
+                PlatformSprite currentPlatform = myAnimatedHero.currentPlatform;
+                if (currentPlatform != null)
+                {
+                    MapData newMap = currentPlatform.data.NextMap;
+                    if (newMap != null)
+                    {
+                        overlay = new MapTransition(GraphicsDevice, Content, newMap);
+                    }
+                }
+            }
 
             base.Update(gameTime);
         }

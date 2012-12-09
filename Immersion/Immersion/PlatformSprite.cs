@@ -15,7 +15,6 @@ namespace Immersion
 {
     public class PlatformSprite : Sprite, IPathedSprite
     {
-        protected PlatformData data;
         protected float degree = 0;
         protected float timeMult = 30;
         protected float sumTime;
@@ -23,6 +22,7 @@ namespace Immersion
         protected float heroLastOnPlatform = 0;
         protected byte baseOpacity = 200;
 
+        public PlatformData data;
         public Vector2 Velocity;
         public Vector2 LastFrameMovement;
         public ItemSprite Item { get; set; }
@@ -81,7 +81,7 @@ namespace Immersion
 
             if (Item != null)
             {
-                Item.myPosition = myPosition + data.itemOffset;
+                Item.myPosition = myPosition + getPointOffset(data.ItemOffset);
                 if (Item.IsCollected)
                 {
                     sumTime = .01f;
@@ -125,6 +125,20 @@ namespace Immersion
             return false;
         }
 
+        public Vector2 NearEdge(Vector2 pos)
+        {
+            int checks = 4;
+            int rad = 8;
+            for (int i = 0; i < checks; i++)
+            {
+                double degree = Math.PI / 4 + i * Math.PI * 2 / checks;
+                Vector2 offset = new Vector2((float)Math.Cos(degree), (float)Math.Sin(degree)) * rad;
+                Vector2 checkPos = pos + offset;
+                if (!Contains(checkPos)) return offset;
+            }
+            return Vector2.Zero;
+        }
+
         public bool SegmentContains(Vector2 pos)
         {
             Vector2 relPos = pos - myPosition;
@@ -137,6 +151,11 @@ namespace Immersion
             return true;
         }
 
+        public bool OnMapTransition(Vector2 pos)
+        {
+            return data.NextMap != null &&  SegmentContains(pos);
+        }
+
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
             if (data.Invisible) return;
@@ -146,7 +165,21 @@ namespace Immersion
             }
             foreach (Point p in data.Segments)
             {
-                base.Draw(batch, offset + getPointOffset(p));
+                if (p.X == 0 && p.Y == 0 && data.NextMap != null)
+                {
+                    Color oldColor = myColor;
+                    double highlight = Math.Sin(degree / 180 * Math.PI * 10) / 2 + 0.5;
+                    int plus = (int)(125 * highlight);
+                    myColor.R = (byte)Math.Min(myColor.R + plus, 255);
+                    myColor.G = (byte)Math.Min(myColor.G + plus, 255);
+                    myColor.B = (byte)Math.Min(myColor.B - plus, 255);
+                    base.Draw(batch, offset + getPointOffset(p));
+                    myColor = oldColor;
+                }
+                else
+                {
+                    base.Draw(batch, offset + getPointOffset(p));
+                }
             }
             if (Item != null)
             {
@@ -162,9 +195,9 @@ namespace Immersion
 
         public void LoadItemTextures(ContentManager content, Texture2D shadow)
         {
-            if (data.item != null)
+            if (data.Item != null)
             {
-                Item = new ItemSprite(content.Load<Texture2D>(data.item.ImageName), shadow, data.itemOffset);
+                Item = new ItemSprite(content.Load<Texture2D>(data.Item.ImageName), shadow, getPointOffset(data.ItemOffset));
             }
         }
             

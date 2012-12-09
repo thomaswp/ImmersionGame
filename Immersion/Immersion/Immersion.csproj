@@ -116,6 +116,7 @@
     <Compile Include="InputManager.cs" />
     <Compile Include="ItemSprite.cs" />
     <Compile Include="IPathedSprite.cs" />
+    <Compile Include="MapTransition.cs" />
     <Compile Include="Overlay.cs" />
     <Compile Include="PlatformSprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

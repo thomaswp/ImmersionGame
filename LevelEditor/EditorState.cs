@@ -10,8 +10,31 @@ namespace LevelEditor
 {
     public class EditorState
     {
+        private GameData myGame;
+
         public Point MapOffset;
-        public MapData Map;
+        public GameData Game 
+        { 
+            get { return myGame; } 
+            set { myGame = value; Reset(); } 
+        }
+        public MapData Map 
+        { 
+            get 
+            {
+                if (Game.LastEditedMap == null) Game.LastEditedMap = Game.StartMap;
+                return Game.LastEditedMap; 
+            } 
+            set 
+            {
+                if (!myGame.Maps.Contains(value))
+                {
+                    myGame.Maps.Add(value);
+                }
+                myGame.LastEditedMap = value;
+                Reset();
+            } 
+        }
         public Size RenderSize;
         public int Degree;
 
@@ -20,10 +43,20 @@ namespace LevelEditor
         public List<PlatformData> SelectedPlatforms = new List<PlatformData>();
         public List<PlatformSegue> SelectedSegues = new List<PlatformSegue>();
 
-        public EditorState(MapData map, Size renderSize)
+        public EditorState(GameData game, Size renderSize)
         {
-            this.Map = map;
+            Game = game;
             this.RenderSize = renderSize;
+        }
+
+        public void Reset()
+        {
+            SelectedPlatform = null;
+            SelectedPlatforms.Clear();
+            SelectedSegue = null;
+            SelectedSegues.Clear();
+            MapOffset = new Point();
+            Degree = 0;
         }
 
         public Vector2 MousePosOnMap(Point pos)

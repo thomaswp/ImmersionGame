@@ -38,14 +38,14 @@ namespace LevelEditor
 
         private void Form1_Load_1(object sender, EventArgs e)
         {
-            editorState = new EditorState(new MapData(), this.pictureBoxWorld.Size);
+            editorState = new EditorState(new GameData(), this.pictureBoxWorld.Size);
             uiHandler = new UIHandler(editorState);
             mapRenderer = new MapRenderer(editorState);
 
             String lastSave = Properties.Settings.Default.lastSave;
             if (File.Exists(lastSave))
             {
-                LoadGame(lastSave);
+                LoadData(lastSave);
             }
             else
             {
@@ -53,19 +53,27 @@ namespace LevelEditor
             }
         }
 
-        private void LoadGame(String game)
+        private void LoadData(String game)
         {
             try
             {
-                editorState.Map = MapData.ReadFromFile(game);
-                //List<String> words = new List<string>();
-                //words.Add("Hello"); words.Add("Howre"); words.Add("You");
-                //WordCloudData wc = new WordCloudData(editorState.Map.Platforms[0], 0, 0, words);
-                //editorState.Map.WordClouds.Add(wc);
-                this.Text = game.Split('\\').Last();
+                if (game.ToLower().EndsWith(".map"))
+                {
+                    MapData map = MapData.ReadFromFile(game);
+                    if (map.Name == null) map.Name = "New Map";
+                    editorState.Game = new GameData(map);
+                }
+                else
+                {
+                    editorState.Game = GameData.ReadFromFile(game);
+                    if (editorState.Game.StartMap == null)
+                    {
+                        editorState.Game.StartMap = editorState.Game.Maps[0];
+                    }
+                }
                 Properties.Settings.Default.lastSave = game;
                 Properties.Settings.Default.Save();
-                draw();
+                GameLoaded();
             }
             catch (Exception e)
             {
@@ -74,11 +82,42 @@ namespace LevelEditor
             }
         }
 
+        private void LoadMapMenu()
+        {
+            tsmiSelectMap.DropDownItems.Clear();
+            foreach (MapData map in editorState.Game.Maps)
+            {
+                tsmiSelectMap.DropDownItems.Add(map.Name);
+                ToolStripMenuItem tsmi = (ToolStripMenuItem)tsmiSelectMap.DropDownItems[tsmiSelectMap.DropDownItems.Count - 1];
+                tsmi.Checked = map == editorState.Map;
+                tsmi.Tag = map;
+                tsmi.Click += new EventHandler(tsmiMap_Click);
+            }
+        }
+
+        void tsmiMap_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem tsmi = (ToolStripMenuItem)sender;
+            editorState.Map = (MapData)tsmi.Tag;
+            this.Text = editorState.Map.Name;
+            MapLoaded();
+        }
+
         private void NewGame()
         {
-            editorState.Map = new MapData();
-            editorState.Map.Platforms.Add(new PlatformData(new Vector2(0, 0)));
-            editorState.Map.Platforms[0].SafePlatform = true;
+            editorState.Game = new GameData();
+            GameLoaded();
+        }
+
+        private void GameLoaded()
+        {
+            MapLoaded();
+        }
+
+        private void MapLoaded()
+        {
+            LoadMapMenu();
+            this.Text = editorState.Map.Name;
             draw();
         }
 
@@ -172,28 +211,18 @@ namespace LevelEditor
 
         private void tsmiOpen_Click(object sender, EventArgs e)
         {
-            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (openGameDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                LoadGame(openFileDialog.FileName);
-                Vector2 offset = Vector2.Zero;
-                foreach (PlatformData platform in editorState.Map.Platforms)
-                {
-                    platform.StartPos += offset;
-                    foreach (PlatformSegue segue in platform.segues)
-                    {
-                        segue.Destination += offset;
-                    }
-                }
-                draw();
+                LoadData(openGameDialog.FileName);
             }
         }
 
         private void tsmiSave_Click(object sender, EventArgs e)
         {
-            if (this.saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (this.saveGameDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                editorState.Map.WriteToFile(saveFileDialog.FileName);
-                Properties.Settings.Default.lastSave = saveFileDialog.FileName;
+                editorState.Game.WriteToFile(saveGameDialog.FileName);
+                Properties.Settings.Default.lastSave = saveGameDialog.FileName;
                 Properties.Settings.Default.Save();
             }
         }
@@ -220,8 +249,8 @@ namespace LevelEditor
             dir += @"\Immersion\Immersion\bin\x86\Debug";
             ProcessStartInfo psi = new ProcessStartInfo(dir + @"\Immersion.exe");
             psi.WorkingDirectory = dir;
-            editorState.Map.WriteToFile("testing.map");
-            psi.Arguments = Directory.GetCurrentDirectory() + @"\testing.map";
+            editorState.Game.WriteToFile("testing.game");
+            psi.Arguments = Directory.GetCurrentDirectory() + @"\testing.game";
             psi.RedirectStandardError = true;
             psi.UseShellExecute = false;
             Process p = Process.Start(psi);
@@ -255,6 +284,53 @@ namespace LevelEditor
             }
         }
 
+        private void tsmiNewLevel_Click(object sender, EventArgs e)
+        {
+            editorState.Map = new MapData();
+            MapLoaded();
+        }
 
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (this.openMapDialog.ShowDialog() == DialogResult.OK)
+                {
+                    MapData data = MapData.ReadFromFile(this.openMapDialog.FileName);
+                    editorState.Map = data;
+                    MapLoaded();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+            }
+        }
+
+        private void tsmiExportMap_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (this.saveMapDialog.ShowDialog() == DialogResult.OK)
+                {
+                    editorState.Map.WriteToFile(this.saveMapDialog.FileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex);
+            }
+        }
+
+        private MapDialog mapDialog = new MapDialog();
+        private void tsmiEditLevel_Click(object sender, EventArgs e)
+        {
+            mapDialog.MapData = editorState.Map;
+            mapDialog.GameData = editorState.Game;
+            if (mapDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                MapLoaded();
+            }
+        }
     }
 }

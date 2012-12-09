@@ -20,11 +20,18 @@ namespace Immersion
     {
         public const float DISTANCE_MULTIPLIER = 3;
 
-        public String name = "New Map";
+        public String Name = "New Map";
         public List<PlatformData> Platforms = new List<PlatformData>();
         public List<WordCloudData> WordClouds = new List<WordCloudData>();
         public float speed = 30;
         public PlatformData startPlatform;
+
+        public MapData()
+        {
+            startPlatform = new PlatformData(Vector2.Zero);
+            Platforms.Add(startPlatform);
+            startPlatform.SafePlatform = true;
+        }
 
         public static MapData ReadFromFile(String path)
         {

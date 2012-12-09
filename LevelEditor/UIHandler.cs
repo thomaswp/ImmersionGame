@@ -211,8 +211,7 @@ namespace LevelEditor
                 if (SelectedPlatform != null && e.Clicks == 2)
                 {
                     draggingPlatform = null;
-                    platformDialog.PlatformData = SelectedPlatform;
-                    platformDialog.MapData = map;
+                    platformDialog.EditorState = editorState;
                     platformDialog.ShowDialog();
                 }
             }
