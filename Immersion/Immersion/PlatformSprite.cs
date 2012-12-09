@@ -18,17 +18,19 @@ namespace Immersion
         protected float degree = 0;
         protected float timeMult = 30;
         protected float sumTime;
-        protected float heroOnPlatform = 0;
-        protected float heroLastOnPlatform = 0;
+        protected bool heroOnPlatform;
+        protected float heroOnPlatformMs = 0;
+        protected float heroLastOnPlatformMs = 0;
         protected byte baseOpacity = 200;
+        protected Color baseColor;
 
         public PlatformData data;
         public Vector2 Velocity;
         public Vector2 LastFrameMovement;
         public ItemSprite Item { get; set; }
-        public bool Solid { get { return data.FallTime <= 0 || heroOnPlatform < data.FallTime; } }
+        public bool Solid { get { return data.FallTime <= 0 || heroOnPlatformMs < data.FallTime; } }
         public bool Safe { get { return data.SafePlatform; } }
-        public bool RespawnPlatform { set { byte color = (byte)(value ? 200 : 255); myColor.R = color; myColor.B = color; } }
+        public bool RespawnPlatform { get; set; }
 
         public float Size
         {
@@ -41,27 +43,28 @@ namespace Immersion
             this.data = data;
             this.timeMult = 30;// timeMult;
             myScale = 0.5f;
-            myColor.A = baseOpacity;
+            baseColor = new Color(255, 255, 255, baseOpacity);
         }
 
         public void UpdateHeroOnPlatform(bool onPlatform, float elapsedTime)
         {
+            this.heroOnPlatform = onPlatform;
             float ms = elapsedTime * 1000;
             if (onPlatform)
             {
-                heroOnPlatform += ms;
-                heroOnPlatform = Math.Min(heroOnPlatform, data.FallTime);
-                heroLastOnPlatform = 1000;
+                heroOnPlatformMs += ms;
+                heroOnPlatformMs = Math.Min(heroOnPlatformMs, data.FallTime);
+                heroLastOnPlatformMs = 1000;
             }
             else
             {
-                if (heroLastOnPlatform > 0)
+                if (heroLastOnPlatformMs > 0)
                 {
-                    heroLastOnPlatform -= ms;
+                    heroLastOnPlatformMs -= ms;
                 }
                 else
                 {
-                    heroOnPlatform = Math.Max(0, heroOnPlatform - data.FallTime * ms / 1000);
+                    heroOnPlatformMs = Math.Max(0, heroOnPlatformMs - data.FallTime * ms / 1000);
                 }
             }
         }
@@ -73,7 +76,13 @@ namespace Immersion
             base.Update(elapsedTime);
             float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
             if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
-            degree = (degree + elapsedTime * timeMult) % 360;
+
+            float dd = elapsedTime * timeMult;
+            Console.WriteLine(heroOnPlatformMs);
+            if (!data.Wait(degree, dd) || heroOnPlatform)
+            {
+                degree = (degree + dd) % 360;
+            }
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
 
             LastFrameMovement = myPosition - lastPos;
@@ -159,27 +168,41 @@ namespace Immersion
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
             if (data.Invisible) return;
+
+            myColor = baseColor;
+
             if (data.FallTime > 0)
             {
-                myColor.A = (byte)Math.Max(0, baseOpacity * (data.FallTime - heroOnPlatform) / data.FallTime);
+                myColor.A = (byte)Math.Max(0, baseOpacity * (data.FallTime - heroOnPlatformMs) / data.FallTime);
             }
+
+            if (RespawnPlatform)
+            {
+                myColor.R -= 50;
+                myColor.B -= 50;
+            }
+
+            if (data.Launch)
+            {
+                myColor.G -= 100;
+                myColor.B -= 150;
+            }
+
+            myColor.R -= (byte)(100 * data.Slide);
+            myColor.G -= (byte)(100 * data.Slide);
+
             foreach (Point p in data.Segments)
             {
                 if (p.X == 0 && p.Y == 0 && data.NextMap != null)
                 {
-                    Color oldColor = myColor;
                     double highlight = Math.Sin(degree / 180 * Math.PI * 10) / 2 + 0.5;
                     int plus = (int)(125 * highlight);
                     myColor.R = (byte)Math.Min(myColor.R + plus, 255);
                     myColor.G = (byte)Math.Min(myColor.G + plus, 255);
                     myColor.B = (byte)Math.Min(myColor.B - plus, 255);
-                    base.Draw(batch, offset + getPointOffset(p));
-                    myColor = oldColor;
                 }
-                else
-                {
-                    base.Draw(batch, offset + getPointOffset(p));
-                }
+
+                base.Draw(batch, offset + getPointOffset(p));
             }
             if (Item != null)
             {

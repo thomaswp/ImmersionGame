@@ -21,6 +21,11 @@ namespace Immersion
             return Destination;
         }
 
+        public override bool HasLength()
+        {
+            return true;
+        }
+
         public override string[] GetProperties()
         {
             return new string[0];

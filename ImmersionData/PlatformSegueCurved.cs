@@ -11,7 +11,7 @@ namespace Immersion
     {
         public float curvature = 0;
 
-        public PlatformSegueCurved(Vector2 destination) : base(destination) { Weight = 3; }
+        public PlatformSegueCurved(Vector2 destination) : base(destination) { SegWeight = 3; }
 
         public override Vector2 GetPosition(Vector2 start, float perc)
         {
@@ -36,6 +36,11 @@ namespace Immersion
 
             return center + new Vector2((float)Math.Cos(deg), (float)Math.Sin(deg)) * rad;
 
+        }
+
+        public override bool HasLength()
+        {
+            return true;
         }
 
         public override string[] GetProperties()

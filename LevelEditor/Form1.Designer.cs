@@ -125,7 +125,8 @@
             this.listBoxSegues.ItemHeight = 16;
             this.listBoxSegues.Items.AddRange(new object[] {
             "Linear",
-            "Curved"});
+            "Curved",
+            "Wait"});
             this.listBoxSegues.Location = new System.Drawing.Point(683, 238);
             this.listBoxSegues.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBoxSegues.Name = "listBoxSegues";
@@ -247,34 +248,34 @@
             // tsmiSelectMap
             // 
             this.tsmiSelectMap.Name = "tsmiSelectMap";
-            this.tsmiSelectMap.Size = new System.Drawing.Size(152, 24);
+            this.tsmiSelectMap.Size = new System.Drawing.Size(123, 24);
             this.tsmiSelectMap.Text = "Select";
             // 
             // tsmiNewLevel
             // 
             this.tsmiNewLevel.Name = "tsmiNewLevel";
-            this.tsmiNewLevel.Size = new System.Drawing.Size(152, 24);
+            this.tsmiNewLevel.Size = new System.Drawing.Size(123, 24);
             this.tsmiNewLevel.Text = "New";
             this.tsmiNewLevel.Click += new System.EventHandler(this.tsmiNewLevel_Click);
             // 
             // tsmiEditLevel
             // 
             this.tsmiEditLevel.Name = "tsmiEditLevel";
-            this.tsmiEditLevel.Size = new System.Drawing.Size(152, 24);
+            this.tsmiEditLevel.Size = new System.Drawing.Size(123, 24);
             this.tsmiEditLevel.Text = "Edit";
             this.tsmiEditLevel.Click += new System.EventHandler(this.tsmiEditLevel_Click);
             // 
             // importToolStripMenuItem
             // 
             this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(123, 24);
             this.importToolStripMenuItem.Text = "Import";
             this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // tsmiExportMap
             // 
             this.tsmiExportMap.Name = "tsmiExportMap";
-            this.tsmiExportMap.Size = new System.Drawing.Size(152, 24);
+            this.tsmiExportMap.Size = new System.Drawing.Size(123, 24);
             this.tsmiExportMap.Text = "Export";
             this.tsmiExportMap.Click += new System.EventHandler(this.tsmiExportMap_Click);
             // 

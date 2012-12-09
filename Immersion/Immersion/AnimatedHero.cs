@@ -18,7 +18,7 @@ namespace Immersion
     class AnimatedHero : Sprite 
     {
 
-        const float MAX_PLATFORM_JUMP = 30;
+        const float MAX_PLATFORM_JUMP = 50;
         const float MAP_TRANSITION_TIME = 2;
 
         protected float myPositionZ;
@@ -206,7 +206,15 @@ namespace Immersion
                     {
                         myPosition += currentPlatform.LastFrameMovement;
                     }
-                    //pushoffVelocity = currentPlatform.Velocity;
+
+                    if (currentPlatform.data.Launch)
+                    {
+                        pushoffVelocity = currentPlatform.Velocity;
+                    }
+                    else
+                    {
+                        pushoffVelocity = Vector2.Zero;
+                    }
                 }
                 else
                 {

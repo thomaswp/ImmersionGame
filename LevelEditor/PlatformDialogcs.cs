@@ -50,6 +50,7 @@ namespace LevelEditor
             nudSpeed.Value = PlatformData.Repeats;
             checkBoxItem.Checked = PlatformData.Item != null;
             nudSlide.Value = new Decimal(PlatformData.Slide);
+            checkBoxLaunch.Checked = PlatformData.Launch;
             if (PlatformData.Item != null)
             {
                 textBoxItemName.Text = PlatformData.Item.Name;
@@ -115,6 +116,7 @@ namespace LevelEditor
             PlatformData.Slide = (float)nudSlide.Value;
             PlatformData.SafePlatform = checkBoxSafe.Checked;
             PlatformData.Invisible = checkBoxInvisible.Checked;
+            PlatformData.Launch = checkBoxLaunch.Checked;
             if (comboBoxNextLevel.SelectedIndex > 0)
             {
                 PlatformData.NextMap = EditorState.Game.Maps[comboBoxNextLevel.SelectedIndex - 1];

@@ -21,7 +21,7 @@ namespace LevelEditor
         //segues from the listbox
         public enum Segues
         {
-            Linear, Curved
+            Linear, Curved, Wait
         }
 
         public Actions CurrentActionType { get; set; }
@@ -230,6 +230,10 @@ namespace LevelEditor
                 {
                     segue = new PlatformSegueCurved(pos);
                 }
+                else if (CurrentSegueType == Segues.Wait)
+                {
+                    segue = new PlatformSegueWait(pos);
+                }
 
                 if (segue == null) return;
 
@@ -359,11 +363,11 @@ namespace LevelEditor
             {
                 if (i < segueIndex)
                 {
-                    weightBefore += SelectedPlatform.segues[i].Weight;
+                    weightBefore += SelectedPlatform.segues[i].SegWeight;
                 }
                 if (i > segueIndex)
                 {
-                    weightAfter += SelectedPlatform.segues[i].Weight;
+                    weightAfter += SelectedPlatform.segues[i].SegWeight;
                 }
             }
 
@@ -374,7 +378,7 @@ namespace LevelEditor
 
             Console.WriteLine(weight);
 
-            segue.Weight = weight;
+            segue.SegWeight = weight;
         }
 
         private Vector2 mousePosOnMap(Point pos)

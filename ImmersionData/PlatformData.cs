@@ -24,6 +24,7 @@ namespace Immersion
         public List<Point> Segments = new List<Point>();
         public int FallTime;
         public float Slide;
+        public bool Launch;
         public bool SafePlatform;
         public bool Invisible;
         public MapData NextMap;
@@ -33,7 +34,9 @@ namespace Immersion
         public Vector2 getNextSegueStart()
         {
             if (segues.Count > 0)
+            {
                 return segues[segues.Count - 1].Destination;
+            }
             return StartPos;
         }
 
@@ -49,7 +52,7 @@ namespace Immersion
             float[] weightMarks = new float[segues.Count];
             for (int i = 0; i < segues.Count; i++)
             {
-                totalWeight += segues[i].Weight;
+                totalWeight += segues[i].SegWeight;
                 weightMarks[i] = totalWeight;
             }
             for (int i = 0; i < weightMarks.Length; i++)
@@ -66,6 +69,19 @@ namespace Immersion
             degree = (degree * Repeats) % 360;
 
             return degree / 360f;
+        }
+
+        public bool Wait(float degree, float dd)
+        {
+            int index; 
+            if ((index = GetCurrentSegueIndex(degree)) != GetCurrentSegueIndex(degree + dd))
+            {
+                if (segues[(index + 1) % segues.Count].GetType() == typeof(PlatformSegueWait))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         public int GetCurrentSegueIndex(float degree)
