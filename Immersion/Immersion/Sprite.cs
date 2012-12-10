@@ -50,7 +50,7 @@ namespace Immersion
 
         public virtual void Draw(SpriteBatch batch, Vector2 offset)
         {
-            batch.Draw(myTexture, myPosition + offset,null, myColor, 0f, 
+            batch.Draw(myTexture, myPosition + offset,null, myColor, myAngle, 
                 new Vector2(myTexture.Width / 2,myTexture.Height / 2),myScale,SpriteEffects.None, 0f);
         }
     }

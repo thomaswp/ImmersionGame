@@ -14,7 +14,7 @@ namespace Immersion
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class ImmersionGame : Microsoft.Xna.Framework.Game
     {
         const float DEFAULT_SCALE = 0.8f;
 
@@ -42,7 +42,7 @@ namespace Immersion
         MapData map;
 
 
-        public Game1(String gameFile = null)
+        public ImmersionGame(String gameFile = null)
         {
             gameState = new GameState();
 

@@ -104,33 +104,7 @@ namespace Immersion
             if (Item != null)
             {
                 Item.myPosition = myPosition + getPointOffset(data.ItemOffset);
-                if (Item.IsCollected)
-                {
-                    sumTime = .01f;
-                    float currentTime = 0;
-
-                    while (sumTime != 0 && sumTime < 30)
-                    {
-                        sumTime += 1f;
-                        Item.myScale += .5f * elapsedTime;
-                        Item.myAngularVelocity += .5f * elapsedTime;
-                        currentTime = 31;
-                    }
-                    if (currentTime == 31)
-                    {
-                        while (currentTime != 0)
-                        {
-                            currentTime -= 1f;
-                            Item.myScale -= .5f * elapsedTime;
-                            Item.myAngularVelocity += .5f * elapsedTime;
-                            if (Item.myScale < 0.001f)
-                            {
-                                Item.myScale = 0f;
-                            }
-                        }
-                    }
-                    else { }
-                }
+                Item.Update(elapsedTime, gameState);
             }
         }
 

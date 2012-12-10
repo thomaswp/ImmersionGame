@@ -34,7 +34,7 @@ namespace Immersion
         {
         }
 
-        public virtual void UpdateGame(Game1 game)
+        public virtual void UpdateGame(ImmersionGame game)
         {
 
         }

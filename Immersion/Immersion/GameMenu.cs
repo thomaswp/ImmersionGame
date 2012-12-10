@@ -32,9 +32,9 @@ namespace Immersion
             font = content.Load<SpriteFont>("MenuFont");
         }
 
-        public override void UpdateGame(Game1 game)
+        public override void UpdateGame(ImmersionGame game)
         {
-            game.WorldScale = Game1.Lerp(game.WorldScale, 0.3f, 0.7f);
+            game.WorldScale = ImmersionGame.Lerp(game.WorldScale, 0.3f, 0.7f);
         }
 
         public override bool IsFinished()

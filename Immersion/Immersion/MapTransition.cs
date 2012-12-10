@@ -38,7 +38,7 @@ namespace Immersion
             return finished;
         }
 
-        public override void UpdateGame(Game1 game)
+        public override void UpdateGame(ImmersionGame game)
         {
             base.UpdateGame(game);
             if (!finishing && alpha >= 300)

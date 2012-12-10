@@ -11,7 +11,7 @@ namespace Immersion
         static void Main(string[] args)
         {
             String map = args.Length == 0 ? null : args[0];
-            using (Game1 game = new Game1(map))
+            using (ImmersionGame game = new ImmersionGame(map))
             {
                 game.Run();
             }
