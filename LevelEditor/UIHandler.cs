@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using Immersion;
 using System.Drawing;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
+using Vector3 = Microsoft.Xna.Framework.Vector3;
+using BoundingBox = Microsoft.Xna.Framework.BoundingBox;
 
 namespace LevelEditor
 {
@@ -42,11 +44,10 @@ namespace LevelEditor
         private PlatformData draggingPlatform;
         //segue being dragged
         private PlatformSegue draggingSegue;
-        //if the user is dragging something, where did they grab it
-        private Vector2 draggingItemOffset;
         //wordCloud being dragged
         private WordCloudData draggingWordCloud;
-
+        //if the user is dragging something, where did they grab it
+        private Vector2 draggingItemOffset;
         private PlatformDialog platformDialog = new PlatformDialog();
 
         //selected/highlighted platform
@@ -61,8 +62,15 @@ namespace LevelEditor
             get { return editorState.SelectedSegue; }
             set { editorState.SelectedSegue = value; }
         }
+        //selected/highlighted wordCloud
+        private WordCloudData  SelectedWordCloud
+        {
+            get { return editorState.SelectedWordCloud;}
+            set { editorState.SelectedWordCloud = value; }
+        }
         private List<PlatformData> SelectedPlatforms { get { return editorState.SelectedPlatforms;} }
         private List<PlatformSegue> SelectedSegues { get { return editorState.SelectedSegues; } }
+        private List<WordCloudData> SelectedWordClouds { get { return editorState.SelectedWordClouds; } }
         
         public UIHandler(EditorState editorState)
         {
@@ -110,6 +118,106 @@ namespace LevelEditor
         public void OnDoubleClick(EventArgs e)
         {
         }
+        public void RightClick(Vector2 pos, MapData map)
+        {
+             if (SelectedPlatform != null || SelectedSegue != null)
+            {
+                PlatformData addTo = SelectedPlatform;
+
+                if (addTo == null)
+                {
+                    foreach (PlatformData platform in map.Platforms)
+                    {
+                        if (platform.StartSegue == SelectedSegue || platform.segues.Contains(SelectedSegue))
+                        {
+                            addTo = platform;
+                            break;
+                        }
+                    }
+                }
+
+                //add a new segue and start dragging it
+                if (addTo == null) return;
+
+                PlatformSegue segue = null;
+                if (CurrentSegueType == Segues.Linear)
+                {
+                    segue = new PlatformSegueLinear(pos);
+                }
+                else if (CurrentSegueType == Segues.Curved)
+                {
+                    segue = new PlatformSegueCurved(pos);
+                }
+                else if (CurrentSegueType == Segues.Wait)
+                {
+                    segue = new PlatformSegueWait(pos);
+                }
+                else if (CurrentSegueType == Segues.Jump)
+                {
+                    segue = new PlatformSegueJump(pos);
+                }
+
+                if (segue == null) return;
+
+                int index = addTo.segues.Count;
+                if (SelectedSegue != null)
+                {
+                    index = addTo.segues.IndexOf(SelectedSegue) + 1;
+                }
+
+                addTo.segues.Insert(index, segue);
+                draggingSegue = segue;
+                draggingItemOffset = new Vector2();
+            }
+            else
+            {
+                draggingPlatform = new PlatformData(pos, Degree);
+                draggingItemOffset = new Vector2();
+                map.Platforms.Add(draggingPlatform);
+            }
+        }
+        public void LookForSegues(Vector2 pos, MapData map)
+        {
+            foreach (PlatformData platform in map.Platforms)
+            {
+                //check the start "segue" which is really just
+                //the start position of the platform
+                //but you can move that, so it's selectable
+                if (segueContains(platform.StartSegue, pos))
+                {
+                    SelectedSegue = platform.StartSegue;
+                    draggingSegue = SelectedSegue;
+                    break;
+                }
+                //and check all the rest
+                foreach (PlatformSegue segue in platform.segues)
+                {
+                    if (segueContains(segue, pos))
+                    {
+                        SelectedSegue = segue;
+                        draggingSegue = SelectedSegue;
+                        break;
+                    }
+                }
+            }
+        }
+        public void LookForPlatforms(Vector2 pos, MapData map)
+        {
+            //look for a platform first
+            foreach (PlatformData platform in map.Platforms)
+            {
+                if (platform.contains(pos, Degree))
+                {
+                    SelectedPlatform = platform;
+                    draggingPlatform = platform;
+                }
+            }
+            if (SelectedPlatform != null)
+            {
+                SelectedPlatforms.Add(SelectedPlatform);
+                shiftDrag = Control.ModifierKeys == Keys.Shift;
+            }
+        }
 
         //Ugly method that handles all mouse down events. Needs to be cleaned
         public void MouseDown(MouseEventArgs e)
@@ -120,61 +228,7 @@ namespace LevelEditor
 
             if (e.Button == MouseButtons.Right)
             {
-                if (SelectedPlatform != null || SelectedSegue != null)
-                {
-                    PlatformData addTo = SelectedPlatform;
-
-                    if (addTo == null)
-                    {
-                        foreach (PlatformData platform in map.Platforms)
-                        {
-                            if (platform.StartSegue == SelectedSegue || platform.segues.Contains(SelectedSegue))
-                            {
-                                addTo = platform;
-                                break;
-                            }
-                        }
-                    }
-
-                    //add a new segue and start dragging it
-                    if (addTo == null) return;
-
-                    PlatformSegue segue = null;
-                    if (CurrentSegueType == Segues.Linear)
-                    {
-                        segue = new PlatformSegueLinear(pos);
-                    }
-                    else if (CurrentSegueType == Segues.Curved)
-                    {
-                        segue = new PlatformSegueCurved(pos);
-                    }
-                    else if (CurrentSegueType == Segues.Wait)
-                    {
-                        segue = new PlatformSegueWait(pos);
-                    }
-                    else if (CurrentSegueType == Segues.Jump)
-                    {
-                        segue = new PlatformSegueJump(pos);
-                    }
-
-                    if (segue == null) return;
-
-                    int index = addTo.segues.Count;
-                    if (SelectedSegue != null)
-                    {
-                        index = addTo.segues.IndexOf(SelectedSegue) + 1;
-                    }
-
-                    addTo.segues.Insert(index, segue);
-                    draggingSegue = segue;
-                    draggingItemOffset = new Vector2();
-                }
-                else
-                {
-                    draggingPlatform = new PlatformData(pos, Degree);
-                    draggingItemOffset = new Vector2();
-                    map.Platforms.Add(draggingPlatform);
-                }
+                RightClick(pos, map);
             }
             else
             {
@@ -184,36 +238,18 @@ namespace LevelEditor
                     //set selections to null
                     SelectedPlatform = null;
                     SelectedSegue = null;
+                    SelectedWordCloud = null;
                     SelectedPlatforms.Clear();
                     SelectedSegues.Clear();
+                    SelectedWordClouds.Clear();
                 }
                 draggingPlatform = null;
                 draggingSegue = null;
+                draggingWordCloud = null;
 
                 if (SelectedPlatform == null)
                 {
-                    foreach (PlatformData platform in map.Platforms)
-                    {
-                        //check the start "segue" which is really just
-                        //the start position of the platform
-                        //but you can move that, so it's selectable
-                        if (segueContains(platform.StartSegue, pos))
-                        {
-                            SelectedSegue = platform.StartSegue;
-                            draggingSegue = SelectedSegue;
-                            break;
-                        }
-                        //and check all the rest
-                        foreach (PlatformSegue segue in platform.segues)
-                        {
-                            if (segueContains(segue, pos))
-                            {
-                                SelectedSegue = segue;
-                                draggingSegue = SelectedSegue;
-                                break;
-                            }
-                        }
-                    }
+                    LookForSegues(pos, map);
                 }
 
                 //drag the selected segue
@@ -228,20 +264,7 @@ namespace LevelEditor
 
                 if (SelectedSegue == null)
                 {
-                    //look for a platform first
-                    foreach (PlatformData platform in map.Platforms)
-                    {
-                        if (platform.contains(pos, Degree))
-                        {
-                            SelectedPlatform = platform;
-                            draggingPlatform = platform;
-                        }
-                    }
-                    if (SelectedPlatform != null)
-                    {
-                        SelectedPlatforms.Add(SelectedPlatform);
-                        shiftDrag = Control.ModifierKeys == Keys.Shift;
-                    }
+                   LookForPlatforms(pos, map);
                 }
                 //drag the selected platform
                 draggingPlatform = SelectedPlatform;
@@ -251,7 +274,7 @@ namespace LevelEditor
                 }
 
                 //if we're not selecting anything, just drag the map
-                if (SelectedPlatform == null && SelectedSegue == null)
+                if (SelectedPlatform == null && SelectedSegue == null && SelectedWordCloud == null)
                 {
                     startMapDrag(e);
                 }
@@ -263,9 +286,21 @@ namespace LevelEditor
                     platformDialog.EditorState = editorState;
                     platformDialog.ShowDialog();
                 }
-                //if (SelectedWordCloud != null)
-                //{
-                //}
+                if (SelectedPlatform != null && SelectedSegue != null)
+                {
+                    foreach(WordCloudData wordCloud in map.WordClouds)
+                    {
+                        if(wordCloudContains(wordCloud, pos)==1)
+                        {
+                            SelectedWordCloud =wordCloud;
+                        }
+                    }
+                }
+                draggingWordCloud = SelectedWordCloud;
+                if (draggingWordCloud != null)
+                {
+                    draggingItemOffset = SelectedWordCloud. - pos;
+                }
             }
         }
 
@@ -454,6 +489,16 @@ namespace LevelEditor
         private bool segueContains(PlatformSegue segue, Vector2 pos)
         {
             return (segue.Destination - pos).Length() < MapRenderer.SEGUE_DRAW_RADIUS;
+        }
+
+        private int wordCloudContains(WordCloudData wordCloud, Vector2 pos)
+        {
+            if ((wordCloud.StartPosition - pos).Length() < MapRenderer.WORD_CLOUD_END_SIZE)
+            {
+            }
+            if (wordCloud.EndPosition)
+            {
+            }
         }
     }
 }

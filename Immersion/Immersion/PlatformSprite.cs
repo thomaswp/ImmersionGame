@@ -207,7 +207,10 @@ namespace Immersion
                     myColor.G = (byte)Math.Min(myColor.G + plus, 255);
                     myColor.B = (byte)Math.Min(myColor.B - plus, 255);
                 }
+                //if (data.Launch)
+                //{
 
+                //}
                 base.Draw(batch, offset + getPointOffset(p));
             }
             if (Item != null)

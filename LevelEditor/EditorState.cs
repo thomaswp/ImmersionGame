@@ -40,8 +40,10 @@ namespace LevelEditor
 
         public PlatformData SelectedPlatform;
         public PlatformSegue SelectedSegue;
+        public WordCloudData SelectedWordCloud;
         public List<PlatformData> SelectedPlatforms = new List<PlatformData>();
         public List<PlatformSegue> SelectedSegues = new List<PlatformSegue>();
+        public List<WordCloudData> SelectedWordClouds = new List<WordCloudData>();
 
         public EditorState(GameData game, Size renderSize)
         {
@@ -55,6 +57,8 @@ namespace LevelEditor
             SelectedPlatforms.Clear();
             SelectedSegue = null;
             SelectedSegues.Clear();
+            SelectedWordCloud = null;
+            SelectedWordClouds.Clear();
             MapOffset = new Point();
             Degree = 0;
         }

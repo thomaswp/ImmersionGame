@@ -19,6 +19,8 @@ namespace Immersion
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
         public Vector2 Center { get { return center; } set { center = value; GeneratePaths(); } }
+        public BoundingBox startBox { get { return new BoundingBox(new Vector3(StartPosition.X - 1.25f, StartPosition.Y - 1.25f, 0), new Vector3(StartPosition.X + 1.25f, StartPosition.Y + 1.25f, 0)); } }
+        public BoundingBox endBox { get { return new BoundingBox(new Vector3(EndPosition.X - 1.25f, EndPosition.Y - 1.25f, 0), new Vector3(EndPosition.X + 1.25f, EndPosition.Y + 1.25f, 0)); } }
 
         public String Name
         {
@@ -67,6 +69,10 @@ namespace Immersion
 
             GeneratePaths();
         }
+        public bool clicked(Vector3 pos, BoundingBox box)
+        {
+            return box.Contains(pos) > 0;
+        }
 
         public Vector2 GetForcedPath(float degree)
         {
@@ -81,5 +87,10 @@ namespace Immersion
             }
         }
 
+
+        public void clicked(Vector2 pos, BoundingBox boundingBox)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
