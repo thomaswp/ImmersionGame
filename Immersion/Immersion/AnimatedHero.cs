@@ -20,6 +20,7 @@ namespace Immersion
 
         const float MAX_PLATFORM_JUMP = 50;
         const float MAP_TRANSITION_TIME = 2;
+        const float MAX_SPEED = 400;
 
         protected float myPositionZ;
         protected float myVelocityZ;
@@ -30,6 +31,7 @@ namespace Immersion
         protected bool falling;
         protected Flipbook myBook;
         protected float transitionTime;
+        protected float sliding;
 
         public List<ItemData> Items = new List<ItemData>();
 
@@ -96,7 +98,7 @@ namespace Immersion
             maxSpeed = Math.Max(myVelocity.Length(), maxSpeed);
             myVelocity += direction * 50;
             moved = true;
-            if (myVelocity.Length() > maxSpeed)
+            if (myVelocity.Length() > MAX_SPEED)
             {
                 myVelocity.Normalize();
                 myVelocity *= maxSpeed;
@@ -196,14 +198,15 @@ namespace Immersion
 
             float slideFactor = (float)Math.Pow(currentPlatform.data.Slide, 0.1);
             float factor = 1f;
-            if (!moved)
+            if (!moved || myVelocity.Length() > MAX_SPEED)
             {
-                factor = 0.9f;
+                factor = 0.98f;
                 if (IsGrounded)
                 {
                     if (!Keyboard.GetState().IsKeyDown(Keys.L))
                     {
                         factor = 0.3f + slideFactor * 0.7f;
+                        sliding = 0;
                     }
                 }
             } 

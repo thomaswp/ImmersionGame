@@ -61,6 +61,8 @@ namespace Immersion
                 if (heroLastOnPlatformMs > 0)
                 {
                     heroLastOnPlatformMs -= ms;
+                    heroOnPlatformMs += ms;
+                    heroOnPlatformMs = Math.Min(heroOnPlatformMs, data.FallTime);
                 }
                 else
                 {
