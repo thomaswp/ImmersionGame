@@ -149,6 +149,10 @@ namespace LevelEditor
             {
                 g.DrawLine(linePen, MapPointOnCanvas(wordCloud.StartPosition),
                     MapPointOnCanvas(wordCloud.EndPosition));
+                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.StartPosition).X - 1f,
+                    MapPointOnCanvas(wordCloud.StartPosition).Y - 1f, 2.5f, 2.5f);
+                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.EndPosition).X - 1f,
+                    MapPointOnCanvas(wordCloud.EndPosition).Y - 1f, 2.5f, 2.5f);
             }
 
             foreach (WordData word in wordCloud.Words)

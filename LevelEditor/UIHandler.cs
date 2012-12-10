@@ -44,6 +44,8 @@ namespace LevelEditor
         private PlatformSegue draggingSegue;
         //if the user is dragging something, where did they grab it
         private Vector2 draggingItemOffset;
+        //wordCloud being dragged
+        private WordCloudData draggingWordCloud;
 
         private PlatformDialog platformDialog = new PlatformDialog();
 
@@ -241,7 +243,6 @@ namespace LevelEditor
                         shiftDrag = Control.ModifierKeys == Keys.Shift;
                     }
                 }
-
                 //drag the selected platform
                 draggingPlatform = SelectedPlatform;
                 if (draggingPlatform != null)
@@ -262,6 +263,9 @@ namespace LevelEditor
                     platformDialog.EditorState = editorState;
                     platformDialog.ShowDialog();
                 }
+                //if (SelectedWordCloud != null)
+                //{
+                //}
             }
         }
 
@@ -330,6 +334,9 @@ namespace LevelEditor
                     }
                 }
             }
+            //if (draggingWordCloud != null)
+            //{
+            //}
         }
 
         public void MouseWheel(MouseEventArgs e)
@@ -367,18 +374,20 @@ namespace LevelEditor
             platform.DegreeOffset += desiredDegree - degree;
             platform.DegreeOffset = (platform.DegreeOffset + 360) % 360;
         }
-        private void updateWordCloudLineUp()
-        {
-           //find nearest path position to the mouse to offset the wordcloud
-            float desiredDegree = 0;
-            float minDis = float.MaxValue;
-            for (float deg = 0; deg < 360; deg += 0.1f)
-            {
-                float dis=(
-            }
+        //private void updateWordCloudLineUp(WordCloudData cloud, int deg, Vector2 pos)
+        //{
+        //   //find nearest path position to the mouse to offset the wordcloud
+        //    float desiredDegree = 0;
+        //    float minDis = float.MaxValue;
+            
+        //    for (float iDeg = 0; iDeg < 360; iDeg += 0.1f)
+        //    {
+        //          if(cloud.StartPosition
+        //        float dis = (cloud.());
+        //    }
 
 
-        }
+        //}
 
         //experimental method to change segue "weights" to put the platform
         //where it's being dragged
