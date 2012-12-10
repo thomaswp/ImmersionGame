@@ -82,16 +82,18 @@ namespace Immersion
             {
                 gameState.myAnimatedHero.Jump();
             }
-            if (!data.Wait(degree, dd) || heroOnPlatform)
+            bool waiting = data.Wait(degree, dd);
+            if (!waiting || heroOnPlatform)
             {
                 degree = (degree + dd) % 360;
             }
-            else
+            else if (waiting)
             {
                 float sdd = 0.001f;
                 while (!data.Wait(degree, sdd)) degree += sdd;
                 //if ((degree + data.DegreeOffset) % 360 + dd >= 360) degree = data.DegreeOffset;
             }
+
             myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
 
             LastFrameMovement = myPosition - lastPos;
@@ -206,12 +208,17 @@ namespace Immersion
                 {
                     double highlight = Math.Sin(degree / 180 * Math.PI * 10) / 2 + 0.5;
                     int plus = (int)(125 * highlight);
+                    Color oldColor = myColor;
                     myColor.R = (byte)Math.Min(myColor.R + plus, 255);
                     myColor.G = (byte)Math.Min(myColor.G + plus, 255);
                     myColor.B = (byte)Math.Min(myColor.B - plus, 255);
+                    base.Draw(batch, offset + getPointOffset(p));
+                    myColor = oldColor;
                 }
-
-                base.Draw(batch, offset + getPointOffset(p));
+                else
+                {
+                    base.Draw(batch, offset + getPointOffset(p));
+                }
             }
             if (Item != null)
             {

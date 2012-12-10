@@ -91,7 +91,9 @@ namespace Immersion
 
         public void Move(Vector2 direction)
         {
-            float maxSpeed = Math.Max(myVelocity.Length(), 400 - pushoffVelocity.Length());
+            float maxSpeed = 400;
+            if (!IsGrounded) maxSpeed -= pushoffVelocity.Length();
+            maxSpeed = Math.Max(myVelocity.Length(), maxSpeed);
             myVelocity += direction * 50;
             moved = true;
             if (myVelocity.Length() > maxSpeed)
@@ -99,7 +101,6 @@ namespace Immersion
                 myVelocity.Normalize();
                 myVelocity *= maxSpeed;
             }
-            Debug.Write(myVelocity);
         }
 
         public void Jump()

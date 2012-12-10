@@ -99,6 +99,34 @@ namespace LevelEditor
                     }
                 }
             }
+            else if (e.KeyCode == Keys.Left)
+            {
+                MoveSelected(-1, 0);
+            }
+            else if (e.KeyCode == Keys.Right)
+            {
+                MoveSelected(1, 0);
+            }
+            else if (e.KeyCode == Keys.Up)
+            {
+                MoveSelected(0, -1);
+            }
+            else if (e.KeyCode == Keys.Down)
+            {
+                MoveSelected(0, 1);
+            }
+        }
+
+        private void MoveSelected(int dx, int dy)
+        {
+            if (SelectedPlatform != null)
+            {
+                SelectedPlatform.StartPos += new Vector2(dx, dy);
+            }
+            if (SelectedSegue != null)
+            {
+                SelectedSegue.Destination += new Vector2(dx, dy);
+            }
         }
 
         public void OnKeyPress(KeyPressEventArgs e)
