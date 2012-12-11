@@ -123,13 +123,14 @@ namespace Immersion
 
             //Make a Platform
             Texture2D plat45 = Content.Load<Texture2D>("platform45squished");
+            Texture2D arrow = Content.Load<Texture2D>("arrow");
             foreach (PlatformData data in map.Platforms)
             {
                 if (myAnimatedHero.Items.Contains(data.Item))
                 {
                     data.Item = null;
                 }
-                PlatformSprite platform = new PlatformSprite(plat45, data);
+                PlatformSprite platform = new PlatformSprite(plat45, data, arrow);
                 mySprites.Add(platform);
                 myPlatforms.Add(platform);
                 platform.LoadItemTextures(Content, shadow);

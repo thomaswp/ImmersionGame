@@ -35,7 +35,7 @@ namespace LevelEditor
         //contains all the information about the editor's current state
         private EditorState editorState;
 
-        //if the user is draggin the mouse, keeps track of where the drag started
+        //if the user is dragging the mouse, keeps track of where the drag started
         private Point startDragMouse, startDragMap;
         private bool shiftDrag;
         private bool draggingMap;
@@ -68,7 +68,12 @@ namespace LevelEditor
             get { return editorState.SelectedWordCloud;}
             set { editorState.SelectedWordCloud = value; }
         }
+        //indicates which end of the wordCloud is getting grabbed
+        //0=not selected
+        //1=starting side
+        //2=ending side
         private int cloudSide;
+
         private List<PlatformData> SelectedPlatforms { get { return editorState.SelectedPlatforms;} }
         private List<PlatformSegue> SelectedSegues { get { return editorState.SelectedSegues; } }
         private List<WordCloudData> SelectedWordClouds { get { return editorState.SelectedWordClouds; } }
@@ -386,18 +391,19 @@ namespace LevelEditor
             }
             //Need  to check start position write access
 
-            //if (draggingWordCloud != null)
-            //{
-            //    //move the draggingWordCloud
-            //    if (cloudSide == 1)
-            //    {
-            //        draggingWordCloud.StartPosition = pos + draggingItemOffset;
-            //    }
-            //    if (cloudSide == 2)
-            //    {
-            //        draggingWordCloud.EndPosition = pos + draggingItemOffset;
-            //    }
-            //}
+            if (draggingWordCloud != null)
+            {
+                //move the draggingWordCloud
+                if (cloudSide == 1)
+                {
+                    draggingWordCloud.StartPosition = pos + draggingItemOffset;
+                }
+                if (cloudSide == 2)
+                {
+                    draggingWordCloud.EndPosition = pos + draggingItemOffset;
+                }
+                updateWordCloudLineUp(SelectedWordCloud, Degree, pos);
+            }
         }
 
         public void MouseWheel(MouseEventArgs e)

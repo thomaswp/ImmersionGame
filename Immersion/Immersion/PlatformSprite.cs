@@ -24,6 +24,7 @@ namespace Immersion
         protected byte baseOpacity = 200;
         protected Color baseColor;
 
+        public Texture2D lArrow;
         public PlatformData data;
         public Vector2 Velocity;
         public Vector2 LastFrameMovement;
@@ -38,13 +39,14 @@ namespace Immersion
             get { return myTexture.Width / 2 * myScale; }
         }
 
-        public PlatformSprite(Texture2D texture, PlatformData data)//, float timeMult)
+        public PlatformSprite(Texture2D texture, PlatformData data, Texture2D arrow)//, float timeMult)
             : base(texture, data.StartPos)
         {
             this.data = data;
             this.timeMult = 30;// timeMult;
             myScale = 0.5f;
             baseColor = new Color(255, 255, 255, baseOpacity);
+            lArrow = arrow;
         }
 
         public void UpdateHeroOnPlatform(bool onPlatform, float elapsedTime)
@@ -207,11 +209,11 @@ namespace Immersion
                     myColor.G = (byte)Math.Min(myColor.G + plus, 255);
                     myColor.B = (byte)Math.Min(myColor.B - plus, 255);
                 }
-                //if (data.Launch)
-                //{
-
-                //}
+                
                 base.Draw(batch, offset + getPointOffset(p));
+                //batch.Draw(lArrow, data.StartPos, null, Color.White, Velocity, new Vector2(0, 0), SpriteEffects.None, 0f);
+                //if (data.Launch) batch.Draw(lArrow, data.StartPos, Color.White);
+                //batch.Draw(lArrow, data.StartPos, null,Color.White, 
             }
             if (Item != null)
             {

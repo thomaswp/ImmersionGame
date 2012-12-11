@@ -160,8 +160,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="oie_transparent.png">
-      <Name>oie_transparent</Name>
+    <Compile Include="arrow.png">
+      <Name>arrow</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

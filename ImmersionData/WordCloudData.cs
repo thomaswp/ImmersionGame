@@ -15,8 +15,8 @@ namespace Immersion
         public IPathed PathedObject;
         public float DegreeOffset = 0;
 
-        public Vector2 StartPosition { get { return GetForcedPath(startDegree); } }
-        public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
+        public Vector2 StartPosition { get { return GetForcedPath(startDegree); } set { GetForcedPath(startDegree); } }
+        public Vector2 EndPosition { get { return GetForcedPath(endDegree); } set { GetForcedPath(endDegree); } }
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
         public Vector2 Center { get { return center; } set { center = value; GeneratePaths(); } }
