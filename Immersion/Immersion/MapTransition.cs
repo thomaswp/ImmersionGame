@@ -16,7 +16,7 @@ namespace Immersion
     public class MapTransition : Overlay
     {
         MapData map;
-        Texture2D black;
+        Texture2D black, end;
         bool finished;
         bool finishing;
         float alpha;
@@ -31,6 +31,7 @@ namespace Immersion
         {
             base.LoadContent(content);
             black = content.Load<Texture2D>("black");
+            end = content.Load<Texture2D>("EndScreen");
         }
 
         public override bool IsFinished()
@@ -41,10 +42,28 @@ namespace Immersion
         public override void UpdateGame(ImmersionGame game)
         {
             base.UpdateGame(game);
-            if (!finishing && alpha >= 300)
+            
+            
+            if (!finishing)
             {
-                finishing = true;
-                game.LoadMap(map);
+                if (map.Name == "Tutorial")
+                {
+                    bool anyKey = Keyboard.GetState().GetPressedKeys().Length > 0 || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).Buttons.ToString() != "{Buttons:None}";
+                    if (anyKey)
+                    {
+                        finishing = true;
+                        game.LoadMap(map);
+                        alpha = 300;
+                    }
+                }
+                else
+                {
+                    if (alpha >= 300)
+                    {
+                        finishing = true;
+                        game.LoadMap(map);
+                    }
+                }
             }
         }
 
@@ -69,7 +88,7 @@ namespace Immersion
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
             Color color = new Color(255, 255, 255, Math.Min(Math.Max((int)alpha, 0), 255));
-            spriteBatch.Draw(black, new Rectangle(0, 0, resolution.X, resolution.Y), color);
+            spriteBatch.Draw(map.Name == "Tutorial" ? end : black, new Rectangle(0, 0, resolution.X, resolution.Y), color);
             spriteBatch.End();
         }
     }

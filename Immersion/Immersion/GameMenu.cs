@@ -42,7 +42,7 @@ namespace Immersion
                 {
                     menuItems.Add(content.Load<Texture2D>(collected.ImageName), collected.ImageName);
                 }
-            }         
+            }
         }
 
         public override void UpdateGame(ImmersionGame game)
@@ -59,7 +59,7 @@ namespace Immersion
         {
             milliseconds += gameTime.ElapsedGameTime.Milliseconds;
 
-            bool down = Keyboard.GetState().IsKeyDown(Keys.Escape) || 
+            bool down = Keyboard.GetState().IsKeyDown(Keys.Escape) ||
                 GamePad.GetState(0, GamePadDeadZone.None).IsButtonDown(Buttons.Start);
 
             if (!escUp && !down)
@@ -91,7 +91,7 @@ namespace Immersion
         {
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 
-            
+
             Color color = new Color(255, 255, 255, Math.Max((int)alpha, 0));
             spriteBatch.Draw(black, new Rectangle(0, 0, resolution.X, resolution.Y), color);
             String text = "Game Paused...";
@@ -103,13 +103,14 @@ namespace Immersion
             String itemText = "Items";
 
             float yy = 100f;
-            float xx = 75f;
+            float xx = font.MeasureString(itemText).X + 20;
             spriteBatch.DrawString(font, itemText, new Vector2(0, 100), Color.PowderBlue);
             foreach (Texture2D key in menuItems.Keys)
             {
-                xx += yy;
+                float scale = 0.35f;
+                xx += key.Width * scale;
                 spriteBatch.Draw(key, new Vector2(xx, yy), null, Color.White, 0f, new Vector2(key.Width / 2,
-                    key.Height / 2), .5f, SpriteEffects.None, 0f);
+                    key.Height / 2), scale, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
         }

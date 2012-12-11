@@ -337,7 +337,9 @@
             "slide_pic",
             "blink_pic",
             "streetsign",
-            "burger"});
+            "burger",
+            "car_key",
+            "girlfriend"});
             this.comboBoxItemTexture.Location = new System.Drawing.Point(146, 115);
             this.comboBoxItemTexture.Margin = new System.Windows.Forms.Padding(2);
             this.comboBoxItemTexture.Name = "comboBoxItemTexture";

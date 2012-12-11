@@ -186,6 +186,10 @@ namespace Immersion
                 {
                     platform.Update(0, gameState);
                 }
+                foreach (WordSprite word in myWordSprites)
+                {
+                    word.Update(0);
+                }
                 myAnimatedHero.myPosition = myPlatforms[startIndex].myPosition;
                 myAnimatedHero.currentPlatform = myPlatforms[startIndex];
             }
