@@ -56,6 +56,21 @@ namespace Immersion
             object[] downDir = { new Vector2(0, 1) };
             GameAction isMovingDown = new GameAction(this, this.GetType().GetMethod("Move"), downDir);
 
+
+            //Controller directions
+            object[] forwardRightDir = { new Vector2(1,-1) };
+            GameAction isMovingForwardRight = new GameAction(this, this.GetType().GetMethod("Move"), forwardRightDir);
+            
+            object[] forwardLeftDir = { new Vector2(1, -1) };
+            GameAction isMovingForwardLeft = new GameAction(this, this.GetType().GetMethod("Move"), forwardLeftDir);
+
+            object[] downRightDir = { new Vector2(1, 1) };
+            GameAction isMovingDownRightDir = new GameAction(this, this.GetType().GetMethod("Move"), downRightDir);
+
+            object[] downLeftDir = { new Vector2(-1, 1) };
+            GameAction isMovingDownLeftDir = new GameAction(this, this.GetType().GetMethod("Move"), downLeftDir);
+            
+
             GameAction isJumping = new GameAction(this, this.GetType().GetMethod("Jump"), new Object[0]);
 
             InputManager.AddToKeyboardMap(Keys.W, isMovingForward);
@@ -63,7 +78,10 @@ namespace Immersion
             InputManager.AddToKeyboardMap(Keys.A, isMovingLeft);
             InputManager.AddToKeyboardMap(Keys.D, isMovingRight);
             InputManager.AddToKeyboardMap(Keys.Space, isJumping);
+
+            InputManager.AddToControllerMap(Buttons.A, isJumping);
         }
+
 
         public void Move(Vector2 direction)
         {

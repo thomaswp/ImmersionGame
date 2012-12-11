@@ -97,12 +97,24 @@ namespace Immersion
             // Make the hero
             Texture2D heroImage = Content.Load<Texture2D>("hero");
             Texture2D shadow = Content.Load<Texture2D>("shadow");
-            Texture2D[] heroImages = {Content.Load<Texture2D>("hero0"),
-                                         Content.Load<Texture2D>("hero1"),
-                                         Content.Load<Texture2D>("hero2"),
-                                         Content.Load<Texture2D>("hero3")};
+            Texture2D[] heroImages = {Content.Load<Texture2D>("scott_idle_1"),
+                                         Content.Load<Texture2D>("scott_idle_2"),
+                                         Content.Load<Texture2D>("scott_idle_3"),
+                                         Content.Load<Texture2D>("scott_idle_4"),
+                                         Content.Load<Texture2D>("scott_idle_5"),
+                                     Content.Load<Texture2D>("scott_idle_6"),
+                                     Content.Load<Texture2D>("scott_idle_7"),
+                                     Content.Load<Texture2D>("scott_idle_8"),};
+            Texture2D[] runImages = {Content.Load<Texture2D>("scott_run_1"),
+                                        Content.Load<Texture2D>("scott_run_2"),
+                                        Content.Load<Texture2D>("scott_run_3"),
+                                        Content.Load<Texture2D>("scott_run_4"),
+                                        Content.Load<Texture2D>("scott_run_5"),
+                                        Content.Load<Texture2D>("scott_run_6"),
+                                        Content.Load<Texture2D>("scott_run_7"),
+                                        Content.Load<Texture2D>("scott_run_8")};
             Vector2 center = myScreenSize / 2;
-            myAnimatedHero = new AnimatedHero(heroImages, shadow, center, myScreenSize);
+            myAnimatedHero = new AnimatedHero(heroImages, runImages, shadow, center, myScreenSize);
 
             LoadMap(map);
 
@@ -181,7 +193,7 @@ namespace Immersion
         {
             UpdateOffset();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape) || (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed))
             {
                 if (!escDown && overlay == null)
                 {
@@ -214,6 +226,7 @@ namespace Immersion
             // Here's where the input manager is told to deal with the input
             InputManager.ActKeyboard(Keyboard.GetState());
             InputManager.ActMouse(Mouse.GetState());
+            InputManager.ActController(GamePad.GetState(PlayerIndex.One));
 
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 

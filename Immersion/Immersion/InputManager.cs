@@ -32,6 +32,11 @@ namespace Immersion
         static Dictionary<Keys, List<GameAction>> myKeyboardMap = new Dictionary<Keys, List<GameAction>>();
 
         static Dictionary<Keys, List<GameAction>> myKeyboardPressMap = new Dictionary<Keys, List<GameAction>>();
+
+        static Dictionary<Buttons, List<GameAction>> myControllerMap = new Dictionary<Buttons, List<GameAction>>();
+
+        static Dictionary<Buttons, List<GameAction>> myControllerPressMap = new Dictionary<Buttons, List<GameAction>>();
+
         static List<Keys> myPressedKeys = new List<Keys>();
 
         static InputManager myInstance = new InputManager();
@@ -71,6 +76,28 @@ namespace Immersion
         {
             AddToMap<Keys>(myKeyboardPressMap, key, action);
         }
+
+        public static void AddToControllerMap(Buttons button, GameAction action)
+        {
+            AddToMap<Buttons>(myControllerMap, button, action);
+        }
+
+        public static void AddToControllerPressMap(Buttons button, GameAction action)
+        {
+            AddToMap<Buttons>(myControllerPressMap, button, action);
+        }
+
+
+
+        public static Vector2 GetStickPosition()
+        {
+            GamePadState padState = GamePad.GetState(PlayerIndex.One);
+            return padState.ThumbSticks.Left;
+        }
+
+
+
+
 
         // Perform the functions in the MouseDictionary, given the current MouseState.
         public static void ActMouse(MouseState mouseState)
@@ -137,5 +164,19 @@ namespace Immersion
             myPressedKeys.Clear();
             myPressedKeys.AddRange(allPressed);
         }
+
+        public static void ActController(GamePadState padState)
+        {
+
+
+            if (padState.Buttons.A == ButtonState.Pressed && myControllerMap.ContainsKey(Buttons.A))
+            {
+                foreach (GameAction a in myControllerMap[Buttons.A])
+                {
+                    a.Invoke();
+                }
+            }
+        }
+
     }
 }
