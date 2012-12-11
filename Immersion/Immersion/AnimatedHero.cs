@@ -143,7 +143,7 @@ namespace Immersion
             myVelocity += direction * 50;
             moved = true;
 
-            if (myVelocity.Length() > MAX_SPEED)
+            if (myVelocity.Length() > maxSpeed)
             {
                 myVelocity.Normalize();
                 myVelocity *= maxSpeed;
@@ -247,7 +247,7 @@ namespace Immersion
             {
                 if (!falling)
                 {
-                    fall.Play();
+                    fall.Play(0.7f, 0, 0);
                 }
                 falling = true;
             }

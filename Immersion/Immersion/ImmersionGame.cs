@@ -124,7 +124,7 @@ namespace Immersion
 
             music = Content.Load<SoundEffect>("song").CreateInstance();
             music.IsLooped = true;
-            music.Volume = 0.5f;
+            music.Volume = 0.4f;
             music.Play();
 
             LoadMap(map);
