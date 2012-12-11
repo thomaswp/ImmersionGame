@@ -33,9 +33,13 @@ namespace Immersion
         protected Flipbook myRunBook;
         protected Flipbook currentBook;
         protected float transitionTime;
-        protected float sliding;
+        protected bool sliding;
         protected bool facingLeft;
         protected bool running;
+        protected Vector2 lastDirection;
+        protected SoundEffect fall;
+        protected SoundEffect slide;
+        protected float slideTime;
 
         public List<ItemData> Items = new List<ItemData>();
 
@@ -62,6 +66,14 @@ namespace Immersion
             SetUpInput();
             facingLeft = true;
             running = false;
+        }
+
+        public override void LoadContent(ContentManager content)
+        {
+            base.LoadContent(content);
+            fall = content.Load<SoundEffect>("fall");
+            slide = content.Load<SoundEffect>("slide");//.CreateInstance();
+            //slide.IsLooped = true;
         }
 
         public void setUpFlipbook()
@@ -115,7 +127,7 @@ namespace Immersion
             InputManager.AddToKeyboardMap(Keys.Left, isMovingLeft);
             InputManager.AddToKeyboardMap(Keys.Right, isMovingRight);
 
-            InputManager.AddToControllerMap(Buttons.A, isJumping);
+            InputManager.AddToControllerPressMap(Buttons.A, isJumping);
 
             InputManager.AddToKeyboardPressMap(Keys.Space, isJumping);
         }
@@ -125,6 +137,7 @@ namespace Immersion
             direction.Normalize();
 
             float maxSpeed = MAX_SPEED;
+            if (sliding) maxSpeed *= 1.3f;
             if (!IsGrounded) maxSpeed -= pushoffVelocity.Length();
             maxSpeed = Math.Max(myVelocity.Length(), maxSpeed);
             myVelocity += direction * 50;
@@ -145,6 +158,7 @@ namespace Immersion
                 facingLeft = false;
             }
 
+            lastDirection = direction;
         }
 
         public void StickMove()
@@ -217,25 +231,24 @@ namespace Immersion
         {
 
             base.Update(elapsedTime, gameState);
+  
 
             UpdateCurrentPlatform(elapsedTime, gameState);
 
             myIdleBook.Update((double)elapsedTime);
             myRunBook.Update((double)elapsedTime);
 
-            if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left != new Vector2(0, 0))
-            {
-                StickMove();
-                running = true;
-            }
-            if((GamePad.GetState(PlayerIndex.One).ThumbSticks.Left == new Vector2(0, 0)) && (running == true))
-            {
-                running=false;
-            }
+
+            running = lastDirection != Vector2.Zero;
+            lastDirection = Vector2.Zero;
 
 
             if (currentPlatform == null)
             {
+                if (!falling)
+                {
+                    fall.Play();
+                }
                 falling = true;
             }
 
@@ -257,6 +270,14 @@ namespace Immersion
                 return;
             }
 
+            bool wasSliding = sliding;
+
+            sliding = Keyboard.GetState().IsKeyDown(Keys.LeftShift) || Keyboard.GetState().IsKeyDown(Keys.RightShift) || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).IsButtonDown(Buttons.X);
+
+            if (sliding && !wasSliding)
+            {
+               slide.Play();
+            }
 
             float slideFactor = (float)Math.Pow(currentPlatform.data.Slide, 0.1);
             float factor = 1f;
@@ -265,10 +286,9 @@ namespace Immersion
                 factor = 0.98f;
                 if (IsGrounded)
                 {
-                    if (!Keyboard.GetState().IsKeyDown(Keys.L))
+                    if (!sliding)
                     {
                         factor = 0.3f + slideFactor * 0.7f;
-                        sliding = 0;
                     }
                 }
             } 
@@ -319,7 +339,10 @@ namespace Immersion
             }
             transitionTime = transTime;
 
-
+            if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left != new Vector2(0, 0))
+            {
+                StickMove();
+            }
         }
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
@@ -344,7 +367,7 @@ namespace Immersion
             Color transColor = Color.White;
             transColor.A = (byte)(255 * trans);
 
-            if (running)
+            if (running && !sliding)
             {
                 currentBook = myRunBook;
             }

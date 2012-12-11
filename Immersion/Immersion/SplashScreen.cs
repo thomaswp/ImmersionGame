@@ -20,6 +20,7 @@ namespace Immersion
         private float alpha = 255;
         private float milliseconds;
         private SpriteFont font;
+        private SoundEffect beep;
 
         public SplashScreen(GraphicsDevice graphicsDevice, ContentManager content) : base(graphicsDevice, content) { }        
 
@@ -28,6 +29,7 @@ namespace Immersion
             base.LoadContent(content);
             splashScreen = content.Load<Texture2D>("splash-screen");
             font = content.Load<SpriteFont>("MenuFont");
+            beep = content.Load<SoundEffect>("menu_select");
         }
 
         public override bool IsFinished()
@@ -37,9 +39,10 @@ namespace Immersion
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (Keyboard.GetState().GetPressedKeys().Length > 0)
+            if (!finishing && (Keyboard.GetState().GetPressedKeys().Length > 0 || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).Buttons.ToString() != "{Buttons:None}"))
             {
                 finishing = true;
+                beep.Play();
             }
             if (finishing)
             {

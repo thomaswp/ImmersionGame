@@ -38,6 +38,7 @@ namespace Immersion
         static Dictionary<Buttons, List<GameAction>> myControllerPressMap = new Dictionary<Buttons, List<GameAction>>();
 
         static List<Keys> myPressedKeys = new List<Keys>();
+        static List<Buttons> myPressedButtons = new List<Buttons>();
 
         static InputManager myInstance = new InputManager();
 
@@ -167,13 +168,35 @@ namespace Immersion
 
         public static void ActController(GamePadState padState)
         {
+            GamePadState state = GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None);
 
-
-            if (padState.Buttons.A == ButtonState.Pressed && myControllerMap.ContainsKey(Buttons.A))
+            foreach (Buttons button in myControllerMap.Keys)
             {
-                foreach (GameAction a in myControllerMap[Buttons.A])
+                if (state.IsButtonDown(button))
                 {
-                    a.Invoke();
+                    foreach (GameAction action in myControllerMap[button])
+                    {
+                        action.Invoke();
+                    }
+                }
+            }
+
+            foreach (Buttons button in myControllerPressMap.Keys)
+            {
+                if (state.IsButtonDown(button))
+                {
+                    if (!myPressedButtons.Contains(button))
+                    {
+                        foreach (GameAction action in myControllerPressMap[button])
+                        {
+                            action.Invoke();
+                        }
+                        myPressedButtons.Add(button);
+                    }
+                }
+                else
+                {
+                    myPressedButtons.Remove(button);
                 }
             }
         }

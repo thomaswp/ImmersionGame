@@ -24,6 +24,7 @@ namespace Immersion
         float worldScale = DEFAULT_SCALE;
         Overlay overlay;
         GameState gameState;
+        SoundEffectInstance music;
 
         AnimatedHero myAnimatedHero { get { return gameState.myAnimatedHero; } set { gameState.myAnimatedHero = value; } }
         Vector2 myScreenSize { get { return gameState.myScreenSize; } set { gameState.myScreenSize = value; } }
@@ -121,6 +122,11 @@ namespace Immersion
             Vector2 center = myScreenSize / 2;
             myAnimatedHero = new AnimatedHero(heroImages, runImages, shadow, center, myScreenSize);
 
+            music = Content.Load<SoundEffect>("song").CreateInstance();
+            music.IsLooped = true;
+            music.Volume = 0.5f;
+            music.Play();
+
             LoadMap(map);
 
             overlay = new SplashScreen(GraphicsDevice, Content);
@@ -164,6 +170,11 @@ namespace Immersion
 
             //It's important to keep Hero added after the other sprites!
             mySprites.Add(myAnimatedHero);
+
+            foreach (Sprite sprite in mySprites)
+            {
+                sprite.LoadContent(Content);
+            }
 
             myAnimatedHero.Reset();
             int startIndex = map.Platforms.IndexOf(map.startPlatform);

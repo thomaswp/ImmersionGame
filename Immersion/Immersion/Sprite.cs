@@ -30,6 +30,9 @@ namespace Immersion
             this.myPosition = position;
         }
 
+        public virtual void LoadContent(ContentManager content)
+        {
+        }
 
         public Sprite(Texture2D texture2D, Vector2 position, Vector2 velocity, float angle, float angleVelocity, float scale)
         {

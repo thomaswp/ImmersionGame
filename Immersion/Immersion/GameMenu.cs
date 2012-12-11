@@ -22,6 +22,7 @@ namespace Immersion
         int alpha = 0;
         float milliseconds;
         private SpriteFont font;
+        private SoundEffect beep;
 
         public GameMenu(GraphicsDevice graphicsDevice, ContentManager content) : base(graphicsDevice, content) { }
 
@@ -30,6 +31,8 @@ namespace Immersion
             base.LoadContent(content);
             black = content.Load<Texture2D>("black");
             font = content.Load<SpriteFont>("MenuFont");
+            beep = content.Load<SoundEffect>("menu_select");
+            beep.Play();
         }
 
         public override void UpdateGame(ImmersionGame game)
@@ -46,13 +49,16 @@ namespace Immersion
         {
             milliseconds += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (!escUp && Keyboard.GetState().IsKeyUp(Keys.Escape))
+            bool down = Keyboard.GetState().IsKeyDown(Keys.Escape) || 
+                GamePad.GetState(0, GamePadDeadZone.None).IsButtonDown(Buttons.Start);
+
+            if (!escUp && !down)
             {
                 escUp = true;
             }
-            else if (escUp && Keyboard.GetState().IsKeyDown(Keys.Escape))
+            else if (!finishing && escUp && down)
             {
-                
+                beep.Play();
                 finishing = true;
             }
 
