@@ -68,6 +68,7 @@ namespace LevelEditor
             get { return editorState.SelectedWordCloud;}
             set { editorState.SelectedWordCloud = value; }
         }
+        private int cloudSide;
         private List<PlatformData> SelectedPlatforms { get { return editorState.SelectedPlatforms;} }
         private List<PlatformSegue> SelectedSegues { get { return editorState.SelectedSegues; } }
         private List<WordCloudData> SelectedWordClouds { get { return editorState.SelectedWordClouds; } }
@@ -224,6 +225,8 @@ namespace LevelEditor
         {
             Vector2 pos = editorState.MousePosOnMap(e.Location);
             MapData map = editorState.Map;
+            Vector2 wordCloudSide = new Vector2(0,0);
+
             shiftDrag = false;
 
             if (e.Button == MouseButtons.Right)
@@ -239,6 +242,7 @@ namespace LevelEditor
                     SelectedPlatform = null;
                     SelectedSegue = null;
                     SelectedWordCloud = null;
+                    cloudSide = 0;
                     SelectedPlatforms.Clear();
                     SelectedSegues.Clear();
                     SelectedWordClouds.Clear();
@@ -286,20 +290,30 @@ namespace LevelEditor
                     platformDialog.EditorState = editorState;
                     platformDialog.ShowDialog();
                 }
+                //if a platform, nor a segue are selected, check to see if 
+                //a wordcloud beginning or end is selected
                 if (SelectedPlatform != null && SelectedSegue != null)
                 {
                     foreach(WordCloudData wordCloud in map.WordClouds)
                     {
-                        if(wordCloudContains(wordCloud, pos)==1)
+                        if(wordCloudContains(wordCloud, pos) == 1)
                         {
-                            SelectedWordCloud =wordCloud;
+                            SelectedWordCloud = wordCloud;
+                            wordCloudSide = wordCloud.StartPosition;
+                            cloudSide = 1;
+                        }
+                        if(wordCloudContains(wordCloud, pos) == 2)
+                        {
+                            SelectedWordCloud = wordCloud;
+                            wordCloudSide = wordCloud.EndPosition;
+                            cloudSide = 2;
                         }
                     }
                 }
                 draggingWordCloud = SelectedWordCloud;
                 if (draggingWordCloud != null)
                 {
-                    draggingItemOffset = SelectedWordCloud. - pos;
+                    draggingItemOffset = wordCloudSide - pos;
                 }
             }
         }
@@ -315,6 +329,7 @@ namespace LevelEditor
         public void MouseMove(MouseEventArgs e)
         {
             Vector2 pos = mousePosOnMap(e.Location);
+            MapData map=editorState.Map;
             if (draggingMap)
             {
                 //pan the map
@@ -325,7 +340,7 @@ namespace LevelEditor
             {
                 if (draggingPlatform.segues.Count == 0)
                 {
-                    //if there are no segue, just move the platform
+                    //if there are no segues, just move the platform
                     draggingPlatform.StartPos = pos + draggingItemOffset;
                 }
                 else
@@ -369,8 +384,19 @@ namespace LevelEditor
                     }
                 }
             }
+            //Need  to check start position write access
+
             //if (draggingWordCloud != null)
             //{
+            //    //move the draggingWordCloud
+            //    if (cloudSide == 1)
+            //    {
+            //        draggingWordCloud.StartPosition = pos + draggingItemOffset;
+            //    }
+            //    if (cloudSide == 2)
+            //    {
+            //        draggingWordCloud.EndPosition = pos + draggingItemOffset;
+            //    }
             //}
         }
 
@@ -409,20 +435,30 @@ namespace LevelEditor
             platform.DegreeOffset += desiredDegree - degree;
             platform.DegreeOffset = (platform.DegreeOffset + 360) % 360;
         }
-        //private void updateWordCloudLineUp(WordCloudData cloud, int deg, Vector2 pos)
-        //{
-        //   //find nearest path position to the mouse to offset the wordcloud
-        //    float desiredDegree = 0;
-        //    float minDis = float.MaxValue;
+        private void updateWordCloudLineUp(WordCloudData cloud, int degree, Vector2 pos)
+        {
+           //find nearest path position to the mouse to offset the wordcloud
+            float desiredDegree = 0;
+            float minDis = float.MaxValue;
+            Vector2 cloudPosition = new Vector2(0,0);
+            if(cloudSide==1) cloudPosition=cloud.StartPosition;
+            if(cloudSide==2) cloudPosition=cloud.EndPosition;
+
             
-        //    for (float iDeg = 0; iDeg < 360; iDeg += 0.1f)
-        //    {
-        //          if(cloud.StartPosition
-        //        float dis = (cloud.());
-        //    }
+            for (float iDeg = 0; iDeg < 360; iDeg += 0.1f)
+            {
+                float dis = (cloud.GetForcedPath(degree) - pos).Length();
+                if (dis < minDis)
+                {
+                    minDis = dis;
+                    desiredDegree = iDeg;
+                }
+            }
+            
 
-
-        //}
+            cloud.DegreeOffset += desiredDegree - degree;
+            cloud.DegreeOffset = (cloud.DegreeOffset + 360) % 360;
+        }
 
         //experimental method to change segue "weights" to put the platform
         //where it's being dragged
@@ -493,12 +529,17 @@ namespace LevelEditor
 
         private int wordCloudContains(WordCloudData wordCloud, Vector2 pos)
         {
-            if ((wordCloud.StartPosition - pos).Length() < MapRenderer.WORD_CLOUD_END_SIZE)
+            if ((wordCloud.StartPosition - pos).Length() 
+                < MapRenderer.WORD_CLOUD_END_SIZE)
             {
+                return 1;
             }
-            if (wordCloud.EndPosition)
+            if ((wordCloud.EndPosition-pos).Length() 
+                < MapRenderer.WORD_CLOUD_END_SIZE)
             {
+                return 2;
             }
+            return 0;
         }
     }
 }

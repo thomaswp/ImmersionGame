@@ -14,7 +14,7 @@ namespace LevelEditor
 
         public const int SEGUE_DRAW_RADIUS = 10;
         public const int CIRCLE_DRAW_RADIUS = 10;
-        public const int WORD_CLOUD_END_SIZE = 10;
+        public const int WORD_CLOUD_END_SIZE = 3;
 
         public const int SEGMENT_DRAW_SIZE = 47;
         public const float SEGMENT_RATIO = 9 / 14f;
@@ -150,10 +150,12 @@ namespace LevelEditor
             {
                 g.DrawLine(linePen, MapPointOnCanvas(wordCloud.StartPosition),
                     MapPointOnCanvas(wordCloud.EndPosition));
-                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.StartPosition).X - 1.25f,
-                    MapPointOnCanvas(wordCloud.StartPosition).Y - 1f, 2.5f, 2.5f);
-                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.EndPosition).X - 1.25f,
-                    MapPointOnCanvas(wordCloud.EndPosition).Y - 1f, 2.5f, 2.5f);
+                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.StartPosition).X - WORD_CLOUD_END_SIZE,
+                    MapPointOnCanvas(wordCloud.StartPosition).Y - WORD_CLOUD_END_SIZE , 
+                    2 * WORD_CLOUD_END_SIZE, 2 * WORD_CLOUD_END_SIZE);
+                g.DrawRectangle(linePen, MapPointOnCanvas(wordCloud.EndPosition).X - WORD_CLOUD_END_SIZE,
+                   MapPointOnCanvas(wordCloud.EndPosition).Y - WORD_CLOUD_END_SIZE,
+                   2 * WORD_CLOUD_END_SIZE, 2 * WORD_CLOUD_END_SIZE);
             }
 
             foreach (WordData word in wordCloud.Words)
