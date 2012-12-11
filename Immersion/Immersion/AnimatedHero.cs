@@ -29,9 +29,13 @@ namespace Immersion
         protected Vector2 pushoffVelocity;
         protected PlatformSprite respawnPlatform;
         protected bool falling;
-        protected Flipbook myBook;
+        protected Flipbook myIdleBook;
+        protected Flipbook myRunBook;
+        protected Flipbook currentBook;
         protected float transitionTime;
         protected float sliding;
+        protected bool facingLeft;
+        protected bool running;
 
         public List<ItemData> Items = new List<ItemData>();
 
@@ -47,23 +51,38 @@ namespace Immersion
             get { return transitionTime > MAP_TRANSITION_TIME; }
         }
 
-        public AnimatedHero(Texture2D[] images, Texture2D shadow, Vector2 position, Vector2 screenSize)
-            : base(images[0], position)
+        public AnimatedHero(Texture2D[] idleImages, Texture2D[] runImages, Texture2D shadow, Vector2 position, Vector2 screenSize)
+            : base(idleImages[0], position)
         {
-            myBook = new Flipbook(images);
+            myIdleBook = new Flipbook(idleImages);
+            myRunBook = new Flipbook(runImages);
+            currentBook = myIdleBook;
             setUpFlipbook();
             shadowImage = shadow;
             SetUpInput();
+            facingLeft = true;
+            running = false;
         }
 
         public void setUpFlipbook()
         {
-            myBook.AddFrame(0, .1);
-            myBook.AddFrame(1, .1);
-            myBook.AddFrame(2, .1);
-            myBook.AddFrame(3, .1);
-            myBook.AddFrame(2, .1);
-            myBook.AddFrame(1, .1);
+            myIdleBook.AddFrame(0, .1);
+            myIdleBook.AddFrame(1, .1);
+            myIdleBook.AddFrame(2, .1);
+            myIdleBook.AddFrame(3, .1);
+            myIdleBook.AddFrame(4, .1);
+            myIdleBook.AddFrame(5, .1);
+            myIdleBook.AddFrame(6, .1);
+            myIdleBook.AddFrame(7, .1);
+            myRunBook.AddFrame(0, .1);
+            myRunBook.AddFrame(1, .1);
+            myRunBook.AddFrame(2, .1);
+            myRunBook.AddFrame(3, .1);
+            myRunBook.AddFrame(4, .1);
+            myRunBook.AddFrame(5, .1);
+            myRunBook.AddFrame(6, .1);
+            myRunBook.AddFrame(7, .1);
+
         }
 
         public void SetUpInput()
@@ -82,27 +101,55 @@ namespace Immersion
             object[] downDir = { new Vector2(0, 1) };
             GameAction isMovingDown = new GameAction(this, this.GetType().GetMethod("Move"), downDir);
 
+            object[] stickDir = { InputManager.GetStickPosition() };
+            GameAction isMovingStickDir = new GameAction(this, this.GetType().GetMethod("StickMove"), stickDir);
+
             GameAction isJumping = new GameAction(this, this.GetType().GetMethod("Jump"), new Object[0]);
 
             InputManager.AddToKeyboardMap(Keys.W, isMovingForward);
             InputManager.AddToKeyboardMap(Keys.S, isMovingDown);
             InputManager.AddToKeyboardMap(Keys.A, isMovingLeft);
             InputManager.AddToKeyboardMap(Keys.D, isMovingRight);
+            InputManager.AddToKeyboardMap(Keys.Up, isMovingForward);
+            InputManager.AddToKeyboardMap(Keys.Down, isMovingDown);
+            InputManager.AddToKeyboardMap(Keys.Left, isMovingLeft);
+            InputManager.AddToKeyboardMap(Keys.Right, isMovingRight);
+
+            InputManager.AddToControllerMap(Buttons.A, isJumping);
+
             InputManager.AddToKeyboardPressMap(Keys.Space, isJumping);
         }
 
         public void Move(Vector2 direction)
         {
-            float maxSpeed = 400;
+            direction.Normalize();
+
+            float maxSpeed = MAX_SPEED;
             if (!IsGrounded) maxSpeed -= pushoffVelocity.Length();
             maxSpeed = Math.Max(myVelocity.Length(), maxSpeed);
             myVelocity += direction * 50;
             moved = true;
+
             if (myVelocity.Length() > MAX_SPEED)
             {
                 myVelocity.Normalize();
                 myVelocity *= maxSpeed;
             }
+
+            if (direction.X < 0f)
+            {
+                facingLeft = true;
+            }
+            if (direction.X > 0f)
+            {
+                facingLeft = false;
+            }
+
+        }
+
+        public void StickMove()
+        {
+            Move(new Vector2(InputManager.GetStickPosition().X, (InputManager.GetStickPosition().Y * -1)));
         }
 
         public void Jump()
@@ -168,9 +215,24 @@ namespace Immersion
 
         public override void Update(float elapsedTime, GameState gameState)
         {
+
             base.Update(elapsedTime, gameState);
-            myBook.Update((double)elapsedTime);
+
             UpdateCurrentPlatform(elapsedTime, gameState);
+
+            myIdleBook.Update((double)elapsedTime);
+            myRunBook.Update((double)elapsedTime);
+
+            if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left != new Vector2(0, 0))
+            {
+                StickMove();
+                running = true;
+            }
+            if((GamePad.GetState(PlayerIndex.One).ThumbSticks.Left == new Vector2(0, 0)) && (running == true))
+            {
+                running=false;
+            }
+
 
             if (currentPlatform == null)
             {
@@ -262,8 +324,8 @@ namespace Immersion
 
         public override void Draw(SpriteBatch batch, Vector2 offset)
         {
-            float heroScale = 0.4f * myScale;
-            float shadowScale = heroScale * 0.35f;
+            float heroScale = 1.5f * myScale;
+            float shadowScale = heroScale * .11f;
             float trans = Math.Max(0, (1 - transitionTime / MAP_TRANSITION_TIME));
 
             if (!falling)
@@ -271,6 +333,9 @@ namespace Immersion
                 batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, (byte)(100 * trans)), 0f,
                     new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
                     shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
+
+                //base.Draw(myTexture, myPosition + offset,null, myColor, myAngle,
+                //    new Vector2(myTexture.Width / 2,myTexture.Height / 2), myScale,SpriteEffects.None, 0f);
             }
 
             Vector2 jumpingPos = myPosition + offset;
@@ -279,8 +344,26 @@ namespace Immersion
             Color transColor = Color.White;
             transColor.A = (byte)(255 * trans);
 
-            batch.Draw(myBook.GetImage(), jumpingPos, null, transColor, 0f, new Vector2(myBook.GetImage().Width / 2 - 10,
-               myBook.GetImage().Height - 10), heroScale, SpriteEffects.None, 0f);
+            if (running)
+            {
+                currentBook = myRunBook;
+            }
+            else
+            {
+                currentBook = myIdleBook;
+            }
+            if (facingLeft)
+            {
+                batch.Draw(currentBook.GetImage(), jumpingPos, null, transColor, 0f, new Vector2(myIdleBook.GetImage().Width / 2 + 5,
+                 myIdleBook.GetImage().Height / 2 + 35), heroScale, SpriteEffects.FlipHorizontally, 0f);
+            }
+            else
+            {
+                batch.Draw(currentBook.GetImage(), jumpingPos, null, transColor, 0f, new Vector2(myIdleBook.GetImage().Width / 2 - 5,
+                   myIdleBook.GetImage().Height / 2 + 35), heroScale, SpriteEffects.None, 0f);
+            }
+            
+
         }
     }
 }
