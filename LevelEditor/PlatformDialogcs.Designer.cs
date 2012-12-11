@@ -37,6 +37,7 @@
             this.nudOffsetX = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.checkBoxLaunch = new System.Windows.Forms.CheckBox();
             this.nudSlide = new System.Windows.Forms.NumericUpDown();
             this.label10 = new System.Windows.Forms.Label();
             this.comboBoxItemTexture = new System.Windows.Forms.ComboBox();
@@ -64,7 +65,8 @@
             this.comboBoxWordClouds = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBoxDisplay = new System.Windows.Forms.PictureBox();
-            this.checkBoxLaunch = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.nudWordOffset = new System.Windows.Forms.NumericUpDown();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudOffsetY)).BeginInit();
@@ -76,13 +78,14 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudTo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDisplay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWordOffset)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonCancel
             // 
             this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonCancel.Location = new System.Drawing.Point(1019, 544);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 28);
             this.buttonCancel.TabIndex = 0;
@@ -94,7 +97,7 @@
             // 
             this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOk.Location = new System.Drawing.Point(905, 544);
-            this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonOk.Margin = new System.Windows.Forms.Padding(4);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(105, 28);
             this.buttonOk.TabIndex = 1;
@@ -113,7 +116,7 @@
             this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.pictureBoxDisplay, 0, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(1, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -123,6 +126,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.nudWordOffset);
+            this.panel1.Controls.Add(this.label11);
             this.panel1.Controls.Add(this.buttonOnPlatform);
             this.panel1.Controls.Add(this.nudOffsetY);
             this.panel1.Controls.Add(this.nudOffsetX);
@@ -147,7 +152,7 @@
             // 
             // buttonOnPlatform
             // 
-            this.buttonOnPlatform.Location = new System.Drawing.Point(227, 290);
+            this.buttonOnPlatform.Location = new System.Drawing.Point(211, 290);
             this.buttonOnPlatform.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonOnPlatform.Name = "buttonOnPlatform";
             this.buttonOnPlatform.Size = new System.Drawing.Size(93, 23);
@@ -230,6 +235,16 @@
             this.panel2.Size = new System.Drawing.Size(476, 204);
             this.panel2.TabIndex = 10;
             // 
+            // checkBoxLaunch
+            // 
+            this.checkBoxLaunch.AutoSize = true;
+            this.checkBoxLaunch.Location = new System.Drawing.Point(352, 6);
+            this.checkBoxLaunch.Name = "checkBoxLaunch";
+            this.checkBoxLaunch.Size = new System.Drawing.Size(77, 21);
+            this.checkBoxLaunch.TabIndex = 17;
+            this.checkBoxLaunch.Text = "Launch";
+            this.checkBoxLaunch.UseVisualStyleBackColor = true;
+            // 
             // nudSlide
             // 
             this.nudSlide.DecimalPlaces = 2;
@@ -239,7 +254,7 @@
             0,
             131072});
             this.nudSlide.Location = new System.Drawing.Point(259, 5);
-            this.nudSlide.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.nudSlide.Margin = new System.Windows.Forms.Padding(4);
             this.nudSlide.Maximum = new decimal(new int[] {
             1,
             0,
@@ -531,7 +546,7 @@
             // 
             this.pictureBoxDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBoxDisplay.Location = new System.Drawing.Point(4, 4);
-            this.pictureBoxDisplay.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBoxDisplay.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxDisplay.Name = "pictureBoxDisplay";
             this.pictureBoxDisplay.Size = new System.Drawing.Size(636, 529);
             this.pictureBoxDisplay.TabIndex = 0;
@@ -540,15 +555,21 @@
             this.pictureBoxDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBoxDisplay_MouseMove);
             this.pictureBoxDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBoxDisplay_MouseUp);
             // 
-            // checkBoxLaunch
+            // label11
             // 
-            this.checkBoxLaunch.AutoSize = true;
-            this.checkBoxLaunch.Location = new System.Drawing.Point(352, 6);
-            this.checkBoxLaunch.Name = "checkBoxLaunch";
-            this.checkBoxLaunch.Size = new System.Drawing.Size(77, 21);
-            this.checkBoxLaunch.TabIndex = 17;
-            this.checkBoxLaunch.Text = "Launch";
-            this.checkBoxLaunch.UseVisualStyleBackColor = true;
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(319, 292);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(88, 17);
+            this.label11.TabIndex = 15;
+            this.label11.Text = "Word Offset:";
+            // 
+            // nudWordOffset
+            // 
+            this.nudWordOffset.Location = new System.Drawing.Point(412, 290);
+            this.nudWordOffset.Name = "nudWordOffset";
+            this.nudWordOffset.Size = new System.Drawing.Size(58, 22);
+            this.nudWordOffset.TabIndex = 16;
             // 
             // PlatformDialog
             // 
@@ -558,7 +579,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.buttonCancel);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PlatformDialog";
@@ -580,6 +601,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.nudTo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDisplay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWordOffset)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -623,5 +645,7 @@
         private System.Windows.Forms.NumericUpDown nudSlide;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.CheckBox checkBoxLaunch;
+        private System.Windows.Forms.NumericUpDown nudWordOffset;
+        private System.Windows.Forms.Label label11;
     }
 }

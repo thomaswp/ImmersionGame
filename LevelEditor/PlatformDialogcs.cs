@@ -163,6 +163,7 @@ namespace LevelEditor
                 nudOffsetX.Value = 0;
                 nudOffsetY.Value = 0;
                 textBoxWords.Clear();
+                nudWordOffset.Value = 0;
             }
 
             int originalIndex = comboBoxWordClouds.SelectedIndex;
@@ -181,6 +182,7 @@ namespace LevelEditor
             comboBoxWordClouds.Enabled = enabled;
             buttonDelete.Enabled = enabled;
             buttonOnPlatform.Enabled = enabled;
+            nudWordOffset.Enabled = enabled;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -329,6 +331,7 @@ namespace LevelEditor
                 nudTo.Value = new Decimal(editingCloud.EndDegree);
                 nudOffsetX.Value = new Decimal(editingCloud.Center.X);
                 nudOffsetY.Value = new Decimal(editingCloud.Center.Y);
+                nudWordOffset.Value = new Decimal(editingCloud.WordOffset);
                 foreach (WordData word in editingCloud.Words)
                 {
                     if (textBoxWords.Text != "")
@@ -354,6 +357,7 @@ namespace LevelEditor
                     editingCloud.Words.Add(new WordData(editingCloud, line));
                 }
                 editingCloud.GeneratePaths();
+                editingCloud.WordOffset = (float)nudWordOffset.Value;
 
 
                 String name = editingCloud.Name;

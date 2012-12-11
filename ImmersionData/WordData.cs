@@ -76,7 +76,7 @@ namespace Immersion
                 speed = (Parent.StartPosition - Parent.EndPosition).Length() /
                     Math.Abs(Parent.StartDegree - Parent.EndDegree);
             }
-            wordOffset = -100 * percentThrough / 10;// / Math.Max(speed, 1);
+            wordOffset = percentThrough * -Parent.WordOffset;// / Math.Max(speed, 1);
 
             float startRadius = relativeParentStart.Length();
             float endRadius = relativeParentEnd.Length();
@@ -100,6 +100,7 @@ namespace Immersion
         {
             Update();
             timeDeg += wordOffset;
+            timeDeg %= 360;
 
             float degree = degreeOffset + timeDeg * revolutions * dir;
             double timDegRadians = timeDeg * Math.PI / 180;
@@ -116,11 +117,13 @@ namespace Immersion
             Vector2 radialPoint = new Vector2((float)Math.Cos(degreeRadians), (float)Math.Sin(degreeRadians)) * rad;
             radialPoint += center;
 
-            //Rachel Edit This
             double degThrough = 0;
             if (Parent.StartDegree != Parent.EndDegree)
             {
-                degThrough = (timeDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
+                float tDeg = timeDeg;
+                while (tDeg < Parent.StartDegree) tDeg += 360;
+                while (tDeg > Parent.EndDegree) tDeg -= 360;
+                degThrough = (tDeg - Parent.StartDegree) / (Parent.EndDegree - Parent.StartDegree) * 2 * Math.PI;
             }
 
 
@@ -143,6 +146,7 @@ namespace Immersion
             Vector2 linearPoint = Parent.GetForcedPath(timeDeg);
             linearPoint += linearOffset;
 
+
             if (timeDeg >= Parent.StartDegree && timeDeg <= Parent.EndDegree)
             {
                 dis = 0;
@@ -152,11 +156,6 @@ namespace Immersion
 
             float rate = 1 - dis;
             rate = (float)Math.Pow(rate, 10);
-
-
-
-
-            //rate = 1;
 
            return linearPoint * (rate) + radialPoint * (1 - rate);
         }

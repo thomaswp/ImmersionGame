@@ -158,7 +158,10 @@ namespace Immersion
             if (startIndex >= 0)
             {
                 PlatformSprite startPlatform = myPlatforms[startIndex];
-                startPlatform.Update(0, gameState);
+                foreach (PlatformSprite platform in myPlatforms)
+                {
+                    platform.Update(0, gameState);
+                }
                 myAnimatedHero.myPosition = myPlatforms[startIndex].myPosition;
                 myAnimatedHero.currentPlatform = myPlatforms[startIndex];
             }
@@ -186,6 +189,8 @@ namespace Immersion
         {
             UpdateOffset();
 
+            //Not using input manager because we don't
+            //to update plater's input
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 if (!escDown && overlay == null)

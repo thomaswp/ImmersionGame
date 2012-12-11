@@ -74,6 +74,13 @@ namespace LevelEditor
                 Properties.Settings.Default.lastSave = game;
                 Properties.Settings.Default.Save();
                 GameLoaded();
+
+                for (float f = 170.8f; f < 171.2f; f += 0.1f)
+                {
+                    Vector2 pos = editorState.Map.WordClouds[0].Words[1].GetPosition(f % 360);
+                    Console.WriteLine((f % 360) + ": " + pos);
+                }
+                
             }
             catch (Exception e)
             {

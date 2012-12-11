@@ -10,7 +10,7 @@ namespace Immersion
     [Serializable]
     public class WordCloudData
     {
-        private float startDegree, endDegree;
+        private float startDegree, endDegree, wordOffset = 10;
         private Vector2 center;
         public IPathed PathedObject;
 
@@ -19,6 +19,7 @@ namespace Immersion
         public float StartDegree { get { return startDegree; } set { startDegree = value; GeneratePaths(); } }
         public float EndDegree { get { return endDegree; } set { endDegree = value; GeneratePaths(); } }
         public Vector2 Center { get { return center; } set { center = value; GeneratePaths(); } }
+        public float WordOffset { get { return wordOffset; } set { wordOffset = value; GeneratePaths(); } }
 
         public String Name
         {
@@ -47,7 +48,7 @@ namespace Immersion
             return words;
         }
 
-        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { this.center = toCopy.center; }
+        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { this.center = toCopy.center; this.wordOffset = toCopy.wordOffset; }
 
         public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words) : 
             this(new LinearPath(startPosition, startDegree, endPosition, endDegree), startDegree, endDegree, words) {}
