@@ -21,8 +21,8 @@ namespace Immersion
         bool finishing;
         float alpha;
 
-        public MapTransition(GraphicsDevice graphicsDevice, ContentManager content, MapData map)
-            : base(graphicsDevice, content)
+        public MapTransition(GraphicsDevice graphicsDevice, ContentManager content, GameState gameState, MapData map)
+            : base(graphicsDevice, content, gameState)
         {
             this.map = map;
         }

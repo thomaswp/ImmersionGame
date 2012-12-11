@@ -15,6 +15,7 @@ namespace Immersion
 {
     public class GameMenu : Overlay
     {
+        AnimatedHero heroWithItems;
         Texture2D black;
         bool escUp;
         bool finished;
@@ -23,8 +24,9 @@ namespace Immersion
         float milliseconds;
         private SpriteFont font;
         private SoundEffect beep;
+        Dictionary<Texture, String> menuItems = new Dictionary<Texture, string>();
 
-        public GameMenu(GraphicsDevice graphicsDevice, ContentManager content) : base(graphicsDevice, content) { }
+        public GameMenu(GraphicsDevice graphicsDevice, ContentManager content, GameState gameState) : base(graphicsDevice, content, gameState) { }
 
         protected override void LoadContent(ContentManager content)
         {
@@ -33,6 +35,14 @@ namespace Immersion
             font = content.Load<SpriteFont>("MenuFont");
             beep = content.Load<SoundEffect>("menu_select");
             beep.Play();
+
+            if (gameState.myAnimatedHero.Items != null)
+            {
+                foreach (ItemData collected in gameState.myAnimatedHero.Items)
+                {
+                    menuItems.Add(content.Load<Texture2D>(collected.ImageName), collected.ImageName);
+                }
+            }         
         }
 
         public override void UpdateGame(ImmersionGame game)
@@ -89,6 +99,18 @@ namespace Immersion
             float x = (resolution.X - textSize.X) / 2;
             float y = (float)Math.Sin(milliseconds / 300) * 20 + (resolution.Y - textSize.Y) / 2;
             spriteBatch.DrawString(font, text, new Vector2(x, y), Color.PowderBlue);
+
+            String itemText = "Items";
+
+            float yy = 100f;
+            float xx = 50f;
+            spriteBatch.DrawString(font, itemText, new Vector2(0, 100), Color.PowderBlue);
+            foreach (Texture2D key in menuItems.Keys)
+            {
+                xx += yy;
+                spriteBatch.Draw(key, new Vector2(xx, yy), null, Color.White, 0f, new Vector2(key.Width / 2,
+                    key.Height / 2), .5f, SpriteEffects.None, 0f);
+            }
             spriteBatch.End();
         }
     }

@@ -21,6 +21,7 @@ namespace Immersion
         const float MAX_PLATFORM_JUMP = 50;
         const float MAP_TRANSITION_TIME = 2;
         const float MAX_SPEED = 400;
+        const float BLINK_COOLDOWN = 1.5f;
 
         protected float myPositionZ;
         protected float myVelocityZ;
@@ -40,6 +41,8 @@ namespace Immersion
         protected SoundEffect fall;
         protected SoundEffect slide;
         protected float slideTime;
+        protected float coolDownTime;
+        protected bool canBlink, canSlide;
 
         public List<ItemData> Items = new List<ItemData>();
 
@@ -118,6 +121,7 @@ namespace Immersion
 
             GameAction isJumping = new GameAction(this, this.GetType().GetMethod("Jump"), new Object[0]);
 
+            GameAction isBlinkable = new GameAction(this, this.GetType().GetMethod("BlinkAbility"), new Object[0]);
             InputManager.AddToKeyboardMap(Keys.W, isMovingForward);
             InputManager.AddToKeyboardMap(Keys.S, isMovingDown);
             InputManager.AddToKeyboardMap(Keys.A, isMovingLeft);
@@ -126,8 +130,11 @@ namespace Immersion
             InputManager.AddToKeyboardMap(Keys.Down, isMovingDown);
             InputManager.AddToKeyboardMap(Keys.Left, isMovingLeft);
             InputManager.AddToKeyboardMap(Keys.Right, isMovingRight);
+            InputManager.AddToKeyboardPressMap(Keys.OemQuestion, isBlinkable);
+            InputManager.AddToKeyboardPressMap(Keys.Z, isBlinkable);
 
             InputManager.AddToControllerPressMap(Buttons.A, isJumping);
+            InputManager.AddToControllerPressMap(Buttons.B, isBlinkable);
 
             InputManager.AddToKeyboardPressMap(Keys.Space, isJumping);
         }
@@ -135,6 +142,8 @@ namespace Immersion
         public void Move(Vector2 direction)
         {
             direction.Normalize();
+
+            lastDirection += direction;
 
             float maxSpeed = MAX_SPEED;
             if (sliding) maxSpeed *= 1.3f;
@@ -158,7 +167,6 @@ namespace Immersion
                 facingLeft = false;
             }
 
-            lastDirection = direction;
         }
 
         public void StickMove()
@@ -183,6 +191,19 @@ namespace Immersion
             else
             {
                 myVelocityZ += 7;
+            }
+        }
+
+        public void BlinkAbility()
+        {
+            if (canBlink && coolDownTime <= 0)
+            {
+                if (lastDirection != Vector2.Zero)
+                {
+                    lastDirection.Normalize();
+                    coolDownTime = BLINK_COOLDOWN;
+                    myPosition += 200f * lastDirection;
+                }
             }
         }
 
@@ -231,8 +252,9 @@ namespace Immersion
         {
 
             base.Update(elapsedTime, gameState);
-  
 
+
+            coolDownTime -= elapsedTime;
             UpdateCurrentPlatform(elapsedTime, gameState);
 
             myIdleBook.Update((double)elapsedTime);
@@ -272,7 +294,7 @@ namespace Immersion
 
             bool wasSliding = sliding;
 
-            sliding = Keyboard.GetState().IsKeyDown(Keys.LeftShift) || Keyboard.GetState().IsKeyDown(Keys.RightShift) || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).IsButtonDown(Buttons.X);
+            sliding = canSlide && (Keyboard.GetState().IsKeyDown(Keys.LeftShift) || Keyboard.GetState().IsKeyDown(Keys.RightShift) || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).IsButtonDown(Buttons.X));
 
             if (sliding && !wasSliding)
             {
@@ -328,7 +350,19 @@ namespace Immersion
                     if ((myPosition - currentPlatform.Item.myPosition).Length() < 35)
                     {
                         currentPlatform.Item.IsCollected = true;
-                        Items.Add(currentPlatform.data.Item);
+                        ItemData item = currentPlatform.data.Item;
+                        if (!Items.Contains(item))
+                        {
+                            Items.Add(item);
+                            if (item.EnablesBlink)
+                            {
+                                canBlink = true;
+                            }
+                            if (item.EnablesSlide)
+                            {
+                                canSlide = true;
+                            }
+                        }
                     }
                 }
 
@@ -351,6 +385,8 @@ namespace Immersion
             float shadowScale = heroScale * .11f;
             float trans = Math.Max(0, (1 - transitionTime / MAP_TRANSITION_TIME));
 
+
+
             if (!falling)
             {
                 batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, (byte)(100 * trans)), 0f,
@@ -366,6 +402,12 @@ namespace Immersion
 
             Color transColor = Color.White;
             transColor.A = (byte)(255 * trans);
+
+            if (coolDownTime > 0)
+            {
+                float perc = 1 - coolDownTime / BLINK_COOLDOWN;
+                transColor.G = (byte)(perc * transColor.G);
+            }
 
             if (running && !sliding)
             {

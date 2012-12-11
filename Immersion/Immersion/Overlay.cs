@@ -17,12 +17,14 @@ namespace Immersion
     {
         protected SpriteBatch spriteBatch;
         protected Point resolution;
+        protected GameState gameState;
 
-        public Overlay(GraphicsDevice graphicsDevice, ContentManager content)
+        public Overlay(GraphicsDevice graphicsDevice, ContentManager content, GameState gameState)
         {
             spriteBatch = new SpriteBatch(graphicsDevice);
             this.resolution = new Point(graphicsDevice.Viewport.Width,
                 graphicsDevice.Viewport.Height);
+            this.gameState = gameState;
             LoadContent(content);
         }
 

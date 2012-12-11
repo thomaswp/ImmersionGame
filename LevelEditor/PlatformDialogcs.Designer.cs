@@ -301,7 +301,9 @@
             "thoughtCloud",
             "orb",
             "wine-bottle",
-            "phoenixcard"});
+            "phoenixcard",
+            "slide_pic",
+            "blink_pic"});
             this.comboBoxItemTexture.Location = new System.Drawing.Point(146, 115);
             this.comboBoxItemTexture.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.comboBoxItemTexture.Name = "comboBoxItemTexture";

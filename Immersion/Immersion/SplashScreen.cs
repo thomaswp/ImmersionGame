@@ -22,12 +22,12 @@ namespace Immersion
         private SpriteFont font;
         private SoundEffect beep;
 
-        public SplashScreen(GraphicsDevice graphicsDevice, ContentManager content) : base(graphicsDevice, content) { }        
+        public SplashScreen(GraphicsDevice graphicsDevice, ContentManager content, GameState gameState) : base(graphicsDevice, content, gameState) { }        
 
         protected override void LoadContent(ContentManager content)
         {
             base.LoadContent(content);
-            splashScreen = content.Load<Texture2D>("splash-screen");
+            splashScreen = content.Load<Texture2D>("splash2");
             font = content.Load<SpriteFont>("MenuFont");
             beep = content.Load<SoundEffect>("menu_select");
         }

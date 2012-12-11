@@ -129,7 +129,7 @@ namespace Immersion
 
             LoadMap(map);
 
-            overlay = new SplashScreen(GraphicsDevice, Content);
+            overlay = new SplashScreen(GraphicsDevice, Content, gameState);
         }
 
         public void LoadMap(MapData map)
@@ -218,7 +218,7 @@ namespace Immersion
             {
                 if (!escDown && overlay == null)
                 {
-                    overlay = new GameMenu(GraphicsDevice, Content);
+                    overlay = new GameMenu(GraphicsDevice, Content, gameState);
                 }
                 escDown = true;
             }
@@ -268,7 +268,7 @@ namespace Immersion
                     MapData newMap = currentPlatform.data.NextMap;
                     if (newMap != null)
                     {
-                        overlay = new MapTransition(GraphicsDevice, Content, newMap);
+                        overlay = new MapTransition(GraphicsDevice, Content, gameState, newMap);
                     }
                 }
             }
