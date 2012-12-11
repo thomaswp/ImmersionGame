@@ -56,6 +56,8 @@ namespace LevelEditor
                 textBoxItemName.Text = PlatformData.Item.Name;
                 comboBoxItemTexture.Text = PlatformData.Item.ImageName;
                 itemOffset = new Point(PlatformData.ItemOffset.X, PlatformData.ItemOffset.Y);
+                checkBoxSlide.Checked = PlatformData.Item.EnablesSlide;
+                checkBoxBlink.Checked = PlatformData.Item.EnablesBlink;
             }
             else
             {
@@ -125,6 +127,8 @@ namespace LevelEditor
             {
                 PlatformData.Item = new ItemData(textBoxItemName.Text, comboBoxItemTexture.Text);
                 PlatformData.ItemOffset = new XNAPoint(itemOffset.X, itemOffset.Y);
+                PlatformData.Item.EnablesSlide = checkBoxSlide.Checked;
+                PlatformData.Item.EnablesBlink = checkBoxBlink.Checked;
             }
             else
             {
@@ -397,6 +401,8 @@ namespace LevelEditor
             bool check = this.checkBoxItem.Checked;
             this.textBoxItemName.Enabled = check;
             this.comboBoxItemTexture.Enabled = check;
+            this.checkBoxSlide.Enabled = check;
+            this.checkBoxBlink.Enabled = check;
             draw();
         }
 

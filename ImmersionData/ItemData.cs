@@ -11,6 +11,7 @@ namespace Immersion
         public string Name;
         public string ImageName;
         public bool EnablesSlide;
+        public bool EnablesBlink;
 
         public ItemData(string name, string imageName) 
         {
