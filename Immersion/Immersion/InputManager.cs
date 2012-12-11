@@ -35,12 +35,20 @@ namespace Immersion
 
         static Dictionary<Buttons, List<GameAction>> myControllerMap = new Dictionary<Buttons, List<GameAction>>();
 
+        //Used for single presses, instead of holds
         static Dictionary<Buttons, List<GameAction>> myControllerPressMap = new Dictionary<Buttons, List<GameAction>>();
 
         static List<Keys> myPressedKeys = new List<Keys>();
         static List<Buttons> myPressedButtons = new List<Buttons>();
 
         static InputManager myInstance = new InputManager();
+
+        public static bool IsSliding()
+        {
+            return Keyboard.GetState().IsKeyDown(Keys.LeftShift) ||
+                Keyboard.GetState().IsKeyDown(Keys.RightShift) ||
+                GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).IsButtonDown(Buttons.X);
+        }
 
         public static void AddToMap<T>(Dictionary<T, List<GameAction>> map, T key, GameAction action)
         {
@@ -149,6 +157,7 @@ namespace Immersion
                     }
                 }
 
+                //Same as above, but check if the key is unpressed
                 if (myKeyboardPressMap.ContainsKey(k))
                 {
                     if (!myPressedKeys.Contains(k))
@@ -181,6 +190,7 @@ namespace Immersion
                 }
             }
 
+            //Same as above, but check if the button is unpressed
             foreach (Buttons button in myControllerPressMap.Keys)
             {
                 if (state.IsButtonDown(button))

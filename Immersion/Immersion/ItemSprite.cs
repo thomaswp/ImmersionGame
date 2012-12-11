@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 using System.Collections;
 namespace Immersion
 {
+    //Shows Items, these objects are owned by the PlatformSprites that display them
     public class ItemSprite : Sprite
     {
         public bool IsCollected { get; set; }
@@ -38,6 +39,8 @@ namespace Immersion
         {
             base.Update(elapsedTime, gameState);
             time += elapsedTime;
+
+            //Collected animation
             if (IsCollected)
             {
                 collectedTime += elapsedTime;
@@ -65,21 +68,14 @@ namespace Immersion
         {
             float shadowScale = myScale * .65f; //0.35f;
 
-            // If collected draw the shadow and the item
-            //if (!IsCollected)
-            //{
-                batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, 100), 0f,
-                    new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
-                    shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
 
-                base.Draw(batch, offset - new Vector2(0, myPositionZ + myTexture.Height * myScale / 2));
+            batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, 100), 0f,
+                new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
+                shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
 
-            //}
-            //else Draw collected item animation
-            //else
-           // {
-                //base.Draw(batch, offset);
-            //}
+            base.Draw(batch, offset - new Vector2(0, myPositionZ + myTexture.Height * myScale / 2));
+
+
         }
     }
 }

@@ -18,32 +18,61 @@ namespace Immersion
     public class AnimatedHero : Sprite 
     {
 
+        //max distance a platform can move in a frame and bring the player with it
+        //otherwise we assume it's supposed to dump them
         const float MAX_PLATFORM_JUMP = 50;
+        //Time it takes to fade out when moving to a new platform
         const float MAP_TRANSITION_TIME = 2;
+        //Max speed the player accelerate to
+        //by using the controls
         const float MAX_SPEED = 400;
+        //Cooldown on the blink ability
         const float BLINK_COOLDOWN = 1.5f;
 
+        //Z for shadow
         protected float myPositionZ;
         protected float myVelocityZ;
+
         protected Texture2D shadowImage;
+
+        //Current platform the player is standing on
         public PlatformSprite currentPlatform;
-        protected Vector2 pushoffVelocity;
+        //Last "Safe" Platform
         protected PlatformSprite respawnPlatform;
+        
+        //Velocity leaves the platform with
+        protected Vector2 pushoffVelocity;
+
+        //have we fallen?
         protected bool falling;
+        
+        //Animation
         protected Flipbook myIdleBook;
         protected Flipbook myRunBook;
         protected Flipbook currentBook;
+
+        //timer for level transitions
         protected float transitionTime;
+
+        //are we sliding, facing left, running?
         protected bool sliding;
         protected bool facingLeft;
         protected bool running;
+
+        //Last direction we moved
         protected Vector2 lastDirection;
+
+        //fall and slide sound effects
         protected SoundEffect fall;
         protected SoundEffect slide;
-        protected float slideTime;
+
+        //cool down for blink
         protected float coolDownTime;
+
+        //have we gotten the right items for abilities
         protected bool canBlink, canSlide;
 
+        //items collected
         public List<ItemData> Items = new List<ItemData>();
 
         private bool moved;
@@ -146,12 +175,16 @@ namespace Immersion
                 direction.Normalize();
             }
 
+            //modify the last direction
             lastDirection += direction;
 
+            //Max speed should be the max of either how fast they are NOW 
+            //or the max they can acellerate to
             float maxSpeed = MAX_SPEED;
             if (sliding) maxSpeed *= 1.3f;
             if (!IsGrounded) maxSpeed -= pushoffVelocity.Length();
             maxSpeed = Math.Max(myVelocity.Length(), maxSpeed);
+
             myVelocity += direction * 50;
             moved = true;
 
@@ -184,6 +217,7 @@ namespace Immersion
                 myVelocityZ = 600;
                 if (currentPlatform != null && currentPlatform.data.Launch)
                 {
+                    //Keep the platform's velocity on launch platforms
                     pushoffVelocity = currentPlatform.Velocity;
                 }
                 else
@@ -193,6 +227,7 @@ namespace Immersion
             }
             else
             {
+                //let them jump a little higher by holding down
                 myVelocityZ += 7;
             }
         }
@@ -212,10 +247,13 @@ namespace Immersion
 
         private void UpdateCurrentPlatform(float elapsedTime, GameState gameState)
         {
+
+            //gravity
             myVelocityZ += -2000f * elapsedTime;
             myPositionZ += myVelocityZ * elapsedTime;
             myPositionZ = Math.Max(myPositionZ, 0);
 
+            //Update the current platform
             if (IsGrounded && !falling)
             {
                 PlatformSprite lastPlatform = currentPlatform;
@@ -268,6 +306,7 @@ namespace Immersion
             lastDirection = Vector2.Zero;
 
 
+            //fall if we have no platform
             if (currentPlatform == null)
             {
                 if (!falling)
@@ -277,6 +316,7 @@ namespace Immersion
                 falling = true;
             }
 
+            //become wee if falling
             if (falling)
             {
                 myScale *= 0.9f;
@@ -297,22 +337,26 @@ namespace Immersion
 
             bool wasSliding = sliding;
 
-            sliding = canSlide && (Keyboard.GetState().IsKeyDown(Keys.LeftShift) || Keyboard.GetState().IsKeyDown(Keys.RightShift) || GamePad.GetState(PlayerIndex.One, GamePadDeadZone.None).IsButtonDown(Buttons.X));
+            sliding = canSlide && (InputManager.IsSliding());
 
             if (sliding && !wasSliding)
             {
                slide.Play();
             }
 
+            //slide as much as the platform would have you slide
             float slideFactor = (float)Math.Pow(currentPlatform.data.Slide, 0.1);
             float factor = 1f;
             if (!moved || myVelocity.Length() > MAX_SPEED)
             {
+                //Slow down if we're not moving
                 factor = 0.98f;
+                //Show down more if we're on the ground than in the air
                 if (IsGrounded)
                 {
                     if (!sliding)
                     {
+                        //minimum of 0.3 friction
                         factor = 0.3f + slideFactor * 0.7f;
                     }
                 }
@@ -321,6 +365,7 @@ namespace Immersion
             Vector2 edge;
             if (IsGrounded &&  currentPlatform != null && (edge = currentPlatform.NearEdge(myPosition)) != Vector2.Zero)
             {
+                //If we're near the edge, slow them down
                 Vector2 nV = myVelocity; 
                 if (nV != Vector2.Zero) nV.Normalize();
                 if (edge != Vector2.Zero) edge.Normalize();
@@ -330,6 +375,8 @@ namespace Immersion
                 }
             }
 
+            //Update the pushOffVelocity
+            //and move the hero with his platform
             if (currentPlatform != null)
             {
                 if (IsGrounded)
@@ -346,6 +393,7 @@ namespace Immersion
             }
             moved = false;
 
+            //Transition to the next level
             float transTime = 0;
             if (currentPlatform != null)
             {
@@ -377,6 +425,7 @@ namespace Immersion
             }
             transitionTime = transTime;
 
+
             if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Left != new Vector2(0, 0))
             {
                 StickMove();
@@ -393,12 +442,10 @@ namespace Immersion
 
             if (!falling)
             {
+                //Draw the shadow
                 batch.Draw(shadowImage, myPosition + offset, null, new Color(255, 255, 255, (byte)(100 * trans)), 0f,
                     new Vector2(shadowImage.Width / 2, shadowImage.Height / 2),
                     shadowScale / (1 + myPositionZ / 100), SpriteEffects.None, 0f);
-
-                //base.Draw(myTexture, myPosition + offset,null, myColor, myAngle,
-                //    new Vector2(myTexture.Width / 2,myTexture.Height / 2), myScale,SpriteEffects.None, 0f);
             }
 
             Vector2 jumpingPos = myPosition + offset;
@@ -407,12 +454,14 @@ namespace Immersion
             Color transColor = Color.White;
             transColor.A = (byte)(255 * trans);
 
+            //Show cooldown on blink
             if (coolDownTime > 0)
             {
                 float perc = 1 - coolDownTime / BLINK_COOLDOWN;
                 transColor.G = (byte)(perc * transColor.G);
             }
 
+            //draw the right animation
             if (running && !sliding)
             {
                 currentBook = myRunBook;

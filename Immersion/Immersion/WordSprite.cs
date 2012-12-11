@@ -13,7 +13,8 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Immersion
 {
-    public class WordSprite : IPathedSprite
+    //Sprite that represents a Word and interperates WordData in the game
+    public class WordSprite
     {
         protected WordData data;
         protected SpriteFont font;
@@ -30,11 +31,14 @@ namespace Immersion
 
         public void Update(float elapsedTime)
         {
-            float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
+            float timeMult = GameState.TIME_MULTIPLIER;
+
+            //A testing hack for speeding up and slowing down time
+            if (Keyboard.GetState().IsKeyDown(Keys.OemPlus)) timeMult *= 3;
             if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
-            float posMult = 3;
+
             degree = (degree + elapsedTime * timeMult) % 360;
-            position = data.GetPosition(degree) * posMult;
+            position = data.GetPosition(degree) * GameState.DISTANCE_MULTIPLIER;
         }
 
         public void Draw(SpriteBatch spritebatch, Vector2 offset)

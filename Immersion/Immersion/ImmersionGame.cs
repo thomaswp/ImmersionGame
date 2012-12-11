@@ -26,6 +26,7 @@ namespace Immersion
         GameState gameState;
         SoundEffectInstance music;
 
+        //Stor all important variables in the GameState
         AnimatedHero myAnimatedHero { get { return gameState.myAnimatedHero; } set { gameState.myAnimatedHero = value; } }
         Vector2 myScreenSize { get { return gameState.myScreenSize; } set { gameState.myScreenSize = value; } }
         Vector2 offset { get { return gameState.offset; } set { gameState.offset = value; } }
@@ -49,8 +50,6 @@ namespace Immersion
 
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            //graphics.PreferredBackBufferWidth = 2000;
-            //graphics.PreferredBackBufferHeight = 1250;
             graphics.PreferredBackBufferWidth = 1200;
             graphics.PreferredBackBufferHeight = 750;
 
@@ -58,6 +57,7 @@ namespace Immersion
 
             myScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
+            //Read file from command arguemtns for testing purposes
             if (gameFile != null)
             {
                 game = GameData.ReadFromFile(gameFile);
@@ -85,6 +85,7 @@ namespace Immersion
         /// </summary>
         protected override void LoadContent()
         {
+            //Load the default game if none was provided
             if (game == null)
             {
                 game = GameData.ReadFromFile("../../../../../Game1.game");
@@ -132,6 +133,7 @@ namespace Immersion
             overlay = new SplashScreen(GraphicsDevice, Content, gameState);
         }
 
+        //Interperate all game data as sprites and load them
         public void LoadMap(MapData map)
         {
             this.map = map;
@@ -177,6 +179,8 @@ namespace Immersion
                 sprite.LoadContent(Content);
             }
 
+            //Check for the hero's start platform and update everything once
+            //before drawing
             myAnimatedHero.Reset();
             int startIndex = map.Platforms.IndexOf(map.startPlatform);
             if (startIndex >= 0)
@@ -223,6 +227,7 @@ namespace Immersion
             {
                 if (!escDown && overlay == null)
                 {
+                    //start the menu
                     overlay = new GameMenu(GraphicsDevice, Content, gameState);
                 }
                 escDown = true;
@@ -247,6 +252,7 @@ namespace Immersion
                 }
             }
 
+            //in gerneral, put the scale to default
             worldScale = Lerp(worldScale, DEFAULT_SCALE, 0.8f);
 
             // Here's where the input manager is told to deal with the input
@@ -256,6 +262,7 @@ namespace Immersion
 
             float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            //Update all sprites
             foreach (Sprite s in mySprites)
             {
                 s.Update(elapsedTime, gameState);
@@ -285,7 +292,7 @@ namespace Immersion
         private Vector2 offsetVelocity;
         private void UpdateOffset()
         {
-
+            //Try to do some fancy camera prediction, and mostly fail
             int heightBuffer = (int)(myScreenSize.Y / 2.5f);
             int widthBuffer = (int)(myScreenSize.X / 2.5f);
             int width = (int)myScreenSize.X; // (int)(myScreenSize.X / worldScale);
@@ -328,7 +335,7 @@ namespace Immersion
 
             GraphicsDevice.Clear(Color.Aqua);
 
-            // TODO: Add your drawing code here
+            //Use a matrix to handle the offset and scale
             Matrix m = Matrix.Identity;
             m = Matrix.Multiply(Matrix.CreateTranslation(myScreenSize.X / 2, myScreenSize.Y / 2, 0), m);
             m = Matrix.Multiply(Matrix.CreateScale(worldScale), m);

@@ -25,6 +25,7 @@ namespace Immersion
             this.texture = texture;
         }
 
+        //Draws the background in parallax
         public void Draw(SpriteBatch spritebatch, Vector2 offset, float scale)
         {
             offset *= 0.7f;

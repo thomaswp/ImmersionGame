@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Storage;
 
 namespace Immersion
 {
-    public class PlatformSprite : Sprite, IPathedSprite
+    public class PlatformSprite : Sprite
     {
         protected float degree = 0;
         protected float timeMult = 30;
@@ -41,13 +41,14 @@ namespace Immersion
             : base(texture, data.StartPos)
         {
             this.data = data;
-            this.timeMult = 30;// timeMult;
+            this.timeMult = 30;
             myScale = 0.5f;
             baseColor = new Color(255, 255, 255, baseOpacity);
         }
 
         public void UpdateHeroOnPlatform(bool onPlatform, float elapsedTime)
         {
+            //Update for fading platforms
             this.heroOnPlatform = onPlatform;
             float ms = elapsedTime * 1000;
             if (onPlatform)
@@ -74,11 +75,16 @@ namespace Immersion
         public override void Update(float elapsedTime, GameState gameState)
         {
             Vector2 lastPos = myPosition;
-
             base.Update(elapsedTime, gameState);
-            float timeMult = Keyboard.GetState().IsKeyDown(Keys.OemPlus) ? 100 : 30;
+
+            float timeMult = GameState.TIME_MULTIPLIER;
+
+            //A testing hack for speeding up and slowing down time
+            if (Keyboard.GetState().IsKeyDown(Keys.OemPlus)) timeMult *= 3;
             if (Keyboard.GetState().IsKeyDown(Keys.OemMinus)) timeMult /= 2;
 
+
+            //
             float dd = elapsedTime * timeMult;
             if (gameState.myAnimatedHero.currentPlatform == this && data.Jump(degree, dd))
             {
@@ -93,10 +99,9 @@ namespace Immersion
             {
                 float sdd = 0.001f;
                 while (!data.Wait(degree, sdd)) degree += sdd;
-                //if ((degree + data.DegreeOffset) % 360 + dd >= 360) degree = data.DegreeOffset;
             }
 
-            myPosition = data.GetPosition(degree) * MapData.DISTANCE_MULTIPLIER;
+            myPosition = data.GetPosition(degree) * GameState.DISTANCE_MULTIPLIER;
 
             LastFrameMovement = myPosition - lastPos;
             Velocity = LastFrameMovement / elapsedTime;
@@ -108,6 +113,7 @@ namespace Immersion
             }
         }
 
+        //Check if the player is in the platform
         public bool Contains(Vector2 pos)
         {
             if (data.Invisible) return false;
@@ -121,6 +127,8 @@ namespace Immersion
             return false;
         }
 
+
+        //Check if they're near the edge to slow them down
         public Vector2 NearEdge(Vector2 pos)
         {
             int checks = 4;
@@ -135,6 +143,7 @@ namespace Immersion
             return Vector2.Zero;
         }
 
+        //Does a particular segment of the platform contain the hero
         public bool SegmentContains(Vector2 pos)
         {
             Vector2 relPos = pos - myPosition;
@@ -156,6 +165,7 @@ namespace Immersion
         {
             if (data.Invisible) return;
 
+            //Fun color modifiers
             myColor = baseColor;
 
             if (data.FallTime > 0)
@@ -178,6 +188,7 @@ namespace Immersion
             myColor.R -= (byte)(100 * data.Slide);
             myColor.G -= (byte)(100 * data.Slide);
 
+            //Draw segments
             foreach (Point p in data.Segments)
             {
                 if (p.X == 0 && p.Y == 0 && data.NextMap != null)

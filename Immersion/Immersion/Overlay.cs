@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Immersion
 {
+    //Abstract class used to overaly things on top of the game
     public abstract class Overlay
     {
         protected SpriteBatch spriteBatch;

@@ -15,7 +15,6 @@ namespace Immersion
 {
     public class GameMenu : Overlay
     {
-        AnimatedHero heroWithItems;
         Texture2D black;
         bool escUp;
         bool finished;
@@ -36,6 +35,7 @@ namespace Immersion
             beep = content.Load<SoundEffect>("menu_select");
             beep.Play();
 
+            //Load hero items
             if (gameState.myAnimatedHero.Items != null)
             {
                 foreach (ItemData collected in gameState.myAnimatedHero.Items)
@@ -47,6 +47,7 @@ namespace Immersion
 
         public override void UpdateGame(ImmersionGame game)
         {
+            //Zoom out
             game.WorldScale = ImmersionGame.Lerp(game.WorldScale, 0.3f, 0.7f);
         }
 
@@ -62,6 +63,8 @@ namespace Immersion
             bool down = Keyboard.GetState().IsKeyDown(Keys.Escape) ||
                 GamePad.GetState(0, GamePadDeadZone.None).IsButtonDown(Buttons.Start);
 
+            //End the pause (can't use InputManager because it needs
+            //to be paused during this menu)
             if (!escUp && !down)
             {
                 escUp = true;
@@ -72,6 +75,7 @@ namespace Immersion
                 finishing = true;
             }
 
+            //Fade in and out
             if (finishing)
             {
                 alpha -= gameTime.ElapsedGameTime.Milliseconds;
@@ -100,8 +104,8 @@ namespace Immersion
             float y = (float)Math.Sin(milliseconds / 300) * 20 + (resolution.Y - textSize.Y) / 2;
             spriteBatch.DrawString(font, text, new Vector2(x, y), Color.PowderBlue);
 
+            //Draw items
             String itemText = "Items";
-
             float yy = 100f;
             float xx = font.MeasureString(itemText).X + 20;
             spriteBatch.DrawString(font, itemText, new Vector2(0, 100), Color.PowderBlue);
