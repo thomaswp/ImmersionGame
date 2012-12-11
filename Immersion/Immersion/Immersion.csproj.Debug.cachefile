@@ -14,8 +14,6 @@ Content\black.xnb
 Content\splash-screen.xnb
 Content\orb.xnb
 Content\thoughtCloud.xnb
-Content\DefaultFont.xnb
-Content\MenuFont.xnb
 Content\scott_idle_1.xnb
 Content\scott_idle_2.xnb
 Content\scott_idle_3.xnb
@@ -32,12 +30,14 @@ Content\scott_run_5.xnb
 Content\scott_run_6.xnb
 Content\scott_run_7.xnb
 Content\scott_run_8.xnb
-Content\fall.xnb
-Content\slide.xnb
-Content\song.xnb
-Content\menu_select.xnb
 Content\blink_pic.xnb
 Content\slide_pic.xnb
 Content\Splash2.xnb
 Content\burger.xnb
 Content\streetsign.xnb
+Content\DefaultFont.xnb
+Content\MenuFont.xnb
+Content\fall.xnb
+Content\slide.xnb
+Content\song.xnb
+Content\menu_select.xnb

@@ -18,12 +18,14 @@ namespace Immersion
         protected WordData data;
         protected SpriteFont font;
         protected Vector2 position;
+        protected bool storyText;
         float degree = 0;
 
-        public WordSprite(WordData data, SpriteFont font)
+        public WordSprite(WordData data, SpriteFont font, bool storyText)
         {
             this.data = data;
             this.font = font;
+            this.storyText = storyText;
         }
 
         public void Update(float elapsedTime)
@@ -38,7 +40,7 @@ namespace Immersion
         public void Draw(SpriteBatch spritebatch, Vector2 offset)
         {
             Vector2 size = font.MeasureString(data.Text);
-            spritebatch.DrawString(font, data.Text, position + offset - size / 2, Color.White);
+            spritebatch.DrawString(font, data.Text, position + offset - size / 2, storyText ? Color.White : Color.LightBlue);
         }
 
         public void SetDegree(float degree)

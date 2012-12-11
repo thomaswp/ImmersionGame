@@ -163,7 +163,8 @@ namespace Immersion
             {
                 foreach (WordData word in wordCloud.Words)
                 {
-                    myWordSprites.Add(new WordSprite(word, font));
+                    WordSprite ws = new WordSprite(word, font, wordCloud.StoryText);
+                    myWordSprites.Add(ws);
                 }
             }
 

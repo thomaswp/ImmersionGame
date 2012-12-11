@@ -168,6 +168,7 @@ namespace LevelEditor
                 nudOffsetY.Value = 0;
                 textBoxWords.Clear();
                 nudWordOffset.Value = 0;
+                checkBoxStory.Checked = false;
             }
 
             int originalIndex = comboBoxWordClouds.SelectedIndex;
@@ -187,6 +188,7 @@ namespace LevelEditor
             buttonDelete.Enabled = enabled;
             buttonOnPlatform.Enabled = enabled;
             nudWordOffset.Enabled = enabled;
+            checkBoxStory.Enabled = enabled;
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)
@@ -336,6 +338,7 @@ namespace LevelEditor
                 nudOffsetX.Value = new Decimal(editingCloud.Center.X);
                 nudOffsetY.Value = new Decimal(editingCloud.Center.Y);
                 nudWordOffset.Value = new Decimal(editingCloud.WordOffset);
+                checkBoxStory.Checked = editingCloud.StoryText;
                 foreach (WordData word in editingCloud.Words)
                 {
                     if (textBoxWords.Text != "")
@@ -362,6 +365,7 @@ namespace LevelEditor
                 }
                 editingCloud.GeneratePaths();
                 editingCloud.WordOffset = (float)nudWordOffset.Value;
+                editingCloud.StoryText = checkBoxStory.Checked;
 
 
                 String name = editingCloud.Name;
@@ -381,7 +385,19 @@ namespace LevelEditor
 
         private void buttonAddWordCloud_Click(object sender, EventArgs e)
         {
-            wordClouds.Add(new WordCloudData(PlatformData, 0, 10, new List<string>()));
+            WordCloudData wordCloud = new WordCloudData(PlatformData, 0, 10, new List<string>());
+            int border = 20;
+            if (wordClouds.Count == 0) 
+            {
+                wordCloud.StartDegree = border;
+                wordCloud.EndDegree = 180 - border;
+            }
+            if (wordClouds.Count == 1) 
+            {
+                wordCloud.StartDegree = 180 + border;
+                wordCloud.EndDegree = 360 - border;
+            }
+            wordClouds.Add(wordCloud);
             UpdateWordClouds();
             comboBoxWordClouds.SelectedIndex = comboBoxWordClouds.Items.Count - 1;
         }

@@ -41,7 +41,10 @@ namespace LevelEditor
             
             foreach (WordCloudData wordCloud in map.WordClouds)
             {
-                DrawWordCloud(g, wordCloud);
+                //if (wordCloud.PathedObject == editorState.SelectedPlatform)
+                //{
+                    DrawWordCloud(g, wordCloud);
+                //}
             }
 
             foreach (PlatformData platform in map.Platforms)
@@ -134,9 +137,11 @@ namespace LevelEditor
 
         private void DrawWordCloud(Graphics g, WordCloudData wordCloud)
         {
+            Color c = editorState.SelectedWordCloud == wordCloud ? Color.Red : Color.Black;
+
             Font smallFont = new Font("Arial", 7);
             Pen linePen = new Pen(Color.DarkBlue, 5);
-            Pen dashPen = Pens.Black;
+            Pen dashPen = new Pen(c, 1);
 
             if (wordCloud.PathedObject.GetType() == typeof(CirclePath))
             {
@@ -158,13 +163,18 @@ namespace LevelEditor
                     int lastIndex = i == 0 ? word.points.Count - 1 : i - 1;
                     Point p1 = MapPointOnCanvas(word.points[lastIndex]);
                     Point p2 = MapPointOnCanvas(word.points[i]);
-                    g.DrawEllipse(Pens.Black, new Rectangle(p1.X - 2, p1.Y - 2, 4, 4));
+                    g.DrawEllipse(dashPen, new Rectangle(p1.X - 2, p1.Y - 2, 4, 4));
                 }
                 DrawPath(g, word, dashPen);
 
                 g.DrawString(word.Text, smallFont, Brushes.Black,
                     MapPointOnCanvas(word.GetPosition(Degree)));
             }
+
+            Point cloudCenter = MapPointOnCanvas(wordCloud.Center);
+            Pen p = new Pen(c, 4);
+            g.DrawEllipse(p, cloudCenter.X - CIRCLE_DRAW_RADIUS, cloudCenter.Y - CIRCLE_DRAW_RADIUS,
+                CIRCLE_DRAW_RADIUS * 2, CIRCLE_DRAW_RADIUS * 2);
         }
 
         private Vector2 MousePosOnMap(Point pos)

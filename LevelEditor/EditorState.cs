@@ -40,6 +40,7 @@ namespace LevelEditor
 
         public PlatformData SelectedPlatform;
         public PlatformSegue SelectedSegue;
+        public WordCloudData SelectedWordCloud;
         public List<PlatformData> SelectedPlatforms = new List<PlatformData>();
         public List<PlatformSegue> SelectedSegues = new List<PlatformSegue>();
 

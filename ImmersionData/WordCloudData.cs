@@ -13,6 +13,7 @@ namespace Immersion
         private float startDegree, endDegree, wordOffset = 10;
         private Vector2 center;
         public IPathed PathedObject;
+        public bool StoryText = true;
 
         public Vector2 StartPosition { get { return GetForcedPath(startDegree); } }
         public Vector2 EndPosition { get { return GetForcedPath(endDegree); } }
@@ -48,7 +49,7 @@ namespace Immersion
             return words;
         }
 
-        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { this.center = toCopy.center; this.wordOffset = toCopy.wordOffset; }
+        public WordCloudData(WordCloudData toCopy) : this(toCopy.PathedObject, toCopy.startDegree, toCopy.endDegree, extractWords(toCopy)) { this.center = toCopy.center; this.wordOffset = toCopy.wordOffset; this.StoryText = toCopy.StoryText; }
 
         public WordCloudData(Vector2 startPosition, float startDegree, Vector2 endPosition, float endDegree, List<String> words) : 
             this(new LinearPath(startPosition, startDegree, endPosition, endDegree), startDegree, endDegree, words) {}

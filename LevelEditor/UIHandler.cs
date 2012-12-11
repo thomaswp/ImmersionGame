@@ -42,8 +42,11 @@ namespace LevelEditor
         private PlatformData draggingPlatform;
         //segue being dragged
         private PlatformSegue draggingSegue;
+
+        private WordCloudData draggingWordCloud;
         //if the user is dragging something, where did they grab it
         private Vector2 draggingItemOffset;
+
 
         private PlatformDialog platformDialog = new PlatformDialog();
 
@@ -58,6 +61,11 @@ namespace LevelEditor
         {
             get { return editorState.SelectedSegue; }
             set { editorState.SelectedSegue = value; }
+        }
+        private WordCloudData SelectedWordCloud
+        {
+            get { return editorState.SelectedWordCloud; }
+            set { editorState.SelectedWordCloud = value; }
         }
         private List<PlatformData> SelectedPlatforms { get { return editorState.SelectedPlatforms;} }
         private List<PlatformSegue> SelectedSegues { get { return editorState.SelectedSegues; } }
@@ -210,6 +218,7 @@ namespace LevelEditor
                     //set selections to null
                     SelectedPlatform = null;
                     SelectedSegue = null;
+                    SelectedWordCloud = null;
                     SelectedPlatforms.Clear();
                     SelectedSegues.Clear();
                 }
@@ -277,8 +286,26 @@ namespace LevelEditor
                     draggingItemOffset = SelectedPlatform.GetPosition(Degree) - pos;
                 }
 
-                //if we're not selecting anything, just drag the map
+
+
                 if (SelectedPlatform == null && SelectedSegue == null)
+                {
+                    foreach (WordCloudData wordCloud in editorState.Map.WordClouds)
+                    {
+                        if (wordCloudContains(wordCloud, pos))
+                        {
+                            SelectedWordCloud = wordCloud;
+                        }
+                    }
+                }
+                draggingWordCloud = SelectedWordCloud;
+                if (draggingWordCloud != null)
+                {
+                    draggingItemOffset = draggingWordCloud.Center - pos;
+                }
+
+                //if we're not selecting anything, just drag the map
+                if (SelectedPlatform == null && SelectedSegue == null && SelectedWordCloud == null)
                 {
                     startMapDrag(e);
                 }
@@ -299,6 +326,7 @@ namespace LevelEditor
             draggingMap = false;
             draggingPlatform = null;
             draggingSegue = null;
+            draggingWordCloud = null;
         }
 
         public void MouseMove(MouseEventArgs e)
@@ -357,6 +385,10 @@ namespace LevelEditor
                         }
                     }
                 }
+            }
+            if (draggingWordCloud != null)
+            {
+                draggingWordCloud.Center = pos + draggingItemOffset;
             }
         }
 
@@ -463,6 +495,11 @@ namespace LevelEditor
         private bool segueContains(PlatformSegue segue, Vector2 pos)
         {
             return (segue.Destination - pos).Length() < MapRenderer.SEGUE_DRAW_RADIUS;
+        }
+
+        private bool wordCloudContains(WordCloudData cloud, Vector2 pos)
+        {
+            return (cloud.Center - pos).Length() < MapRenderer.CIRCLE_DRAW_RADIUS;
         }
     }
 }

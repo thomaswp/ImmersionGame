@@ -141,7 +141,10 @@ namespace Immersion
 
         public void Move(Vector2 direction)
         {
-            direction.Normalize();
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+            }
 
             lastDirection += direction;
 
@@ -318,8 +321,9 @@ namespace Immersion
             Vector2 edge;
             if (IsGrounded &&  currentPlatform != null && (edge = currentPlatform.NearEdge(myPosition)) != Vector2.Zero)
             {
-                Vector2 nV = myVelocity; nV.Normalize();
-                edge.Normalize();
+                Vector2 nV = myVelocity; 
+                if (nV != Vector2.Zero) nV.Normalize();
+                if (edge != Vector2.Zero) edge.Normalize();
                 if ((nV + edge).Length() > Math.Sqrt(2))
                 {
                     myVelocity /= Math.Max(20 * (1 - slideFactor), 1);
