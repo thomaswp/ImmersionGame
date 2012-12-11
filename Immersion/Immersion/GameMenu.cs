@@ -103,7 +103,7 @@ namespace Immersion
             String itemText = "Items";
 
             float yy = 100f;
-            float xx = 50f;
+            float xx = 75f;
             spriteBatch.DrawString(font, itemText, new Vector2(0, 100), Color.PowderBlue);
             foreach (Texture2D key in menuItems.Keys)
             {
